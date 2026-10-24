@@ -9,6 +9,7 @@ type ListPaginationProps = {
   pageSize: number;
   total: number;
   noun: string;
+  note?: string;
   onPageChange: (page: number) => void;
 };
 
@@ -19,6 +20,7 @@ export function ListPagination({
   pageSize,
   total,
   noun,
+  note,
   onPageChange,
 }: ListPaginationProps) {
   const pageCount = Math.max(1, Math.ceil(total / pageSize));
@@ -38,6 +40,7 @@ export function ListPagination({
     <div className="flex h-[52px] items-center gap-4 border-t px-6">
       <p className="flex-1 text-xs text-muted-foreground">
         {first}–{last} de {total.toLocaleString("pt-PT")} {noun}
+        {note && ` · ${note}`}
       </p>
       <nav aria-label="Paginação" className="flex items-center gap-2">
         <button
