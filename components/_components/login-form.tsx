@@ -3,6 +3,7 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import Link from "next/link";
 
 export function LoginForm() {
   return (
@@ -71,9 +72,9 @@ export function LoginForm() {
 
       <p className="text-center text-[16px] text-[#999999]">
         Ainda lembra da tua senha?{" "}
-        <a href="#" className="font-semibold text-[#E73959] hover:underline">
+        <Link href="/forgot-password" className="font-semibold text-[#E73959] hover:underline">
           Recuperar senha
-        </a>
+        </Link>
       </p>
     </form>
   );
