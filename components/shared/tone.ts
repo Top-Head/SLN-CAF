@@ -1,4 +1,3 @@
-/** Pares fundo/texto usados em contadores e badges de estado. */
 export const TONES = {
   primary: "bg-accent text-primary",
   positive: "bg-positive-soft text-positive",

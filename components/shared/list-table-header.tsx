@@ -6,7 +6,6 @@ export type ListColumn = {
   className?: string;
 };
 
-/** Cabeçalho cinzento com cantos arredondados usado nas tabelas de listagem. */
 export function ListTableHeader({ columns }: { columns: ListColumn[] }) {
   return (
     <TableHeader className="[&_tr]:border-0">

@@ -1,4 +1,4 @@
-import { Plus } from "lucide-react";
+import { Download, Plus } from "lucide-react";
 import Image from "next/image";
 
 type ListHeaderProps = {
@@ -7,6 +7,7 @@ type ListHeaderProps = {
   addLabel: string;
   onAdd?: () => void;
   onFilter?: () => void;
+  onExport?: () => void;
 };
 
 export function ListHeader({
@@ -15,6 +16,7 @@ export function ListHeader({
   addLabel,
   onAdd,
   onFilter,
+  onExport,
 }: ListHeaderProps) {
   return (
     <div className="flex flex-wrap items-center justify-between gap-4">
@@ -22,6 +24,16 @@ export function ListHeader({
         {title} ({count.toLocaleString("pt-PT")})
       </h2>
       <div className="flex items-center gap-4">
+        {onExport && (
+          <button
+            type="button"
+            onClick={onExport}
+            className="-mr-2 flex h-[39px] items-center gap-2 rounded-md border border-catalog-border bg-card px-4 text-[13px] text-catalog-text transition-colors hover:bg-muted"
+          >
+            <Download className="size-4 text-catalog-muted" />
+            Exportar
+          </button>
+        )}
         <button
           type="button"
           onClick={onFilter}

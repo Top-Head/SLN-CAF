@@ -42,6 +42,27 @@
   --positive-soft: #ddfbdb;
   --table-head: #f8f8fa;
 
+  /* Catálogos com linhas que podem expandir*/
+  --catalog-text: #20232d;
+  --catalog-muted: #717580;
+  --catalog-faint: #9699a2;
+  --catalog-border: #e5e6eb;
+  --catalog-head: #f7f8fa;
+  --catalog-checkbox: #cdd0d8;
+  --catalog-active: #fff1f4;
+  --catalog-active-border: #f5cbd4;
+  --catalog-detail: #fdfbfc;
+  --catalog-track: #eceef2;
+  --catalog-track-fill: #838c9c;
+  --catalog-switch: #e3e4e9;
+  --active: #157453;
+  --active-soft: #ecf8f2;
+  --attention: #986017;
+  --attention-strong: #775727;
+  --attention-soft: #fff6e7;
+  --attention-surface: #fffaf1;
+  --attention-border: #f1e4cd;
+
   --chart-1: #e73959;
   --chart-2: #428777;
   --chart-3: #fcc43e;
@@ -118,6 +139,25 @@
   --color-positive: var(--positive);
   --color-positive-soft: var(--positive-soft);
   --color-table-head: var(--table-head);
+  --color-catalog-text: var(--catalog-text);
+  --color-catalog-muted: var(--catalog-muted);
+  --color-catalog-faint: var(--catalog-faint);
+  --color-catalog-border: var(--catalog-border);
+  --color-catalog-head: var(--catalog-head);
+  --color-catalog-checkbox: var(--catalog-checkbox);
+  --color-catalog-active: var(--catalog-active);
+  --color-catalog-active-border: var(--catalog-active-border);
+  --color-catalog-detail: var(--catalog-detail);
+  --color-catalog-track: var(--catalog-track);
+  --color-catalog-track-fill: var(--catalog-track-fill);
+  --color-catalog-switch: var(--catalog-switch);
+  --color-active: var(--active);
+  --color-active-soft: var(--active-soft);
+  --color-attention: var(--attention);
+  --color-attention-strong: var(--attention-strong);
+  --color-attention-soft: var(--attention-soft);
+  --color-attention-surface: var(--attention-surface);
+  --color-attention-border: var(--attention-border);
   --color-chart-1: var(--chart-1);
   --color-chart-2: var(--chart-2);
   --color-chart-3: var(--chart-3);

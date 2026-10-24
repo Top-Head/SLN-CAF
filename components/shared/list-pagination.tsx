@@ -8,7 +8,6 @@ type ListPaginationProps = {
   page: number;
   pageSize: number;
   total: number;
-  /** Nome no plural, ex.: "professores". */
   noun: string;
   onPageChange: (page: number) => void;
 };

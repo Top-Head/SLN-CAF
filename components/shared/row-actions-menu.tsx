@@ -15,6 +15,7 @@ type RowActionsMenuProps = {
   onView?: () => void;
   onEdit?: () => void;
   onDelete?: () => void;
+  triggerClassName?: string;
 };
 
 const itemClass =
@@ -25,12 +26,16 @@ export function RowActionsMenu({
   onView,
   onEdit,
   onDelete,
+  triggerClassName,
 }: RowActionsMenuProps) {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger
         aria-label={`Acções de ${label}`}
-        className="flex size-8 items-center justify-center rounded-md border bg-card text-neutral transition-colors hover:bg-muted data-[state=open]:bg-muted"
+        className={cn(
+          "flex size-8 items-center justify-center rounded-md border bg-card text-neutral transition-colors hover:bg-muted data-[state=open]:bg-muted",
+          triggerClassName,
+        )}
       >
         <Ellipsis className="size-4" />
       </DropdownMenuTrigger>
