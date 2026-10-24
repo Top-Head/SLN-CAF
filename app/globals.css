@@ -33,6 +33,13 @@
   --gray-3: #a098ae;
   --gray-100: #d9d9d9;
 
+  /* Badges de estado e tabelas */
+  --pending: #cc7805;
+  --pending-soft: #fef3e2;
+  --neutral: #6b6b73;
+  --neutral-soft: #f1f2f5;
+  --table-head: #f8f8fa;
+
   --chart-1: #e73959;
   --chart-2: #428777;
   --chart-3: #fcc43e;
@@ -102,6 +109,11 @@
   --color-warning: var(--warning);
   --color-gray-3: var(--gray-3);
   --color-gray-100: var(--gray-100);
+  --color-pending: var(--pending);
+  --color-pending-soft: var(--pending-soft);
+  --color-neutral: var(--neutral);
+  --color-neutral-soft: var(--neutral-soft);
+  --color-table-head: var(--table-head);
   --color-chart-1: var(--chart-1);
   --color-chart-2: var(--chart-2);
   --color-chart-3: var(--chart-3);
