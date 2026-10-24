@@ -11,18 +11,18 @@ export function Sidebar() {
   const pathname = usePathname();
 
   return (
-    <aside className="sticky top-0 hidden h-screen w-[290px] shrink-0 flex-col overflow-y-auto bg-sidebar [scrollbar-width:none] px-[34px] py-7 lg:flex">
+    <aside className="sticky top-0 hidden h-screen w-72.5 shrink-0 flex-col overflow-y-auto bg-sidebar scrollbar-none px-8.5 py-7 lg:flex">
       <div className="flex items-center gap-3">
         <Image src="/logo.svg" alt="" width={38} height={38} priority />
         <div className="flex flex-col gap-1">
-          <span className="text-xl font-bold text-white">Easy Meal</span>
+          <span className="text-xl font-bold text-white">SLN CAF</span>
           <span className="text-xs text-muted-foreground">
             Lançamento de Notas
           </span>
         </div>
       </div>
 
-      <nav className="flex flex-col gap-[22px] pt-[68px]">
+      <nav className="flex flex-col gap-5.5 pt-17">
         {NAVIGATION.map((group) => (
           <div key={group.label} className="flex flex-col gap-2">
             <span className="text-[10px] font-medium tracking-[0.8px] text-sidebar-muted uppercase">

@@ -73,7 +73,6 @@ export const NAVIGATION: NavGroup[] = [
     label: "Conta",
     items: [
       { title: "Definições", href: "/definicoes", icon: Settings },
-      { title: "Design system", href: "/design-system", icon: Palette },
       { title: "Perfil", href: "/perfil", icon: CircleUserRound },
     ],
   },
