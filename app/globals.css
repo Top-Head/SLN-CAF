@@ -38,6 +38,8 @@
   --pending-soft: #fef3e2;
   --neutral: #6b6b73;
   --neutral-soft: #f1f2f5;
+  --positive: #119e07;
+  --positive-soft: #ddfbdb;
   --table-head: #f8f8fa;
 
   --chart-1: #e73959;
@@ -46,7 +48,7 @@
   --chart-4: #2c2e3b;
   --chart-5: #a098ae;
 
-  /* Navegação lateral (Figma: frame "Navegação") */
+  /* Navegação lateral */
   --sidebar: #1c1c1c;
   --sidebar-foreground: #ababab;
   --sidebar-primary: #e73959;
@@ -113,6 +115,8 @@
   --color-pending-soft: var(--pending-soft);
   --color-neutral: var(--neutral);
   --color-neutral-soft: var(--neutral-soft);
+  --color-positive: var(--positive);
+  --color-positive-soft: var(--positive-soft);
   --color-table-head: var(--table-head);
   --color-chart-1: var(--chart-1);
   --color-chart-2: var(--chart-2);
@@ -144,4 +148,15 @@
   h3 {
     @apply font-heading;
   }
+}
+
+/* fazer o hide do srcollbar no navegador */
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
 }

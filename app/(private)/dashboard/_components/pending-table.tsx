@@ -13,6 +13,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { cn } from "@/lib/utils";
+import { getInitials } from "@/lib/utils/get-initials";
 
 import type { PendingItem, PendingStatus } from "../_lib/mock-data";
 
@@ -28,12 +29,6 @@ const STATUS: Record<PendingStatus, { label: string; className: string }> = {
   pending: { label: "Pendente", className: "bg-pending-soft text-pending" },
   closed: { label: "Encerrado", className: "bg-neutral-soft text-neutral" },
 };
-
-function getInitials(name: string) {
-  const parts = name.trim().split(/\s+/);
-  return (parts[0][0] + (parts.length > 1 ? parts[parts.length - 1][0] : ""))
-    .toUpperCase();
-}
 
 type PendingTableProps = {
   items: PendingItem[];
