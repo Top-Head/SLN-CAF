@@ -1,5 +1,6 @@
 import Image from "next/image"
 import { Button } from "../ui/button"
+import Link from "next/link"
 
 export default function SendingEmailForm () {
     return(
@@ -22,6 +23,8 @@ export default function SendingEmailForm () {
                      clique o link para redefinir as tuas credenciais.
                   </p>
                </div>
+               <Link href="/resetpassword">
+
                <Button
                 size="lg"
                 variant="secondary"
@@ -29,6 +32,7 @@ export default function SendingEmailForm () {
                 >
                   Reenviar um email
                 </Button>
+               </Link>
             </div>
         </section>
     )
