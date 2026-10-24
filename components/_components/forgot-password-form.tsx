@@ -34,7 +34,7 @@ export default function ForgotPasswordForm (){
                  <Button
                    size="lg"
                    variant="ghost"
-                   className="mt-[22px] cursor-pointer text-white text-[14px] font-bold"
+                   className="mt-5.5 cursor-pointer text-white text-[14px] font-bold"
                 >
                     Continuar
                 </Button>

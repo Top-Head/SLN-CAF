@@ -23,8 +23,6 @@ function PasswordField({ id, name, label }: PasswordFieldProps) {
         />
 
         <Input
-          id={id}
-          name={name}
           type="password"
           placeholder="••••••••••••"
           className="h-11 pl-9 pr-10 text-[12px] text-[#999999]"
