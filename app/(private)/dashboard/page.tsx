@@ -1,6 +1,8 @@
+import { SummaryCards } from "@/components/shared/summary-cards";
+
 import { PendingTable } from "./_components/pending-table";
 import { PerformanceChart } from "./_components/performance-chart";
-import { SummaryCards } from "./_components/summary-cards";
+
 import {
   PENDING_ITEMS,
   PENDING_TOTAL,

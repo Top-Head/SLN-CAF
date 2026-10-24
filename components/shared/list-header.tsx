@@ -1,4 +1,4 @@
-import { Download, Plus } from "lucide-react";
+import { Download, Plus, type LucideIcon } from "lucide-react";
 import Image from "next/image";
 
 type ListHeaderProps = {
@@ -8,6 +8,7 @@ type ListHeaderProps = {
   onAdd?: () => void;
   onFilter?: () => void;
   onExport?: () => void;
+  addIcon?: LucideIcon;
 };
 
 export function ListHeader({
@@ -17,6 +18,7 @@ export function ListHeader({
   onAdd,
   onFilter,
   onExport,
+  addIcon: AddIcon = Plus,
 }: ListHeaderProps) {
   return (
     <div className="flex flex-wrap items-center justify-between gap-4">
@@ -48,7 +50,7 @@ export function ListHeader({
           className="flex h-[39px] items-center gap-1.5 rounded-md bg-primary px-3 text-xs font-medium text-primary-foreground transition-colors hover:bg-primary/90"
         >
           {addLabel}
-          <Plus className="size-3.5" />
+          <AddIcon className={AddIcon === Plus ? "size-3.5" : "size-4"} />
         </button>
       </div>
     </div>

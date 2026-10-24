@@ -1,9 +1,4 @@
-export type SummaryStat = {
-  label: string;
-  value: number;
-  icon: string;
-  avatar?: boolean;
-};
+import type { SummaryStat } from "@/components/shared/summary-cards";
 
 export const SUMMARY_STATS: SummaryStat[] = [
   {
