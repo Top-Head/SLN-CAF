@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 import { Label } from "../ui/label";
@@ -7,8 +8,8 @@ export default function ForgotPasswordForm (){
     return(
         <form className="">
             <h1 className="text-[28px] text-[#1C1C1C] font-black">Recuperar senha</h1>
-            <p className="text-[14px] text-[#999999] w-100">
-                Informe seu email para recuperar a senha, será enviado 
+            <p className="text-[14px] text-[#999999] ">
+                Informe seu email para recuperar a senha, será enviado <br /> 
                 um email com um link para redifinir a senha.
             </p>
 
@@ -29,13 +30,16 @@ export default function ForgotPasswordForm (){
                        />
                      </div>
                 </div>
-
-                <Button
+            <Link href="/sending-email">
+                 <Button
                    size="lg"
                    variant="ghost"
+                   className="mt-[22px] cursor-pointer text-white text-[14px] font-bold"
                 >
                     Continuar
                 </Button>
+            </Link>
+
             </div>
         </form>
     )

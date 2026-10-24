@@ -65,7 +65,7 @@ export function LoginForm() {
         variant="ghost"
         size="lg"
         type="submit"
-        className="text-[14px] font-bold text-white"
+        className="text-[14px] font-bold text-white mt-[22px] cursor-pointer"
       >
         Entrar no sistema
       </Button>
