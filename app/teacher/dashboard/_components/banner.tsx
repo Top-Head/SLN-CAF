@@ -1,47 +1,31 @@
-// components/welcome-banner.tsx
 import Link from "next/link";
+
+import { ArrowRight } from "./arrow-right";
+import { daysUntil, formatDeadlineDay, greeting } from "../_lib/utils";
 
 type WelcomeBannerProps = {
   name: string;
   pendingStudents: number;
-  pendingReports: number; // nº de mini-pautas por completar
+  pendingReports: number;
   nextDeadline: {
-    subject: string; // ex.: "Física · 10.ª IB"
-    label: string; // ex.: "Física · 08 Dez, 23:59"
+    subject: string;
+    label: string;
     date: Date | string;
   };
   continueHref?: string;
   classesHref?: string;
 };
 
-const MONTHS = [
-  "Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho",
-  "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro",
-];
-
-function daysUntil(date: Date | string) {
-  const diff = new Date(date).getTime() - Date.now();
-  return Math.max(0, Math.ceil(diff / (1000 * 60 * 60 * 24)));
-}
-
-function greeting() {
-  const h = new Date().getHours();
-  if (h < 12) return "Bom dia";
-  if (h < 19) return "Boa tarde";
-  return "Boa noite";
-}
-
 export function WelcomeBanner({
   name,
   pendingStudents,
   pendingReports,
   nextDeadline,
-  continueHref = "/lancamento",
-  classesHref = "/turmas",
+  continueHref = "/teacher/lancamento-de-notas",
+  classesHref = "/teacher/turmas",
 }: WelcomeBannerProps) {
   const days = daysUntil(nextDeadline.date);
-  const d = new Date(nextDeadline.date);
-  const deadlineDay = `${d.getDate()} de ${MONTHS[d.getMonth()]}`;
+  const deadlineDay = formatDeadlineDay(nextDeadline.date);
 
   return (
     <section className="relative h-[181px] isolate overflow-hidden rounded-xl bg-[#E8395B] px-8 py-7 text-white">
@@ -55,16 +39,13 @@ export function WelcomeBanner({
       />
 
       <div className="flex flex-col gap-8 md:flex-row md:items-center md:justify-between">
-        {/* Texto */}
         <div className="max-w-lg">
-          <h2 className="text-[22px] font-bold leading-7 tracking-tight [font-family:inherit]">
+          <h2 className="text-[22px] font-bold leading-7 tracking-tight">
             {greeting()}, {name}
           </h2>
 
           <p className="mt-2 text-[13px] leading-4 text-white/90">
-            Faltam {pendingStudents} estudantes por completar em {pendingReports}{" "}
-            mini-pautas. O prazo mais próximo é {nextDeadline.subject}, que fecha
-            a {deadlineDay}.
+            Faltam {pendingStudents} estudantes por completar em {pendingReports} mini-pautas. O prazo mais próximo é {nextDeadline.subject}, que fecha a {deadlineDay}.
           </p>
 
           <div className="mt-4 flex flex-wrap gap-2.5">
@@ -104,23 +85,5 @@ export function WelcomeBanner({
         </aside>
       </div>
     </section>
-  );
-}
-
-function ArrowRight({ className }: { className?: string }) {
-  return (
-    <svg
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth={2.5}
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      aria-hidden
-      className={className}
-    >
-      <path d="M5 12h14" />
-      <path d="m13 6 6 6-6 6" />
-    </svg>
   );
 }
