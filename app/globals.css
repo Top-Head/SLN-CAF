@@ -40,6 +40,8 @@
   --neutral-soft: #f1f2f5;
   --positive: #119e07;
   --positive-soft: #ddfbdb;
+  --info: #2666d9;
+  --info-soft: #e3edff;
   --table-head: #f8f8fa;
 
   /* Catálogos com linhas que podem expandir*/
@@ -138,6 +140,8 @@
   --color-neutral-soft: var(--neutral-soft);
   --color-positive: var(--positive);
   --color-positive-soft: var(--positive-soft);
+  --color-info: var(--info);
+  --color-info-soft: var(--info-soft);
   --color-table-head: var(--table-head);
   --color-catalog-text: var(--catalog-text);
   --color-catalog-muted: var(--catalog-muted);
