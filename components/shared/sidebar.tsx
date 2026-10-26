@@ -4,11 +4,16 @@ import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
-import { NAVIGATION, isActiveRoute } from "@/constants/navigation";
+import { getNavigation, isActiveRoute, type Role } from "@/constants/navigation";
 import { cn } from "@/lib/utils";
 
-export function Sidebar() {
+type SidebarProps = {
+  role?: Role;
+};
+
+export function Sidebar({ role = "admin" }: SidebarProps) {
   const pathname = usePathname();
+  const navigation = getNavigation(role);
 
   return (
     <aside className="sticky top-0 hidden h-screen w-72.5 shrink-0 flex-col overflow-y-auto bg-sidebar scrollbar-none px-8.5 py-7 lg:flex">
@@ -23,7 +28,7 @@ export function Sidebar() {
       </div>
 
       <nav className="flex flex-col gap-5.5 pt-17">
-        {NAVIGATION.map((group) => (
+        {navigation.map((group) => (
           <div key={group.label} className="flex flex-col gap-2">
             <span className="text-[10px] font-medium tracking-[0.8px] text-sidebar-muted uppercase">
               {group.label}

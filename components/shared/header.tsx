@@ -3,12 +3,13 @@
 import { Bell } from "lucide-react";
 import { usePathname } from "next/navigation";
 
-import { getPageTitle } from "@/constants/navigation";
+import { getPageTitle, type Role } from "@/constants/navigation";
 import type { User } from "@/types/user";
 
 type HeaderProps = {
   user: User;
   hasNotifications?: boolean;
+  role?: Role;
 };
 
 function getInitials(name: string) {
@@ -17,9 +18,10 @@ function getInitials(name: string) {
     .toUpperCase();
 }
 
-export function Header({ user, hasNotifications }: HeaderProps) {
+export function Header({ user, hasNotifications, role }: HeaderProps) {
   const pathname = usePathname();
-  const title = getPageTitle(pathname);
+  const inferredRole: Role = role ?? (pathname.startsWith("/teacher") ? "teacher" : "admin");
+  const title = getPageTitle(pathname, inferredRole);
 
   return (
     <header className="sticky top-0 z-10 flex h-20 shrink-0 items-center justify-between gap-6 bg-background px-6 lg:px-12">
