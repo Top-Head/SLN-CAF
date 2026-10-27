@@ -7,11 +7,7 @@ const currentUser: User = {
   email: "edilsoncapo@gmail.com",
 };
 
-export default function DashboardLayout({
-  children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+export default function DashboardLayout({ children }: LayoutProps<"/">) {
   return (
     <div className="flex min-h-screen w-full">
       <Sidebar />
