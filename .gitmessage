@@ -1,0 +1,31 @@
+# <type>(<scope>): <subject>
+# |<----  Máximo 50 caracteres  ---->|
+
+# Corpo explicativo: PORQUÊ esta alteração foi feita, e não COMO
+# |<----   Máximo 72 caracteres por linha   ---->|
+
+
+# Rodapé: referencias, breaking changes, etc.
+# Ex: BREAKING CHANGE: descrição
+# Ex: Closes #123, Fixes #456
+
+
+# TIPOS VÁLIDOS:
+#   feat     - Nova funcionalidade
+#   fix      - Correção de bug
+#   docs     - Alterações na documentação
+#   style    - Formatação (espaços, ponto e vírgula, etc) sem alterar lógica
+#   refactor - Refatoração sem adicionar feature ou corrigir bug
+#   perf     - Melhoria de performance
+#   test     - Adição/alteração de testes
+#   build    - Alterações em build, dependências ou tooling
+#   ci       - Alterações em CI/CD (GitHub Actions, etc)
+#   chore    - Tarefas gerais, configs, sem impacto em código de produção
+#   revert   - Reverte um commit anterior
+#   wip      - Work in progress (usar com moderação)
+
+# REGRAS:
+# - Usa modo imperativo: "add", "fix", "remove" (não "added", "fixes")
+# - Não termina o subject com ponto final
+# - Scope é opcional: ex. feat(auth): ...
+# - Se houver breaking change, adiciona "BREAKING CHANGE:" no rodapé
