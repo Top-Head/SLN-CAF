@@ -7,7 +7,7 @@ import { TONES, type Tone } from "./tone";
 
 export type SummaryStat = {
   label: string;
-  value: number;
+  value: number | string;
   /** Caminho de uma imagem em /public ou um ícone do lucide. */
   icon: string | LucideIcon;
   avatar?: boolean;
