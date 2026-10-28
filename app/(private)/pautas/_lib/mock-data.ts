@@ -1,20 +1,4 @@
-export const SUBJECTS = [
-  { key: "mat", short: "MAT", name: "Matemática" },
-  { key: "port", short: "PORT", name: "Português" },
-  { key: "fis", short: "FÍS", name: "Física" },
-  { key: "qui", short: "QUÍ", name: "Química" },
-  { key: "bio", short: "BIO", name: "Biologia" },
-  { key: "ing", short: "ING", name: "Inglês" },
-] as const;
-
-export type SubjectKey = (typeof SUBJECTS)[number]["key"];
-
-export type ReportStudent = {
-  id: string;
-  name: string;
-  process: string;
-  grades: Record<SubjectKey, number | null>;
-};
+import { SUBJECTS, type ReportStudent } from "@/components/shared/class-report/report";
 
 export const REPORT_INFO = {
   className: "12.ª IB",

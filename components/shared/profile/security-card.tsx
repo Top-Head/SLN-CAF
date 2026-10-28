@@ -6,7 +6,7 @@ import { useId, useState } from "react";
 import { StatusBadge } from "@/components/shared/status-badge";
 import { ToggleSwitch } from "@/components/shared/toggle-switch";
 
-import type { ActiveSession, SECURITY } from "../_lib/mock-data";
+import type { ActiveSession, SecuritySettings } from "@/types/profile";
 
 function SecurityItem({
   icon: Icon,
@@ -38,7 +38,7 @@ function SecurityItem({
 }
 
 type SecurityCardProps = {
-  security: typeof SECURITY;
+  security: SecuritySettings;
   sessions: ActiveSession[];
 };
 

@@ -2,7 +2,6 @@ import { LogOut } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 
-// TODO: terminar a sessão no servidor quando a autenticação estiver ligada.
 export function SignOutCard() {
   return (
     <section className="flex flex-wrap items-center gap-3.5 rounded-lg border bg-card px-6 py-4">

@@ -1,3 +1,6 @@
+import type { Approval } from "@/components/shared/statistics/approval-donut";
+import type { PerformanceRow } from "@/components/shared/statistics/performance-table";
+import type { SubjectAverage } from "@/components/shared/statistics/subject-average-chart";
 import type { SummaryStat } from "@/components/shared/summary-cards";
 
 export const STATS_SUMMARY: SummaryStat[] = [
@@ -15,8 +18,6 @@ export const SUBJECT_OPTIONS = [
   "Biologia", "Inglês", "História", "Ed. Física",
 ];
 
-export type SubjectAverage = { subject: string; average: number };
-
 export const SUBJECT_AVERAGES: SubjectAverage[] = [
   { subject: "Matemática", average: 9.4 },
   { subject: "Português", average: 12.1 },
@@ -28,21 +29,12 @@ export const SUBJECT_AVERAGES: SubjectAverage[] = [
   { subject: "Ed. Física", average: 15.1 },
 ];
 
-export const APPROVAL = { passed: 50, failed: 50, notEvaluated: 20 };
+export const APPROVAL: Approval = { passed: 50, failed: 50, other: 20 };
 
-export type ClassPerformance = {
-  className: string;
-  course: string;
-  students: number;
-  average: number;
-  passed: number;
-  failed: number;
-};
-
-export const CLASS_PERFORMANCE: ClassPerformance[] = [
-  { className: "10.ª IA", course: "Ciências Físicas e Biológicas", students: 24, average: 11.8, passed: 12, failed: 8 },
-  { className: "10.ª IB", course: "Ciências Físicas e Biológicas", students: 24, average: 10.2, passed: 9, failed: 11 },
-  { className: "11.ª IF", course: "Ciências Económicas e Jurídicas", students: 24, average: 11.1, passed: 11, failed: 9 },
-  { className: "12.ª IB", course: "Ciências Físicas e Biológicas", students: 24, average: 9.6, passed: 8, failed: 12 },
-  { className: "12.ª ID", course: "Ciências Humanas", students: 24, average: 10.7, passed: 10, failed: 10 },
+export const CLASS_PERFORMANCE: PerformanceRow[] = [
+  { name: "10.ª IA", detail: "Ciências Físicas e Biológicas", students: 24, average: 11.8, passed: 12, failed: 8 },
+  { name: "10.ª IB", detail: "Ciências Físicas e Biológicas", students: 24, average: 10.2, passed: 9, failed: 11 },
+  { name: "11.ª IF", detail: "Ciências Económicas e Jurídicas", students: 24, average: 11.1, passed: 11, failed: 9 },
+  { name: "12.ª IB", detail: "Ciências Físicas e Biológicas", students: 24, average: 9.6, passed: 8, failed: 12 },
+  { name: "12.ª ID", detail: "Ciências Humanas", students: 24, average: 10.7, passed: 10, failed: 10 },
 ];

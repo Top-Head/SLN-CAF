@@ -15,12 +15,14 @@ import {
   type LucideIcon,
 } from "lucide-react";
 
-export type Role = "admin" | "teacher";
+export type Role = "admin" | "teacher" | "director";
 
 export type NavItem = {
   title: string;
   href: string;
   icon: LucideIcon;
+  /** Título no cabeçalho quando difere do nome no menu. */
+  pageTitle?: string;
 };
 
 export type NavGroup = {
@@ -106,11 +108,56 @@ export const TEACHER_NAVIGATION: NavGroup[] = [
       { title: "Perfil", href: "/teacher/perfil", icon: CircleUserRound },
     ],
   },
-  
+
 ];
 
+// Menu do director de turma: só consulta a sua turma
+export const DIRECTOR_NAVIGATION: NavGroup[] = [
+  {
+    label: "Geral",
+    items: [
+      { title: "Dashboard", href: "/director/dashboard", icon: LayoutDashboard },
+    ],
+  },
+  {
+    label: "Minha turma",
+    items: [
+      {
+        title: "Estatística da turma",
+        href: "/director/estatistica-da-turma",
+        icon: ChartNoAxesColumn,
+      },
+      { title: "Pauta trimestral", href: "/director/pauta-trimestral", icon: FileText },
+    ],
+  },
+  {
+    label: "Conta",
+    items: [
+      {
+        title: "Perfil",
+        href: "/director/perfil",
+        icon: CircleUserRound,
+        pageTitle: "Meu perfil",
+      },
+    ],
+  },
+];
+
+const NAVIGATION_BY_ROLE: Record<Role, NavGroup[]> = {
+  admin: NAVIGATION,
+  teacher: TEACHER_NAVIGATION,
+  director: DIRECTOR_NAVIGATION,
+};
+
 export function getNavigation(role: Role = "admin"): NavGroup[] {
-  return role === "teacher" ? TEACHER_NAVIGATION : NAVIGATION;
+  return NAVIGATION_BY_ROLE[role];
+}
+
+/** Perfil pela área da aplicação, para o cabeçalho e a navegação. */
+export function roleFromPath(pathname: string): Role {
+  if (pathname.startsWith("/teacher")) return "teacher";
+  if (pathname.startsWith("/director")) return "director";
+  return "admin";
 }
 
 export function isActiveRoute(pathname: string, href: string) {
@@ -120,7 +167,7 @@ export function isActiveRoute(pathname: string, href: string) {
 export function getPageTitle(pathname: string, role: Role = "admin") {
   for (const group of getNavigation(role)) {
     const item = group.items.find(({ href }) => isActiveRoute(pathname, href));
-    if (item) return item.title;
+    if (item) return item.pageTitle ?? item.title;
   }
   return "";
 }

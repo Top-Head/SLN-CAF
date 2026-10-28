@@ -1,7 +1,8 @@
-import { PersonalInfoCard } from "./_components/personal-info-card";
-import { ProfileOverview } from "./_components/profile-overview";
-import { SecurityCard } from "./_components/security-card";
-import { SignOutCard } from "./_components/sign-out-card";
+import { PersonalInfoCard } from "@/components/shared/profile/personal-info-card";
+import { ProfileOverview } from "@/components/shared/profile/profile-overview";
+import { SecurityCard } from "@/components/shared/profile/security-card";
+import { SignOutCard } from "@/components/shared/profile/sign-out-card";
+
 import { PERSONAL_INFO, PROFILE, SECURITY, SESSIONS } from "./_lib/mock-data";
 
 export default function ProfilePage() {

@@ -1,9 +1,9 @@
+import { ApprovalDonut } from "@/components/shared/statistics/approval-donut";
+import { PerformanceTable } from "@/components/shared/statistics/performance-table";
+import { SubjectAverageChart } from "@/components/shared/statistics/subject-average-chart";
 import { SummaryCards } from "@/components/shared/summary-cards";
 
-import { ApprovalDonut } from "./_components/approval-donut";
-import { ClassPerformanceTable } from "./_components/class-performance-table";
 import { StatisticsFilters } from "./_components/statistics-filters";
-import { SubjectAverageChart } from "./_components/subject-average-chart";
 import {
   APPROVAL,
   CLASS_PERFORMANCE,
@@ -20,7 +20,19 @@ export default function StatisticsPage() {
         <SubjectAverageChart data={SUBJECT_AVERAGES} />
         <ApprovalDonut approval={APPROVAL} />
       </div>
-      <ClassPerformanceTable rows={CLASS_PERFORMANCE} />
+      <PerformanceTable
+        title="Desempenho por turma"
+        description="Média geral e taxa de aprovação de cada turma no 1.º trimestre"
+        rows={CLASS_PERFORMANCE}
+        labels={{
+          name: "Turma",
+          average: "Média geral",
+          passed: "Aprovados",
+          failed: "Reprovados",
+          rate: "Taxa de aprovação",
+        }}
+        link={{ href: "/pautas", label: "Ver pautas" }}
+      />
     </div>
   );
 }

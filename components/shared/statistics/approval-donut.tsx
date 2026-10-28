@@ -5,8 +5,6 @@ import { Cell, Pie, PieChart } from "recharts";
 import { ChartContainer, type ChartConfig } from "@/components/ui/chart";
 import { formatGrade } from "@/lib/utils/format-grade";
 
-import type { APPROVAL } from "../_lib/mock-data";
-
 const chartConfig = {
   value: { label: "Alunos" },
 } satisfies ChartConfig;
@@ -14,12 +12,24 @@ const chartConfig = {
 const percent = (value: number, total: number) =>
   `${formatGrade(total === 0 ? 0 : (value / total) * 100)}%`;
 
-export function ApprovalDonut({ approval }: { approval: typeof APPROVAL }) {
-  const total = approval.passed + approval.failed + approval.notEvaluated;
+export type Approval = { passed: number; failed: number; other: number };
+
+type ApprovalDonutProps = {
+  approval: Approval;
+  subtitle?: string;
+  otherLabel?: string;
+};
+
+export function ApprovalDonut({
+  approval,
+  subtitle,
+  otherLabel = "Sem avaliação",
+}: ApprovalDonutProps) {
+  const total = approval.passed + approval.failed + approval.other;
   const segments = [
     { name: "Aprovados", value: approval.passed, color: "var(--positive)" },
     { name: "Reprovados", value: approval.failed, color: "var(--primary)" },
-    { name: "Sem avaliação", value: approval.notEvaluated, color: "#dedee6" },
+    { name: otherLabel, value: approval.other, color: "#dedee6" },
   ];
 
   return (
@@ -27,7 +37,7 @@ export function ApprovalDonut({ approval }: { approval: typeof APPROVAL }) {
       <div className="flex flex-col gap-1">
         <h2 className="font-sans text-[15px] font-semibold">Taxa de aprovação</h2>
         <p className="text-xs text-muted-foreground">
-          Resultados de {total} alunos no trimestre
+          {subtitle ?? `Resultados de ${total} alunos no trimestre`}
         </p>
       </div>
 

@@ -1,4 +1,6 @@
-export const PROFILE = {
+import type { ActiveSession, Profile, ProfileField, SecuritySettings } from "@/types/profile";
+
+export const PROFILE: Profile = {
   displayName: "Edilson Capo",
   role: "Administrador · Direcção pedagógica",
   location: "Luanda, Angola",
@@ -7,7 +9,7 @@ export const PROFILE = {
   avatar: "/images/profile-avatar.png",
 };
 
-export const PERSONAL_INFO: { label: string; value: string }[] = [
+export const PERSONAL_INFO: ProfileField[] = [
   { label: "Nome completo", value: "Edilson Manuel Capa" },
   { label: "N.º do Bilhete de Identidade", value: "007845621LA042" },
   { label: "Data de nascimento", value: "14 de Março de 1988" },
@@ -18,15 +20,7 @@ export const PERSONAL_INFO: { label: string; value: string }[] = [
   { label: "Membro desde", value: "Janeiro de 2024" },
 ];
 
-export type ActiveSession = {
-  id: string;
-  device: string;
-  kind: "desktop" | "mobile";
-  detail: string;
-  current: boolean;
-};
-
-export const SECURITY = {
+export const SECURITY: SecuritySettings = {
   passwordChanged: "Alterada há 3 meses",
   twoFactorPhone: "+244 941 ··· 521",
   twoFactorEnabled: true,

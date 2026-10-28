@@ -6,55 +6,78 @@ import { Table, TableBody, TableCell, TableRow } from "@/components/ui/table";
 import { cn } from "@/lib/utils";
 import { formatGrade, PASS_GRADE } from "@/lib/utils/format-grade";
 
-import type { ClassPerformance } from "../_lib/mock-data";
+/** Uma linha: uma turma (visão da escola) ou uma disciplina (visão da turma). */
+export type PerformanceRow = {
+  name: string;
+  detail: string;
+  students: number;
+  average: number;
+  passed: number;
+  failed: number;
+};
 
-const COLUMNS = [
-  { label: "Turma", className: "w-[220px]" },
-  { label: "Alunos", className: "w-[110px]" },
-  { label: "Média geral", className: "w-[130px]" },
-  { label: "Aprovados", className: "w-[120px]" },
-  { label: "Reprovados", className: "w-[120px]" },
-  { label: "Taxa de aprovação" },
-  { label: "", className: "w-10" },
-];
+type PerformanceTableProps = {
+  title: string;
+  description: string;
+  rows: PerformanceRow[];
+  labels: { name: string; average: string; passed: string; failed: string; rate: string };
+  link: { href: string; label: string };
+  /** Taxa mínima para verde e para laranja; abaixo fica vermelho. */
+  thresholds?: { good: number; warning: number };
+};
 
-/** Verde a partir de 45%, laranja entre 40% e 45%, vermelho abaixo. */
-function rateColor(rate: number) {
-  if (rate >= 45) return "bg-positive";
-  if (rate >= 40) return "bg-[#ed9921]";
-  return "bg-primary";
-}
+export function PerformanceTable({
+  title,
+  description,
+  rows,
+  labels,
+  link,
+  thresholds = { good: 45, warning: 40 },
+}: PerformanceTableProps) {
+  const columns = [
+    { label: labels.name, className: "w-[220px]" },
+    { label: "Alunos", className: "w-[110px]" },
+    { label: labels.average, className: "w-[130px]" },
+    { label: labels.passed, className: "w-[120px]" },
+    { label: labels.failed, className: "w-[120px]" },
+    { label: labels.rate },
+    { label: "", className: "w-10" },
+  ];
 
-export function ClassPerformanceTable({ rows }: { rows: ClassPerformance[] }) {
+  const rateColor = (rate: number) =>
+    rate >= thresholds.good
+      ? "bg-positive"
+      : rate >= thresholds.warning
+        ? "bg-[#ed9921]"
+        : "bg-primary";
+
   return (
     <section className="flex flex-col gap-4 rounded-lg border bg-card p-6">
       <div className="flex items-center gap-4">
         <div className="flex min-w-0 flex-1 flex-col gap-1">
-          <h2 className="font-sans text-[15px] font-semibold">Desempenho por turma</h2>
-          <p className="text-xs text-muted-foreground">
-            Média geral e taxa de aprovação de cada turma no 1.º trimestre
-          </p>
+          <h2 className="font-sans text-[15px] font-semibold">{title}</h2>
+          <p className="text-xs text-muted-foreground">{description}</p>
         </div>
         <Link
-          href="/pautas"
+          href={link.href}
           className="flex items-center gap-1 text-[13px] text-primary hover:underline"
         >
-          Ver pautas
+          {link.label}
           <ChevronRight className="size-4" />
         </Link>
       </div>
 
       <Table>
-        <ListTableHeader columns={COLUMNS} />
+        <ListTableHeader columns={columns} />
         <TableBody>
           {rows.map((row) => {
             const rate = Math.round((row.passed / row.students) * 100);
             return (
-              <TableRow key={row.className} className="h-14 text-[13px] last:border-0">
+              <TableRow key={row.name} className="h-14 text-[13px] last:border-0">
                 <TableCell className="pl-4">
                   <span className="flex flex-col gap-0.5">
-                    <span className="font-medium">{row.className}</span>
-                    <span className="text-[11px] text-muted-foreground">{row.course}</span>
+                    <span className="font-medium">{row.name}</span>
+                    <span className="text-[11px] text-muted-foreground">{row.detail}</span>
                   </span>
                 </TableCell>
                 <TableCell>{row.students}</TableCell>
@@ -69,7 +92,7 @@ export function ClassPerformanceTable({ rows }: { rows: ClassPerformance[] }) {
                   <div className="flex items-center gap-3">
                     <div
                       role="meter"
-                      aria-label={`Taxa de aprovação da ${row.className}`}
+                      aria-label={`${labels.rate} de ${row.name}`}
                       aria-valuemin={0}
                       aria-valuemax={100}
                       aria-valuenow={rate}
@@ -84,7 +107,7 @@ export function ClassPerformanceTable({ rows }: { rows: ClassPerformance[] }) {
                   </div>
                 </TableCell>
                 <TableCell className="pr-4">
-                  <Link href="/pautas" aria-label={`Ver pauta da ${row.className}`}>
+                  <Link href={link.href} aria-label={`${link.label}: ${row.name}`}>
                     <ChevronRight className="mx-auto size-4 text-primary" />
                   </Link>
                 </TableCell>

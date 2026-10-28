@@ -1,9 +1,16 @@
 import { Fragment } from "react";
 
-import type { PERSONAL_INFO } from "../_lib/mock-data";
+import type { ProfileField } from "@/types/profile";
 
-export function PersonalInfoCard({ fields }: { fields: typeof PERSONAL_INFO }) {
-  // Dois campos por linha, separados por um divisor.
+type PersonalInfoCardProps = {
+  fields: ProfileField[];
+  description?: string;
+};
+
+export function PersonalInfoCard({
+  fields,
+  description = "Dados usados em pautas, boletins e documentos oficiais",
+}: PersonalInfoCardProps) {
   const rows = Array.from({ length: Math.ceil(fields.length / 2) }, (_, i) =>
     fields.slice(i * 2, i * 2 + 2),
   );
@@ -13,9 +20,7 @@ export function PersonalInfoCard({ fields }: { fields: typeof PERSONAL_INFO }) {
       <div className="flex items-start gap-3">
         <div className="flex min-w-0 flex-1 flex-col gap-1">
           <h2 className="font-sans text-[15px] font-semibold">Informações pessoais</h2>
-          <p className="text-xs text-muted-foreground">
-            Dados usados em pautas, boletins e documentos oficiais
-          </p>
+          <p className="text-xs text-muted-foreground">{description}</p>
         </div>
         <button type="button" className="text-[13px] font-medium text-primary hover:underline">
           Editar

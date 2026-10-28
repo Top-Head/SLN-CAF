@@ -1,7 +1,7 @@
 import { Pencil } from "lucide-react";
 import Image from "next/image";
 
-import type { PROFILE } from "../_lib/mock-data";
+import type { Profile } from "@/types/profile";
 
 function ContactItem({
   label,
@@ -27,10 +27,9 @@ function ContactItem({
   );
 }
 
-export function ProfileOverview({ profile }: { profile: typeof PROFILE }) {
+export function ProfileOverview({ profile }: { profile: Profile }) {
   return (
     <section className="relative overflow-hidden rounded-[20px] border border-black/[0.07] bg-card">
-      {/* Capa com os dois círculos decorativos do Figma */}
       <div aria-hidden className="relative h-[140px] overflow-hidden bg-primary shadow-card">
         <span className="absolute top-[77px] left-[58.6%] size-[274px] rounded-full bg-[#fb7d5b]" />
         <span className="absolute top-[31.6px] left-[70.1%] size-[274px] rounded-full bg-warning" />

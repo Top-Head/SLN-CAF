@@ -14,7 +14,7 @@ import {
 import { ChartContainer, type ChartConfig } from "@/components/ui/chart";
 import { formatGrade, PASS_GRADE } from "@/lib/utils/format-grade";
 
-import type { SubjectAverage } from "../_lib/mock-data";
+export type SubjectAverage = { subject: string; average: number };
 
 const chartConfig = {
   average: { label: "Média" },
