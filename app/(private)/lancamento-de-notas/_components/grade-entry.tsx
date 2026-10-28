@@ -3,33 +3,29 @@
 import {
   ArrowRight,
   Check,
-  ChevronDown,
-  ChevronLeft,
-  ChevronRight,
   CircleDashed,
   ClipboardPaste,
   CloudCheck,
   Keyboard,
   MessageSquare,
-  Search,
   Upload,
 } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
 
+import { GradeCell } from "@/components/shared/grade-cell";
+import {
+  GRADE_SHEET_PAGE_SIZES,
+  GradeSheetPagination,
+} from "@/components/shared/grade-sheet-pagination";
+import { GradeSheetViews } from "@/components/shared/grade-sheet-views";
 import { ListHeader } from "@/components/shared/list-header";
 import { SearchCard } from "@/components/shared/search-card";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuRadioGroup,
-  DropdownMenuRadioItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 import { paginate } from "@/hooks/use-catalog-state";
 import { cn } from "@/lib/utils";
 import { averageOf, formatGrade, parseGrade } from "@/lib/utils/format-grade";
 import { matchesSearch } from "@/lib/utils/matches-search";
+import { isSheetText, parseSheet } from "@/lib/utils/parse-sheet";
 
 import {
   ASSESSMENTS,
@@ -37,25 +33,14 @@ import {
   type GradeStudent,
   type StudentGrades,
 } from "../_lib/mock-data";
-import { GradeCell } from "./grade-cell";
 
 type View = "all" | "pending";
-
-const PAGE_SIZES = [8, 16, 32];
 
 const missingOf = (grades: StudentGrades) =>
   ASSESSMENTS.filter(({ key }) => grades[key] === null).map(({ label }) => label);
 
 const meanOf = (grades: StudentGrades) =>
   averageOf(ASSESSMENTS.map(({ key }) => grades[key]));
-
-/** Converte texto colado de uma folha de cálculo em linhas e colunas. */
-function parseSheet(text: string) {
-  return text
-    .trim()
-    .split(/\r?\n/)
-    .map((line) => line.split("\t"));
-}
 
 const currentTime = () =>
   new Date().toLocaleTimeString("pt-PT", { hour: "2-digit", minute: "2-digit" });
@@ -67,7 +52,7 @@ export function GradeEntry({ students }: { students: GradeStudent[] }) {
   const [query, setQuery] = useState("");
   const [view, setView] = useState<View>("all");
   const [page, setPage] = useState(1);
-  const [pageSize, setPageSize] = useState(PAGE_SIZES[0]);
+  const [pageSize, setPageSize] = useState(GRADE_SHEET_PAGE_SIZES[0]);
   const [savedAt, setSavedAt] = useState("10:42");
 
   const pendingCount = students.filter((s) => missingOf(grades[s.id]).length > 0).length;
@@ -76,9 +61,7 @@ export function GradeEntry({ students }: { students: GradeStudent[] }) {
     view === "pending"
       ? searched.filter((s) => missingOf(grades[s.id]).length > 0)
       : searched;
-  const pageCount = Math.max(1, Math.ceil(filtered.length / pageSize));
   const rows = paginate(filtered, page, pageSize);
-  const first = filtered.length === 0 ? 0 : (page - 1) * pageSize + 1;
 
   const updateGrades = (
     changes: { id: string; key: AssessmentKey; value: number | null }[],
@@ -115,7 +98,7 @@ export function GradeEntry({ students }: { students: GradeStudent[] }) {
     (rowIndex: number, colIndex: number) =>
     (event: React.ClipboardEvent<HTMLInputElement>) => {
       const text = event.clipboardData.getData("text");
-      if (!/[\t\n]/.test(text.trim())) return;
+      if (!isSheetText(text)) return;
       event.preventDefault();
       applySheet(text, rowIndex, colIndex);
       event.currentTarget.blur();
@@ -146,55 +129,19 @@ export function GradeEntry({ students }: { students: GradeStudent[] }) {
       <SearchCard placeholder="Pesquise por estudante aqui!." onSearch={changeQuery} />
 
       <section className="overflow-hidden rounded-[10px] border border-catalog-border bg-card">
-        <div className="flex h-[62px] items-center justify-between gap-4 border-b border-catalog-border px-5">
-          <div role="tablist" className="flex h-full gap-6">
-            {(
-              [
-                ["all", "Todos", searched.length],
-                ["pending", "Pendentes", pendingCount],
-              ] as const
-            ).map(([key, label, count]) => {
-              const active = view === key;
-              return (
-                <button
-                  key={key}
-                  type="button"
-                  role="tab"
-                  aria-selected={active}
-                  onClick={() => {
-                    setView(key);
-                    setPage(1);
-                  }}
-                  className={cn(
-                    "flex h-full items-center gap-[7px] border-b-2 text-[13px] transition-colors",
-                    active
-                      ? "border-primary font-semibold text-primary"
-                      : "border-transparent text-catalog-muted hover:text-catalog-text",
-                  )}
-                >
-                  {label}
-                  {key === "pending" ? (
-                    <span className="rounded-sm bg-[#fff8ea] px-1.5 py-0.5 text-[10px] font-semibold text-attention">
-                      {count}
-                    </span>
-                  ) : (
-                    <span className="text-[11px] font-normal">{count}</span>
-                  )}
-                </button>
-              );
-            })}
-          </div>
-          <label className="flex h-[34px] w-[242px] items-center gap-2 rounded-md border border-catalog-border px-2.5">
-            <Search className="size-[15px] shrink-0 text-catalog-faint" />
-            <input
-              type="search"
-              value={query}
-              onChange={(event) => changeQuery(event.target.value)}
-              placeholder="Pesquisar nome ou processo"
-              className="w-full bg-transparent text-[11px] outline-none placeholder:text-catalog-faint"
-            />
-          </label>
-        </div>
+        <GradeSheetViews
+          views={[
+            { key: "all", label: "Todos", count: searched.length },
+            { key: "pending", label: "Pendentes", count: pendingCount, badge: true },
+          ]}
+          value={view}
+          onChange={(key: View) => {
+            setView(key);
+            setPage(1);
+          }}
+          query={query}
+          onQueryChange={changeQuery}
+        />
 
         <div className="flex h-[54px] items-center justify-between gap-4 px-5">
           <p className="flex items-center gap-2 text-[11px] text-catalog-muted">
@@ -323,62 +270,16 @@ export function GradeEntry({ students }: { students: GradeStudent[] }) {
           <p>MT = (MAC + PP + PT) ÷ 3 · 1 decimal</p>
         </div>
 
-        <div className="flex h-[52px] items-center justify-between gap-4 border-t border-catalog-border px-5 text-[11px] text-catalog-muted">
-          <p>
-            {first}–{Math.min(page * pageSize, filtered.length)} de {filtered.length}{" "}
-            estudantes
-          </p>
-          <div className="flex items-center gap-3.5">
-            <DropdownMenu>
-              <DropdownMenuTrigger className="flex items-center gap-3.5 hover:text-catalog-text">
-                {pageSize} por página
-                <ChevronDown className="size-3" />
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="min-w-0">
-                <DropdownMenuRadioGroup
-                  value={String(pageSize)}
-                  onValueChange={(value) => {
-                    setPageSize(Number(value));
-                    setPage(1);
-                  }}
-                >
-                  {PAGE_SIZES.map((size) => (
-                    <DropdownMenuRadioItem key={size} value={String(size)} className="text-xs">
-                      {size} por página
-                    </DropdownMenuRadioItem>
-                  ))}
-                </DropdownMenuRadioGroup>
-              </DropdownMenuContent>
-            </DropdownMenu>
-            <nav aria-label="Paginação" className="flex items-center gap-3.5">
-              <button
-                type="button"
-                aria-label="Página anterior"
-                disabled={page <= 1}
-                onClick={() => setPage(page - 1)}
-                className="text-catalog-faint disabled:opacity-40"
-              >
-                <ChevronLeft className="size-[15px]" />
-              </button>
-              <span
-                aria-current="page"
-                className="flex size-[26px] items-center justify-center rounded-sm bg-catalog-active font-semibold text-primary"
-              >
-                {page}
-              </span>
-              <span>de {pageCount}</span>
-              <button
-                type="button"
-                aria-label="Página seguinte"
-                disabled={page >= pageCount}
-                onClick={() => setPage(page + 1)}
-                className="text-catalog-text disabled:opacity-40"
-              >
-                <ChevronRight className="size-[15px]" />
-              </button>
-            </nav>
-          </div>
-        </div>
+        <GradeSheetPagination
+          total={filtered.length}
+          page={page}
+          pageSize={pageSize}
+          onPageChange={setPage}
+          onPageSizeChange={(size) => {
+            setPageSize(size);
+            setPage(1);
+          }}
+        />
       </section>
 
       <section className="flex min-h-[76px] flex-wrap items-center justify-between gap-4 rounded-[10px] border border-catalog-border bg-card px-5 py-4">
