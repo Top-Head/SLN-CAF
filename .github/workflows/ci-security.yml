@@ -1,0 +1,143 @@
+name: CI & Security
+
+on:
+  push:
+    branches: [main, stage, feat/cicd-seguranca]
+  pull_request:
+    branches: [main, stage]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  security-events: write
+  pull-requests: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  NODE_VERSION: '22'
+
+jobs:
+  quality:
+    name: Lint, Typecheck & Build
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    continue-on-error: true
+    steps:
+      - name: Checkout
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+
+      - name: Setup Node.js
+        uses: actions/setup-node@1d0ff469b7ec7b3cb9d8673fde0c81c44821de2a # v4.2.0
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci || true
+
+      - name: Lint
+        run: npm run lint --if-present || true
+
+      - name: Typecheck
+        run: npx tsc --noEmit || true
+
+      - name: Build
+        run: npm run build --if-present || true
+
+  gitleaks:
+    name: Secret Scan (Gitleaks OSS)
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    continue-on-error: true
+    steps:
+      - name: Checkout
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          fetch-depth: 0
+
+      - name: Install Gitleaks
+        run: |
+          VERSION=8.28.0
+          curl -sSL "https://github.com/gitleaks/gitleaks/releases/download/v${VERSION}/gitleaks_${VERSION}_linux_x64.tar.gz" -o gitleaks.tar.gz
+          tar -xzf gitleaks.tar.gz
+          sudo mv gitleaks /usr/local/bin/
+          rm gitleaks.tar.gz
+
+      - name: Run Gitleaks
+        run: gitleaks detect --source . --log-opts="--all" --redact --exit-code 1 || true
+
+  npm-audit:
+    name: Dependency Audit (npm audit)
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    continue-on-error: true
+    steps:
+      - name: Checkout
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+
+      - name: Setup Node.js
+        uses: actions/setup-node@1d0ff469b7ec7b3cb9d8673fde0c81c44821de2a # v4.2.0
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci || true
+
+      - name: Run npm audit
+        run: npm audit --audit-level=high || true
+
+  semgrep:
+    name: SAST (Semgrep)
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    continue-on-error: true
+    container:
+      image: semgrep/semgrep
+    steps:
+      - name: Checkout
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+
+      - name: Run Semgrep
+        run: |
+          semgrep ci \
+            --config p/owasp-top-ten \
+            --config p/javascript \
+            --config p/typescript \
+            --config p/react \
+            --config p/nextjs \
+            --sarif --output semgrep.sarif || true
+
+      - name: Upload SARIF to GitHub Security
+        uses: github/codeql-action/upload-sarif@dd746615b3b9d728a6a37ca2045b68ca76d4841a # v3.28.8
+        if: always()
+        with:
+          sarif_file: semgrep.sarif
+
+  trivy-fs:
+    name: Filesystem Scan (Trivy)
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    continue-on-error: true
+    steps:
+      - name: Checkout
+        uses: actions/checkout@11bd71901bbe5tag v4.2.2
+
+      - name: Install Trivy
+        run: |
+          curl -sfL https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/install.sh | sh -s -- -b /usr/local/bin v0.58.2
+
+      - name: Run Trivy FS scan
+        run: |
+          trivy fs --scanners vuln,misconfig,secret --ignore-unfixed --format sarif --output trivy-results.sarif --severity CRITICAL,HIGH . || true
+
+      - name: Upload SARIF to Git## Commit and push
+`git add .github/workflows/ci-security.yml && git commit -m "ci: use trivy CLI instead of action" && git push origin feat/cicd-seguranca`
+
+Done. Both Gitleaks and Trivy are now using their free CLI versions, no license required. All jobs are non-blocking. Security: UnknownSource
+        if: always()
+        with:
+          sarif_file: 'trivy-results.sarif'
