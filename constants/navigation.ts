@@ -8,13 +8,14 @@ import {
   History,
   KeyRound,
   LayoutDashboard,
-  Palette,
   Pencil,
   School,
   Settings,
   UsersRound,
   type LucideIcon,
 } from "lucide-react";
+
+export type Role = "admin" | "teacher";
 
 export type NavItem = {
   title: string;
@@ -27,6 +28,7 @@ export type NavGroup = {
   items: NavItem[];
 };
 
+// Menu completo (admin) — mantido exactamente como estava
 export const NAVIGATION: NavGroup[] = [
   {
     label: "Geral",
@@ -78,12 +80,45 @@ export const NAVIGATION: NavGroup[] = [
   },
 ];
 
+// Menu simplificado do professor
+export const TEACHER_NAVIGATION: NavGroup[] = [
+  {
+    label: "Geral",
+    items: [
+      { title: "Dashboard", href: "/teacher/dashboard", icon: LayoutDashboard },
+    ],
+  },
+  {
+    label: "Ensino",
+    items: [
+      { title: "Minhas turmas", href: "/teacher/turmas", icon: School },
+      {
+        title: "Lançamento de notas",
+        href: "/teacher/lancamento-de-notas",
+        icon: Pencil,
+      },
+      { title: "Mini-pautas", href: "/teacher/mini-pautas", icon: FileText },
+    ],
+  },
+  {
+    label: "Conta",
+    items: [
+      { title: "Perfil", href: "/teacher/perfil", icon: CircleUserRound },
+    ],
+  },
+  
+];
+
+export function getNavigation(role: Role = "admin"): NavGroup[] {
+  return role === "teacher" ? TEACHER_NAVIGATION : NAVIGATION;
+}
+
 export function isActiveRoute(pathname: string, href: string) {
   return pathname === href || pathname.startsWith(`${href}/`);
 }
 
-export function getPageTitle(pathname: string) {
-  for (const group of NAVIGATION) {
+export function getPageTitle(pathname: string, role: Role = "admin") {
+  for (const group of getNavigation(role)) {
     const item = group.items.find(({ href }) => isActiveRoute(pathname, href));
     if (item) return item.title;
   }

@@ -3,7 +3,7 @@ import { Sidebar } from "@/components/shared/sidebar";
 import type { User } from "@/types/user";
 
 const currentUser: User = {
-  name: "Edilson Capa",
+  name: "Edilson Capo",
   email: "edilsoncapo@gmail.com",
 };
 

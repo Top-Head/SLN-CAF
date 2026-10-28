@@ -7,7 +7,7 @@ import { TONES, type Tone } from "./tone";
 
 export type SummaryStat = {
   label: string;
-  value: number;
+  value: number | string;
   /** Caminho de uma imagem em /public ou um ícone do lucide. */
   icon: string | LucideIcon;
   avatar?: boolean;
@@ -21,6 +21,10 @@ type SummaryCardsProps = {
 };
 
 export function SummaryCards({ stats, className }: SummaryCardsProps) {
+  return <StatsCards stats={stats} className={className} />;
+}
+
+export function StatsCards({ stats, className }: SummaryCardsProps) {
   return (
     <div className={cn("grid gap-1.5 sm:grid-cols-2 xl:grid-cols-4", className)}>
       {stats.map(({ label, value, icon: Icon, avatar, tone = "primary", iconSize = 18 }) => (
@@ -48,7 +52,7 @@ export function SummaryCards({ stats, className }: SummaryCardsProps) {
           <div className="flex flex-col gap-2">
             <span className="text-xs text-muted-foreground">{label}</span>
             <span className="text-xl font-black">
-              {value.toLocaleString("pt-PT")}
+              {typeof value === "number" ? value.toLocaleString("pt-PT") : value}
             </span>
           </div>
         </div>
