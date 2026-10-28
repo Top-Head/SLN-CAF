@@ -1,4 +1,4 @@
-import { REPORT_INFO, REPORT_STUDENTS } from "@/app/(private)/pautas/_lib/mock-data";
+import { REPORT_INFO, REPORT_STUDENTS } from "@/app/(admin)/pautas/_lib/mock-data";
 
 // TODO: substituir pela turma do director da sessão quando houver API.
 export const CLASS_INFO = {

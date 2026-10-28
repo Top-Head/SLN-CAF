@@ -116,7 +116,7 @@ export const DIRECTOR_NAVIGATION: NavGroup[] = [
   {
     label: "Geral",
     items: [
-      { title: "Dashboard", href: "/director/dashboard", icon: LayoutDashboard },
+      { title: "Dashboard", href: "/diretor-de-turma/dashboard", icon: LayoutDashboard },
     ],
   },
   {
@@ -124,10 +124,10 @@ export const DIRECTOR_NAVIGATION: NavGroup[] = [
     items: [
       {
         title: "Estatística da turma",
-        href: "/director/estatistica-da-turma",
+        href: "/diretor-de-turma/estatistica-da-turma",
         icon: ChartNoAxesColumn,
       },
-      { title: "Pauta trimestral", href: "/director/pauta-trimestral", icon: FileText },
+      { title: "Pauta trimestral", href: "/diretor-de-turma/pauta-trimestral", icon: FileText },
     ],
   },
   {
@@ -135,7 +135,7 @@ export const DIRECTOR_NAVIGATION: NavGroup[] = [
     items: [
       {
         title: "Perfil",
-        href: "/director/perfil",
+        href: "/diretor-de-turma/perfil",
         icon: CircleUserRound,
         pageTitle: "Meu perfil",
       },
@@ -156,7 +156,7 @@ export function getNavigation(role: Role = "admin"): NavGroup[] {
 /** Perfil pela área da aplicação, para o cabeçalho e a navegação. */
 export function roleFromPath(pathname: string): Role {
   if (pathname.startsWith("/teacher")) return "teacher";
-  if (pathname.startsWith("/director")) return "director";
+  if (pathname.startsWith("/diretor-de-turma")) return "director";
   return "admin";
 }
 

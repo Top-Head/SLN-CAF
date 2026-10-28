@@ -3,13 +3,13 @@ import Link from "next/link";
 
 const LINKS: { href: string; title: string; description: string; icon: LucideIcon }[] = [
   {
-    href: "/director/pauta-trimestral",
+    href: "/diretor-de-turma/pauta-trimestral",
     title: "Pauta trimestral",
     description: "Consultar e exportar em PDF",
     icon: FileText,
   },
   {
-    href: "/director/estatistica-da-turma",
+    href: "/diretor-de-turma/estatistica-da-turma",
     title: "Estatística da turma",
     description: "Positivas, negativas e médias",
     icon: ChartColumn,

@@ -35,7 +35,7 @@ export function SubjectLaunchTable({ subjects }: { subjects: ClassSubject[] }) {
           </p>
         </div>
         <Link
-          href="/director/pauta-trimestral"
+          href="/diretor-de-turma/pauta-trimestral"
           className="flex items-center gap-1 text-xs font-medium text-primary hover:underline"
         >
           Ver pauta

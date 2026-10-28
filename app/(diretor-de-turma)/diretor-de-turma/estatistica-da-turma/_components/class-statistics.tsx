@@ -111,7 +111,7 @@ export function ClassStatistics() {
           failed: "Negativas",
           rate: "Taxa de positivas",
         }}
-        link={{ href: "/director/pauta-trimestral", label: "Ver pauta trimestral" }}
+        link={{ href: "/diretor-de-turma/pauta-trimestral", label: "Ver pauta trimestral" }}
         thresholds={{ good: 50, warning: 40 }}
       />
     </div>

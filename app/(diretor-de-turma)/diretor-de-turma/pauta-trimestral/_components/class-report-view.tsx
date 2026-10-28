@@ -95,7 +95,7 @@ export function ClassReportView() {
           </button>
         )}
         <Link
-          href="/director/estatistica-da-turma"
+          href="/diretor-de-turma/estatistica-da-turma"
           className="flex h-10 items-center gap-2 rounded-md bg-primary px-4 text-[13px] font-medium text-primary-foreground transition-colors hover:bg-primary/90"
         >
           <ChartColumn className="size-4" />
