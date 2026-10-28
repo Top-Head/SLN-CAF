@@ -27,7 +27,7 @@ export function WelcomeBanner({
   nextDeadline = {
     subject: "Física · 10.ª IB",
     label: "Física · 08 Dez, 23:59",
-    date: new Date(Date.now() + 2 * 24 * 60 * 60 * 1000),
+    date: "2026-12-08T23:59:00",
   },
   continueHref = "/teacher/lancamento-de-notas",
   classesHref = "/teacher/turmas",
