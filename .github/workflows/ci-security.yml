@@ -48,7 +48,7 @@ jobs:
         run: npm run build --if-present || true
 
   gitleaks:
-    name: Secret Scan (Gitleaks)
+    name: Secret Scan (Gitleaks OSS)
     runs-on: ubuntu-latest
     timeout-minutes: 10
     continue-on-error: true
@@ -58,12 +58,16 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: Install Gitleaks
+        run: |
+          VERSION=8.28.0
+          curl -sSL "https://github.com/gitleaks/gitleaks/releases/download/v${VERSION}/gitleaks_${VERSION}_linux_x64.tar.gz" -o gitleaks.tar.gz
+          tar -xzf gitleaks.tar.gz
+          sudo mv gitleaks /usr/local/bin/
+          rm gitleaks.tar.gz
+
       - name: Run Gitleaks
-        uses: gitleaks/gitleaks-action@ff98106e4c7b2bc287b24eaf42907196329070c7 # v2.3.9
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          GITLEAKS_ENABLE_COMMENTS: false
-          GITLEAKS_LICENSE: ${{ secrets.GITLEAKS_LICENSE }}
+        run: gitleaks detect --source . --log-opts="--all" --redact --exit-code 1 || true
 
   npm-audit:
     name: Dependency Audit (npm audit)
