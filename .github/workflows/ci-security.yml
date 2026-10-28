@@ -124,7 +124,7 @@ jobs:
     continue-on-error: true
     steps:
       - name: Checkout
-        uses: actions/checkout@11bd71901bbe5tag v4.2.2
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
 
       - name: Install Trivy
         run: |
@@ -134,10 +134,8 @@ jobs:
         run: |
           trivy fs --scanners vuln,misconfig,secret --ignore-unfixed --format sarif --output trivy-results.sarif --severity CRITICAL,HIGH . || true
 
-      - name: Upload SARIF to Git## Commit and push
-`git add .github/workflows/ci-security.yml && git commit -m "ci: use trivy CLI instead of action" && git push origin feat/cicd-seguranca`
-
-Done. Both Gitleaks and Trivy are now using their free CLI versions, no license required. All jobs are non-blocking. Security: UnknownSource
+      - name: Upload SARIF to GitHub Security
+        uses: github/codeql-action/upload-sarif@dd746615b3b9d728a6a37ca2045b68ca76d4841a # v3.28.8
         if: always()
         with:
           sarif_file: 'trivy-results.sarif'
