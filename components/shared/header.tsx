@@ -3,7 +3,7 @@
 import { Bell } from "lucide-react";
 import { usePathname } from "next/navigation";
 
-import { getPageTitle, type Role } from "@/constants/navigation";
+import { getPageTitle, roleFromPath, type Role } from "@/constants/navigation";
 import type { User } from "@/types/user";
 
 type HeaderProps = {
@@ -20,7 +20,7 @@ function getInitials(name: string) {
 
 export function Header({ user, hasNotifications, role }: HeaderProps) {
   const pathname = usePathname();
-  const inferredRole: Role = role ?? (pathname.startsWith("/teacher") ? "teacher" : "admin");
+  const inferredRole: Role = role ?? roleFromPath(pathname);
   const title = getPageTitle(pathname, inferredRole);
 
   return (

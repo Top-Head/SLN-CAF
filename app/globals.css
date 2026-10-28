@@ -65,6 +65,14 @@
   --attention-surface: #fffaf1;
   --attention-border: #f1e4cd;
 
+  /* Notas: positiva, negativa e células só de leitura */
+  --grade-pass: #1a7f45;
+  --grade-pass-soft: #e7f6ec;
+  --grade-fail: #c42746;
+  --grade-fail-soft: #fdecef;
+  --grade-locked: #f6f7f9;
+  --grade-locked-text: #5f6472;
+
   --chart-1: #e73959;
   --chart-2: #428777;
   --chart-3: #fcc43e;
@@ -162,6 +170,12 @@
   --color-attention-soft: var(--attention-soft);
   --color-attention-surface: var(--attention-surface);
   --color-attention-border: var(--attention-border);
+  --color-grade-pass: var(--grade-pass);
+  --color-grade-pass-soft: var(--grade-pass-soft);
+  --color-grade-fail: var(--grade-fail);
+  --color-grade-fail-soft: var(--grade-fail-soft);
+  --color-grade-locked: var(--grade-locked);
+  --color-grade-locked-text: var(--grade-locked-text);
   --color-chart-1: var(--chart-1);
   --color-chart-2: var(--chart-2);
   --color-chart-3: var(--chart-3);

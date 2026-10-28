@@ -9,9 +9,11 @@ import { cn } from "@/lib/utils";
 
 type SidebarProps = {
   role?: Role;
+  /** Conteúdo fixo no fundo da navegação (ex.: estado do lançamento). */
+  footer?: React.ReactNode;
 };
 
-export function Sidebar({ role = "admin" }: SidebarProps) {
+export function Sidebar({ role = "admin", footer }: SidebarProps) {
   const pathname = usePathname();
   const navigation = getNavigation(role);
 
@@ -60,7 +62,9 @@ export function Sidebar({ role = "admin" }: SidebarProps) {
         ))}
       </nav>
 
-      <span className="mt-auto pt-10 text-[10px] text-sidebar-muted">
+      {footer && <div className="mt-auto pt-10">{footer}</div>}
+
+      <span className={cn("text-[10px] text-sidebar-muted", footer ? "pt-4" : "mt-auto pt-10")}>
         Easy Meal · Gestão escolar
       </span>
     </aside>
