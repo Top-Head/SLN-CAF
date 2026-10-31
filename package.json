@@ -32,7 +32,7 @@
     "eslint-config-next": "16.4.2",
     "husky": "^9.1.7",
     "tailwindcss": "^4",
-    "typescript": "^7"
+    "typescript": "^5.9.3"
   },
   "engines": {
     "node": ">=20.9.0 <23"

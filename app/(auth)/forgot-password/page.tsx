@@ -1,5 +1,4 @@
 import ForgotPasswordForm from "@/components/_components/forgot-password-form";
-import { LoginForm } from "@/components/_components/login-form";
 import { BrandLogo } from "@/components/shared/brand-logo";
 
 export default function ForgotPasswordPage() {

@@ -1,6 +1,6 @@
-import { ClassesCatalog } from "@/app/(admin)/turmas/_components/classes-catalog";
-import { CLASSES } from "@/app/(admin)/turmas/_lib/mock-data";
+import { MyClasses } from "./_components/my-classes";
+import { CLASSES } from "./_lib/mock-data";
 
 export default function TeacherTurmasPage() {
-  return <ClassesCatalog classes={CLASSES} />;
+  return <MyClasses classes={CLASSES} />;
 }
