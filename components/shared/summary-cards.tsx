@@ -13,6 +13,7 @@ export type SummaryStat = {
   avatar?: boolean;
   tone?: Tone;
   iconSize?: number;
+  hint?: string;
 };
 
 type SummaryCardsProps = {
@@ -27,10 +28,10 @@ export function SummaryCards({ stats, className }: SummaryCardsProps) {
 export function StatsCards({ stats, className }: SummaryCardsProps) {
   return (
     <div className={cn("grid gap-1.5 sm:grid-cols-2 xl:grid-cols-4", className)}>
-      {stats.map(({ label, value, icon: Icon, avatar, tone = "primary", iconSize = 18 }) => (
+      {stats.map(({ label, value, icon: Icon, avatar, tone = "primary", iconSize = 18, hint }) => (
         <div
           key={label}
-          className="flex h-[83px] items-center gap-[22px] rounded-lg border bg-card px-[18px]"
+          className="flex min-h-[83px] items-center gap-[22px] rounded-lg border bg-card px-[18px] py-3"
         >
           <div
             className={cn(
@@ -49,11 +50,16 @@ export function StatsCards({ stats, className }: SummaryCardsProps) {
               <Icon style={{ width: iconSize, height: iconSize }} />
             )}
           </div>
-          <div className="flex flex-col gap-2">
-            <span className="text-xs text-muted-foreground">{label}</span>
-            <span className="text-xl font-black">
+          <div className="flex min-w-0 flex-col gap-1">
+            <span className="truncate text-xs text-muted-foreground">{label}</span>
+            <span className="text-xl font-black leading-none">
               {typeof value === "number" ? value.toLocaleString("pt-PT") : value}
             </span>
+            {hint && (
+              <span className="truncate text-[10px] leading-tight text-muted-foreground">
+                {hint}
+              </span>
+            )}
           </div>
         </div>
       ))}

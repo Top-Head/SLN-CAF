@@ -3,6 +3,7 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import Image from "next/image";
 import Link from "next/link";
 
 export function LoginForm() {
@@ -16,7 +17,13 @@ export function LoginForm() {
             Seu email
           </Label>
           <div className="relative">
-            <img src="/auth/Email.png" className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-zinc-400" />
+            <Image
+              src="/auth/Email.png"
+              alt=""
+              width={15}
+              height={15}
+              className="absolute left-3 top-1/2 size-4 -translate-y-1/2"
+            />
             <Input
               id="email"
               name="email"
@@ -33,7 +40,13 @@ export function LoginForm() {
             Sua senha
           </Label>
           <div className="relative">
-            <img src="/auth/Password.png" alt="" className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-zinc-400" />
+            <Image
+              src="/auth/Password.png"
+              alt=""
+              width={15}
+              height={15}
+              className="absolute left-3 top-1/2 size-4 -translate-y-1/2"
+            />
             <Input
               id="password"
               name="password"
@@ -46,7 +59,7 @@ export function LoginForm() {
               type="button"
               className="absolute right-3 top-1/2 -translate-y-1/2 text-zinc-400 hover:text-zinc-600 cursor-pointer"
             >
-            <img src="/auth/Eyes.png" alt="" />
+            <Image src="/auth/Eyes.png" alt="" width={15} height={15} />
             </button>
           </div>
         </div>

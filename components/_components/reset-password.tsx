@@ -1,3 +1,5 @@
+import Image from "next/image";
+
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 import { Label } from "../ui/label";
@@ -16,10 +18,12 @@ function PasswordField({ id, name, label }: PasswordFieldProps) {
       </Label>
 
       <div className="relative">
-        <img
+        <Image
           src="/auth/Password.png"
           alt=""
-          className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-zinc-400"
+          width={15}
+          height={15}
+          className="absolute left-3 top-1/2 size-4 -translate-y-1/2"
         />
 
         <Input
@@ -36,7 +40,7 @@ function PasswordField({ id, name, label }: PasswordFieldProps) {
           aria-label="Mostrar senha"
           className="absolute right-3 top-1/2 -translate-y-1/2 cursor-pointer text-zinc-400 hover:text-zinc-600"
         >
-          <img src="/auth/Eyes.png" alt="" />
+          <Image src="/auth/Eyes.png" alt="" width={15} height={15} />
         </button>
       </div>
     </div>
