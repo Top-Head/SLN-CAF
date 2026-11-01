@@ -16,39 +16,37 @@ type ProximosPrazosCardProps = {
 
 export function ProximosPrazosCard({ prazos }: ProximosPrazosCardProps) {
   return (
-    <div className="w-[330px] h-auto rounded-2xl border border-neutral-200/80 bg-white p-6 shadow-sm">
+    <div className="w-[330px] rounded-2xl border border-gray-100 bg-white p-5 shadow-sm">
       {/* Cabeçalho */}
-      <div className="mb-5 border-b border-neutral-100 pb-4">
-        <h3 className="text-base font-bold text-neutral-900 tracking-tight">
-          Próximos prazos
-        </h3>
-        <p className="mt-0.5 text-[11px] text-neutral-400">
+      <div className="mb-4">
+        <h3 className="text-sm font-bold text-gray-900">Próximos prazos</h3>
+        <p className="mt-0.5 text-xs text-gray-400">
           Definidos pela direcção por disciplina
         </p>
       </div>
 
       {/* Lista de Prazos */}
-      <div className="divide-y divide-neutral-100">
+      <div className="space-y-3">
         {prazos.map((item) => (
-          <div key={item.id} className="flex items-center justify-between py-3.5 first:pt-0 last:pb-0">
+          <div key={item.id} className="flex items-center justify-between py-1.5">
             {/* Bloco de Data + Conteúdo */}
-            <div className="flex items-center gap-3.5">
+            <div className="flex items-center gap-3">
               {/* Box da Data */}
-              <div className="flex h-12 w-12 shrink-0 flex-col items-center justify-center rounded-xl border border-neutral-200/80 bg-neutral-50/50">
-                <span className="text-sm font-bold leading-none text-neutral-900">
+              <div className="flex h-10 w-10 shrink-0 flex-col items-center justify-center rounded-lg border border-gray-100 bg-gray-50">
+                <span className="text-xs font-bold leading-none text-gray-900">
                   {item.day}
                 </span>
-                <span className="mt-0.5 text-[9px] font-bold uppercase tracking-wider text-neutral-400">
+                <span className="mt-0.5 text-[9px] font-bold uppercase text-gray-400">
                   {item.month}
                 </span>
               </div>
 
               {/* Título e Subtítulo */}
               <div>
-                <h4 className="text-sm font-bold text-neutral-900 leading-tight">
+                <h4 className="text-xs font-bold leading-tight text-gray-800">
                   {item.title}
                 </h4>
-                <p className="mt-1 text-xs text-neutral-400 font-normal">
+                <p className="mt-0.5 text-[10px] font-normal text-gray-400">
                   {item.subtitle}
                 </p>
               </div>
