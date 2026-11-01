@@ -31,6 +31,7 @@ export type SheetStudent = {
   id: string;
   name: string;
   process: string;
+  gender: "M" | "F";
   grades: Grades;
   /** MT1 e MT2, usadas na MFD do 3.º trimestre das classes de exame. */
   previous?: [number, number];
@@ -189,7 +190,22 @@ function seeded(seed: string) {
 
 const clampGrade = (value: number) => Math.min(20, Math.max(0, Math.round(value)));
 
-type RosterEntry = { id: string; name: string; process: string; level: number; previous: [number, number] };
+const FEMININE_EXCEPTIONS = new Set(["Beatriz", "Isabel", "Raquel", "Esther", "Carmen", "Inês"]);
+
+/** Heurística para o sexo enquanto não existe um cadastro de estudantes. */
+function genderOf(name: string): "M" | "F" {
+  const firstName = name.split(" ")[0];
+  return /a$/i.test(firstName) || FEMININE_EXCEPTIONS.has(firstName) ? "F" : "M";
+}
+
+type RosterEntry = {
+  id: string;
+  name: string;
+  process: string;
+  gender: "M" | "F";
+  level: number;
+  previous: [number, number];
+};
 
 function rosterOf(classId: string): RosterEntry[] {
   const size = CLASS_SIZES[classId];
@@ -218,6 +234,7 @@ function rosterOf(classId: string): RosterEntry[] {
       id: `${classId}-${i + 1}`,
       name,
       process: `${prefix}${String(i + 1).padStart(2, "0")}`,
+      gender: genderOf(name),
       level,
       previous,
     };

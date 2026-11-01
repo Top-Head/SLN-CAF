@@ -1,12 +1,40 @@
 // ./_lib/mock-data.ts
+import {
+  CheckCircle2,
+  Clock,
+  FileText,
+  GraduationCap,
+} from "lucide-react";
+
 import type { SummaryStat } from "@/components/shared/summary-cards";
 import type { MiniPautaItem } from "./types";
 
 export const TEACHER_SUMMARY_STATS: SummaryStat[] = [
-  { label: "Turmas", value: 4, icon: "/icons/classes.svg" },
-  { label: "Mini-pautas", value: 5, icon: "/icons/subjects.svg" },
-  { label: "Concluídas", value: "2/5", icon: "/icons/subjects.svg" },
-  { label: "Por completar", value: 55, icon: "/icons/subjects.svg" },
+  {
+    label: "Turmas",
+    value: 4,
+    icon: GraduationCap,
+    hint: "2 disciplinas leccionadas",
+  },
+  {
+    label: "Mini-pautas",
+    value: 5,
+    icon: FileText,
+    hint: "1.º Trimestre",
+  },
+  {
+    label: "Concluídas",
+    value: "2/5",
+    icon: CheckCircle2,
+    hint: "40% do trimestre",
+  },
+  {
+    label: "Por completar",
+    value: 55,
+    icon: Clock,
+    tone: "pending",
+    hint: "estudantes com notas em falta",
+  },
 ];
 
 export const TEACHER_DASHBOARD_MOCK = {
@@ -38,7 +66,7 @@ export const MINI_PAUTAS_MOCK: MiniPautaItem[] = [
       date: "12 Dez",
     },
     estado: "em_curso",
-    href: "/teacher/lancamento/1",
+    href: `/teacher/mini-pautas?classId=12-ib&subject=${encodeURIComponent("Matemática")}&trimester=1`,
   },
   {
     id: "2",
@@ -54,7 +82,7 @@ export const MINI_PAUTAS_MOCK: MiniPautaItem[] = [
       date: "12 Dez",
     },
     estado: "concluido",
-    href: "/teacher/lancamento/2",
+    href: `/teacher/mini-pautas?classId=11-if&subject=${encodeURIComponent("Matemática")}&trimester=1`,
   },
   {
     id: "3",
@@ -71,7 +99,7 @@ export const MINI_PAUTAS_MOCK: MiniPautaItem[] = [
       subLabel: "fecha em 2 dias",
     },
     estado: "por_iniciar",
-    href: "/teacher/lancamento/3",
+    href: `/teacher/mini-pautas?classId=10-ib&subject=${encodeURIComponent("Física")}&trimester=1`,
   },
   {
     id: "4",
@@ -87,7 +115,7 @@ export const MINI_PAUTAS_MOCK: MiniPautaItem[] = [
       date: "08 Dez",
     },
     estado: "concluido",
-    href: "/teacher/lancamento/4",
+    href: `/teacher/mini-pautas?classId=12-ib&subject=${encodeURIComponent("Física")}&trimester=1`,
   },
   {
     id: "5",
@@ -103,7 +131,7 @@ export const MINI_PAUTAS_MOCK: MiniPautaItem[] = [
       date: "12 Dez",
     },
     estado: "em_curso",
-    href: "/teacher/lancamento/5",
+    href: `/teacher/mini-pautas?classId=9-a&subject=${encodeURIComponent("Matemática")}&trimester=1`,
   },
 ];
 

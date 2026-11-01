@@ -1,8 +1,11 @@
+import { Suspense } from "react";
+
+import { MiniPautaView } from "./_components/mini-pauta-view";
+
 export default function TeacherMiniPautasPage() {
   return (
-    <div className="flex flex-col gap-4">
-      <h1 className="text-2xl font-semibold">Mini-pautas</h1>
-      <p className="text-muted-foreground">Visualização das mini-pautas.</p>
-    </div>
+    <Suspense fallback={null}>
+      <MiniPautaView />
+    </Suspense>
   );
 }

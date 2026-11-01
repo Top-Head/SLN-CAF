@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
@@ -19,7 +20,13 @@ export default function ForgotPasswordForm (){
                         Seu email
                     </Label>
                      <div className="relative mt-3 ">
-                       <img src="/auth/Email.png" className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-zinc-400" />
+                       <Image
+                         src="/auth/Email.png"
+                         alt=""
+                         width={15}
+                         height={15}
+                         className="absolute left-3 top-1/2 size-4 -translate-y-1/2"
+                       />
                        <Input
                          id="email"
                          name="email"
