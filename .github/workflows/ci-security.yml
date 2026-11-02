@@ -150,7 +150,7 @@ jobs:
 
       - name: Upload SARIF to GitHub Security
         if: always() && steps.validate_sarif.outcome == 'success'
-        uses: github/codeql-action/upload-sarif@96f518a34f7a870018057716cc4d7a5c014bd61c # v3.29.10
+        uses: github/codeql-action/upload-sarif@9b3254085494b55a0f7c4c2b3d2d52cc712ce370 # v4.39.1
         with:
           sarif_file: semgrep.sarif
 
@@ -222,7 +222,7 @@ jobs:
 
       - name: Upload SARIF to GitHub Security
         if: always() && steps.validate_sarif.outcome == 'success'
-        uses: github/codeql-action/upload-sarif@96f518a34f7a870018057716cc4d7a5c014bd61c # v3.29.10
+        uses: github/codeql-action/upload-sarif@9b3254085494b55a0f7c4c2b3d2d52cc712ce370 # v4.39.1
         with:
           sarif_file: trivy-results.sarif
 
