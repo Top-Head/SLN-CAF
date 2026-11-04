@@ -1,7 +1,7 @@
 import { Pencil } from "lucide-react";
 import Image from "next/image";
 
-import type { Profile } from "@/types/profile";
+import type { Profile } from "@/types/profile.types";
 
 function ContactItem({
   label,

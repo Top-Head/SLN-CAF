@@ -12,7 +12,7 @@ import {
 import { CatalogViews } from "@/components/shared/catalog/catalog-views";
 import { ListHeader } from "@/components/shared/list-header";
 import { SearchCard } from "@/components/shared/search-card";
-import { paginate, useCatalogState } from "@/hooks/use-catalog-state";
+import { paginate, useCatalogState } from "@/hooks/catalog/use-catalog-state";
 import { cn } from "@/lib/utils";
 import { matchesSearch } from "@/lib/utils/matches-search";
 

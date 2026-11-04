@@ -29,7 +29,7 @@ import {
   type PeriodStatus,
   type Trimester,
 } from "@/app/(teacher)/teacher/lancamento-de-notas/_lib/mock-data";
-import { paginate } from "@/hooks/use-catalog-state";
+import { paginate } from "@/hooks/catalog/use-catalog-state";
 import { cn } from "@/lib/utils";
 import { formatGrade } from "@/lib/utils/format-grade";
 import { matchesSearch } from "@/lib/utils/matches-search";

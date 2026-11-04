@@ -1,6 +1,6 @@
 import { Fragment } from "react";
 
-import type { ProfileField } from "@/types/profile";
+import type { ProfileField } from "@/types/profile.types";
 
 type PersonalInfoCardProps = {
   fields: ProfileField[];
