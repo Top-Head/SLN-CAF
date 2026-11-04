@@ -7,7 +7,7 @@ import { ListPagination } from "@/components/shared/list-pagination";
 import { ListTabs } from "@/components/shared/list-tabs";
 import { StatusBadge } from "@/components/shared/status-badge";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { paginate } from "@/hooks/use-catalog-state";
+import { paginate } from "@/hooks/catalog/use-catalog-state";
 import { cn } from "@/lib/utils";
 import { formatGrade, PASS_GRADE } from "@/lib/utils/format-grade";
 import { matchesSearch } from "@/lib/utils/matches-search";

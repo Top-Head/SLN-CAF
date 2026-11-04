@@ -9,7 +9,7 @@ import {
   GradeSheetPagination,
 } from "@/components/shared/grade-sheet-pagination";
 import { GradeSheetViews } from "@/components/shared/grade-sheet-views";
-import { paginate } from "@/hooks/use-catalog-state";
+import { paginate } from "@/hooks/catalog/use-catalog-state";
 import { cn } from "@/lib/utils";
 import { formatGrade, parseGrade } from "@/lib/utils/format-grade";
 import { matchesSearch } from "@/lib/utils/matches-search";

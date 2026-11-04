@@ -4,7 +4,7 @@ import { Bell } from "lucide-react";
 import { usePathname } from "next/navigation";
 
 import { getPageTitle, roleFromPath, type Role } from "@/constants/navigation";
-import type { User } from "@/types/user";
+import type { User } from "@/types/user.types";
 
 type HeaderProps = {
   user: User;

@@ -6,7 +6,7 @@ import { useId, useState } from "react";
 import { StatusBadge } from "@/components/shared/status-badge";
 import { ToggleSwitch } from "@/components/shared/toggle-switch";
 
-import type { ActiveSession, SecuritySettings } from "@/types/profile";
+import type { ActiveSession, SecuritySettings } from "@/types/profile.types";
 
 function SecurityItem({
   icon: Icon,
