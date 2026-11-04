@@ -7,6 +7,8 @@ import type {
   ConfirmPasswordPayload,
   LoginPayload,
   PasswordResetPayload,
+  RegisterPayload,
+  TeacherRegisterPayload,
 } from "@/services/auth/type";
 import { authStore, useAuthState } from "@/stores/use-auth.store";
 
@@ -95,6 +97,24 @@ export function useRequestPasswordReset() {
   >(authService.requestPasswordReset);
 
   return { requestPasswordReset: run, isPending, error, resetError };
+}
+
+export function useRegister() {
+  const { run, isPending, error, resetError } = useAsyncAction<
+    [RegisterPayload],
+    void
+  >(authService.register);
+
+  return { register: run, isPending, error, resetError };
+}
+
+export function useRegisterTeacher() {
+  const { run, isPending, error, resetError } = useAsyncAction<
+    [TeacherRegisterPayload],
+    void
+  >(authService.registerTeacher);
+
+  return { registerTeacher: run, isPending, error, resetError };
 }
 
 export function useConfirmPassword() {

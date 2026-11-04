@@ -6,6 +6,8 @@ import type {
   LoginPayload,
   PasswordResetPayload,
   RefreshResult,
+  RegisterPayload,
+  TeacherRegisterPayload,
 } from "./type";
 
 type LoginApiResponse = {
@@ -187,6 +189,16 @@ async function requestPasswordReset(
   await API.post("/api/auth/password-reset", payload);
 }
 
+async function register(payload: RegisterPayload): Promise<void> {
+  await API.post("/api/auth/register/", payload);
+}
+
+async function registerTeacher(
+  payload: TeacherRegisterPayload,
+): Promise<void> {
+  await API.post("/api/auth/teacher-register/", payload);
+}
+
 async function confirmPassword(
   payload: ConfirmPasswordPayload,
 ): Promise<void> {
@@ -202,5 +214,7 @@ export const authService = {
   logout,
   refresh,
   requestPasswordReset,
+  register,
+  registerTeacher,
   confirmPassword,
 };
