@@ -1,0 +1,1664 @@
+openapi: 3.0.3
+info:
+  title: SLN CAF API
+  version: 1.0.0
+  description: API do Sistema de Gestão Académica
+paths:
+  /api/academico/courses/:
+    get:
+      operationId: academico_courses_list
+      parameters:
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      tags:
+      - Cursos
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedCourseList'
+          description: ''
+    post:
+      operationId: academico_courses_create
+      description: gerenciar cursod
+      tags:
+      - Cursos
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Course'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Course'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Course'
+        required: true
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Course'
+          description: ''
+  /api/academico/courses/{id}/:
+    get:
+      operationId: academico_courses_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Curso.
+        required: true
+      tags:
+      - Cursos
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Course'
+          description: ''
+    put:
+      operationId: academico_courses_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Curso.
+        required: true
+      tags:
+      - Cursos
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Course'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Course'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Course'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Course'
+          description: ''
+    patch:
+      operationId: academico_courses_partial_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Curso.
+        required: true
+      tags:
+      - Cursos
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedCourse'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedCourse'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedCourse'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Course'
+          description: ''
+    delete:
+      operationId: academico_courses_destroy
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Curso.
+        required: true
+      tags:
+      - Cursos
+      responses:
+        '204':
+          description: No response body
+  /api/academico/school-classes/:
+    get:
+      operationId: academico_school_classes_list
+      parameters:
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      tags:
+      - Classes
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedSchoolClassList'
+          description: ''
+    post:
+      operationId: academico_school_classes_create
+      description: Criar classe
+      tags:
+      - Classes
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SchoolClass'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/SchoolClass'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/SchoolClass'
+        required: true
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SchoolClass'
+          description: ''
+  /api/academico/school-classes/{id}/:
+    get:
+      operationId: academico_school_classes_retrieve
+      description: listar classes
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Ano/Turma.
+        required: true
+      tags:
+      - Classes
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SchoolClass'
+          description: ''
+    put:
+      operationId: academico_school_classes_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Ano/Turma.
+        required: true
+      tags:
+      - Classes
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SchoolClass'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/SchoolClass'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/SchoolClass'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SchoolClass'
+          description: ''
+    patch:
+      operationId: academico_school_classes_partial_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Ano/Turma.
+        required: true
+      tags:
+      - Classes
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedSchoolClass'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedSchoolClass'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedSchoolClass'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SchoolClass'
+          description: ''
+    delete:
+      operationId: academico_school_classes_destroy
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Ano/Turma.
+        required: true
+      tags:
+      - Classes
+      responses:
+        '204':
+          description: No response body
+  /api/academico/school-years/:
+    get:
+      operationId: academico_school_years_list
+      summary: Listar anos letivos
+      parameters:
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      tags:
+      - Anos Letivos
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedSchoolYearList'
+          description: ''
+    post:
+      operationId: academico_school_years_create
+      summary: Criar ano letivo
+      tags:
+      - Anos Letivos
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SchoolYear'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/SchoolYear'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/SchoolYear'
+        required: true
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SchoolYear'
+          description: ''
+  /api/academico/school-years/{id}/:
+    get:
+      operationId: academico_school_years_retrieve
+      summary: Detalhar ano letivo
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Ano Letivo.
+        required: true
+      tags:
+      - Anos Letivos
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SchoolYear'
+          description: ''
+  /api/academico/students/:
+    get:
+      operationId: academico_students_list
+      description: Listar alunos
+      parameters:
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - name: search
+        required: false
+        in: query
+        description: A search term.
+        schema:
+          type: string
+      tags:
+      - Alunos
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedStudentList'
+          description: ''
+    post:
+      operationId: academico_students_create
+      description: Criar aluno
+      tags:
+      - Alunos
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Student'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Student'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Student'
+        required: true
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Student'
+          description: ''
+  /api/academico/students/{id}/:
+    get:
+      operationId: academico_students_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Aluno.
+        required: true
+      tags:
+      - Alunos
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Student'
+          description: ''
+    put:
+      operationId: academico_students_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Aluno.
+        required: true
+      tags:
+      - Alunos
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Student'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Student'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Student'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Student'
+          description: ''
+    patch:
+      operationId: academico_students_partial_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Aluno.
+        required: true
+      tags:
+      - Alunos
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedStudent'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedStudent'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedStudent'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Student'
+          description: ''
+    delete:
+      operationId: academico_students_destroy
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Aluno.
+        required: true
+      tags:
+      - Alunos
+      responses:
+        '204':
+          description: No response body
+  /api/academico/subjects/:
+    get:
+      operationId: academico_subjects_list
+      parameters:
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      tags:
+      - Disciplinas
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedSubjectList'
+          description: ''
+    post:
+      operationId: academico_subjects_create
+      description: Criar disciplina
+      tags:
+      - Disciplinas
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Subject'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Subject'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Subject'
+        required: true
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Subject'
+          description: ''
+  /api/academico/subjects/{id}/:
+    get:
+      operationId: academico_subjects_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Disciplina.
+        required: true
+      tags:
+      - Disciplinas
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Subject'
+          description: ''
+    put:
+      operationId: academico_subjects_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Disciplina.
+        required: true
+      tags:
+      - Disciplinas
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Subject'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Subject'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Subject'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Subject'
+          description: ''
+    patch:
+      operationId: academico_subjects_partial_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Disciplina.
+        required: true
+      tags:
+      - Disciplinas
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedSubject'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedSubject'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedSubject'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Subject'
+          description: ''
+    delete:
+      operationId: academico_subjects_destroy
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Disciplina.
+        required: true
+      tags:
+      - Disciplinas
+      responses:
+        '204':
+          description: No response body
+  /api/academico/turmas/:
+    get:
+      operationId: academico_turmas_list
+      description: Listar turmas - suporta ?course=&school_class=&school_year=
+      parameters:
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      tags:
+      - Turmas
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedTurmaList'
+          description: ''
+    post:
+      operationId: academico_turmas_create
+      description: 'Criar turma '
+      tags:
+      - Turmas
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Turma'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Turma'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Turma'
+        required: true
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Turma'
+          description: ''
+  /api/academico/turmas/{id}/:
+    get:
+      operationId: academico_turmas_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Turma.
+        required: true
+      tags:
+      - Turmas
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Turma'
+          description: ''
+    put:
+      operationId: academico_turmas_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Turma.
+        required: true
+      tags:
+      - Turmas
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Turma'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Turma'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Turma'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Turma'
+          description: ''
+    patch:
+      operationId: academico_turmas_partial_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Turma.
+        required: true
+      tags:
+      - Turmas
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedTurma'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedTurma'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedTurma'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Turma'
+          description: ''
+    delete:
+      operationId: academico_turmas_destroy
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Turma.
+        required: true
+      tags:
+      - Turmas
+      responses:
+        '204':
+          description: No response body
+  /api/auth/confirm-password/:
+    post:
+      operationId: auth_confirm_password_create
+      description: Confirma a recuperação da password utilizando um token válido e
+        define uma nova password.
+      tags:
+      - Recuperação de Password
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PasswordResetConfirm'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PasswordResetConfirm'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PasswordResetConfirm'
+        required: true
+      security:
+      - {}
+      responses:
+        '200':
+          description: Password alterada com sucesso.
+        '400':
+          description: Dados inválidos ou token expirado, inválido ou já utilizado.
+  /api/auth/login/:
+    post:
+      operationId: auth_login_create
+      description: Autentica o utilizador e devolve um token de acesso e um token
+        de renovação.
+      tags:
+      - Autenticação
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Login'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Login'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Login'
+        required: true
+      security:
+      - {}
+      responses:
+        '200':
+          description: Autenticação realizada com sucesso.
+        '400':
+          description: Dados de entrada inválidos.
+        '401':
+          description: Credenciais inválidas.
+        '429':
+          description: Limite de tentativas excedido.
+  /api/auth/logout/:
+    post:
+      operationId: auth_logout_create
+      description: Termina a sessão revogando o refresh token fornecido.
+      tags:
+      - Autenticação
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Refresh'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Refresh'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Refresh'
+        required: true
+      security:
+      - {}
+      responses:
+        '200':
+          description: Sessão terminada com sucesso.
+        '400':
+          description: Refresh token inválido.
+  /api/auth/password-reset:
+    post:
+      operationId: auth_password_reset_create
+      description: Solicita a recuperação da password. A resposta não revela se o
+        email está registado.
+      tags:
+      - Recuperação de Password
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PasswordResetRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PasswordResetRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PasswordResetRequest'
+        required: true
+      security:
+      - {}
+      responses:
+        '200':
+          description: Se o email estiver registado, serão enviadas instruções de
+            recuperação.
+        '400':
+          description: Email inválido.
+  /api/auth/refresh/:
+    post:
+      operationId: auth_refresh_create
+      description: Renova os tokens utilizando um refresh token válido. O token anterior
+        é revogado.
+      tags:
+      - Autenticação
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Refresh'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Refresh'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Refresh'
+        required: true
+      security:
+      - {}
+      responses:
+        '200':
+          description: Tokens renovados com sucesso.
+        '400':
+          description: Refresh token inválido.
+  /api/auth/register/:
+    post:
+      operationId: auth_register_create
+      description: Cria uma nova conta de utilizador. O cadastro cria inicialmente
+        um utilizador com o perfil ADMIN.
+      tags:
+      - Autenticação
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Register'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Register'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Register'
+        required: true
+      security:
+      - {}
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Register'
+          description: Conta criada com sucesso.
+        '400':
+          description: Dados fornecidos inválidos.
+  /api/auth/teacher-register/:
+    post:
+      operationId: auth_teacher_register_create
+      description: Cria um novo utilizador com perfil de professor e o respetivo perfil
+        de professor.
+      tags:
+      - Autenticação
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TeacherRegister'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/TeacherRegister'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/TeacherRegister'
+        required: true
+      security:
+      - {}
+      responses:
+        '201':
+          description: Professor criado com sucesso.
+        '400':
+          description: Dados inválidos.
+  /api/auth/teachers/:
+    get:
+      operationId: auth_teachers_list
+      parameters:
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      tags:
+      - auth
+      security:
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedTeacherList'
+          description: ''
+  /api/auth/teachers/{id}/:
+    get:
+      operationId: auth_teachers_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - auth
+      security:
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Teacher'
+          description: ''
+    put:
+      operationId: auth_teachers_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - auth
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TeacherUpdate'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/TeacherUpdate'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/TeacherUpdate'
+      security:
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TeacherUpdate'
+          description: ''
+    patch:
+      operationId: auth_teachers_partial_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - auth
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedTeacherUpdate'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedTeacherUpdate'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedTeacherUpdate'
+      security:
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TeacherUpdate'
+          description: ''
+    delete:
+      operationId: auth_teachers_destroy
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - auth
+      security:
+      - {}
+      responses:
+        '204':
+          description: No response body
+components:
+  schemas:
+    BlankEnum:
+      enum:
+      - ''
+    Course:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        nome:
+          type: string
+          maxLength: 100
+      required:
+      - id
+      - nome
+    GeneroC1eEnum:
+      enum:
+      - MASCULINO
+      - FEMENINO
+      type: string
+      description: |-
+        * `MASCULINO` - Masculino
+        * `FEMENINO` - Femenino
+    Login:
+      type: object
+      properties:
+        email:
+          type: string
+          format: email
+        password:
+          type: string
+          writeOnly: true
+      required:
+      - email
+      - password
+    NullEnum:
+      enum:
+      - null
+    PaginatedCourseList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Course'
+    PaginatedSchoolClassList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/SchoolClass'
+    PaginatedSchoolYearList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/SchoolYear'
+    PaginatedStudentList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Student'
+    PaginatedSubjectList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Subject'
+    PaginatedTeacherList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Teacher'
+    PaginatedTurmaList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Turma'
+    PasswordResetConfirm:
+      type: object
+      properties:
+        token:
+          type: string
+          writeOnly: true
+        new_password:
+          type: string
+          writeOnly: true
+        confirm_password:
+          type: string
+          writeOnly: true
+      required:
+      - confirm_password
+      - new_password
+      - token
+    PasswordResetRequest:
+      type: object
+      properties:
+        email:
+          type: string
+          format: email
+      required:
+      - email
+    PatchedCourse:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        nome:
+          type: string
+          maxLength: 100
+    PatchedSchoolClass:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        numero:
+          type: integer
+          maximum: 32767
+          minimum: -32768
+    PatchedStudent:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        numero_processo:
+          type: string
+          maxLength: 50
+        nome:
+          type: string
+          maxLength: 150
+        genero:
+          nullable: true
+          oneOf:
+          - $ref: '#/components/schemas/StudentGeneroEnum'
+          - $ref: '#/components/schemas/BlankEnum'
+          - $ref: '#/components/schemas/NullEnum'
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+    PatchedSubject:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        nome:
+          type: string
+          maxLength: 100
+    PatchedTeacherUpdate:
+      type: object
+      properties:
+        username:
+          type: string
+          maxLength: 50
+        email:
+          type: string
+          format: email
+        nome:
+          type: string
+          maxLength: 150
+        telefone:
+          type: string
+          maxLength: 9
+          minLength: 9
+        bi:
+          type: string
+          maxLength: 16
+          minLength: 6
+        genero:
+          $ref: '#/components/schemas/GeneroC1eEnum'
+    PatchedTurma:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        nome:
+          type: string
+          maxLength: 20
+        course:
+          type: string
+          format: uuid
+        school_class:
+          type: string
+          format: uuid
+        school_year:
+          type: string
+          format: uuid
+        director_teacher:
+          type: string
+          readOnly: true
+        director_teacher_id:
+          type: string
+          format: uuid
+          writeOnly: true
+          nullable: true
+        course_nome:
+          type: string
+          readOnly: true
+        school_class_nome:
+          type: string
+          readOnly: true
+        school_year_label:
+          type: string
+          readOnly: true
+    Refresh:
+      type: object
+      properties:
+        refresh_token:
+          type: string
+          writeOnly: true
+      required:
+      - refresh_token
+    Register:
+      type: object
+      properties:
+        username:
+          type: string
+          maxLength: 50
+        email:
+          type: string
+          format: email
+          maxLength: 254
+        password:
+          type: string
+          writeOnly: true
+          minLength: 8
+      required:
+      - email
+      - password
+      - username
+    SchoolClass:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        numero:
+          type: integer
+          maximum: 32767
+          minimum: -32768
+      required:
+      - id
+      - numero
+    SchoolYear:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        ano_inicio:
+          type: integer
+          maximum: 32767
+          minimum: -32768
+        ano_fim:
+          type: integer
+          maximum: 32767
+          minimum: -32768
+      required:
+      - ano_fim
+      - ano_inicio
+      - id
+    Student:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        numero_processo:
+          type: string
+          maxLength: 50
+        nome:
+          type: string
+          maxLength: 150
+        genero:
+          nullable: true
+          oneOf:
+          - $ref: '#/components/schemas/StudentGeneroEnum'
+          - $ref: '#/components/schemas/BlankEnum'
+          - $ref: '#/components/schemas/NullEnum'
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - created_at
+      - id
+      - nome
+      - numero_processo
+    StudentGeneroEnum:
+      enum:
+      - Masculino
+      - Feminino
+      type: string
+      description: |-
+        * `Masculino` - Masculino
+        * `Feminino` - Feminino
+    Subject:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        nome:
+          type: string
+          maxLength: 100
+      required:
+      - id
+      - nome
+    Teacher:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        username:
+          type: string
+          readOnly: true
+        email:
+          type: string
+          readOnly: true
+        nome:
+          type: string
+          maxLength: 150
+        telefone:
+          type: string
+          maxLength: 9
+        bi:
+          type: string
+          maxLength: 16
+        genero:
+          $ref: '#/components/schemas/GeneroC1eEnum'
+      required:
+      - bi
+      - email
+      - genero
+      - id
+      - nome
+      - telefone
+      - username
+    TeacherRegister:
+      type: object
+      properties:
+        username:
+          type: string
+          maxLength: 50
+        email:
+          type: string
+          format: email
+        password:
+          type: string
+          writeOnly: true
+        nome:
+          type: string
+          maxLength: 150
+        telefone:
+          type: string
+          maxLength: 9
+          minLength: 9
+        bi:
+          type: string
+          maxLength: 16
+          minLength: 6
+        genero:
+          $ref: '#/components/schemas/GeneroC1eEnum'
+      required:
+      - bi
+      - email
+      - genero
+      - nome
+      - password
+      - telefone
+      - username
+    TeacherUpdate:
+      type: object
+      properties:
+        username:
+          type: string
+          maxLength: 50
+        email:
+          type: string
+          format: email
+        nome:
+          type: string
+          maxLength: 150
+        telefone:
+          type: string
+          maxLength: 9
+          minLength: 9
+        bi:
+          type: string
+          maxLength: 16
+          minLength: 6
+        genero:
+          $ref: '#/components/schemas/GeneroC1eEnum'
+    Turma:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        nome:
+          type: string
+          maxLength: 20
+        course:
+          type: string
+          format: uuid
+        school_class:
+          type: string
+          format: uuid
+        school_year:
+          type: string
+          format: uuid
+        director_teacher:
+          type: string
+          readOnly: true
+        director_teacher_id:
+          type: string
+          format: uuid
+          writeOnly: true
+          nullable: true
+        course_nome:
+          type: string
+          readOnly: true
+        school_class_nome:
+          type: string
+          readOnly: true
+        school_year_label:
+          type: string
+          readOnly: true
+      required:
+      - course
+      - course_nome
+      - director_teacher
+      - id
+      - nome
+      - school_class
+      - school_class_nome
+      - school_year
+      - school_year_label
