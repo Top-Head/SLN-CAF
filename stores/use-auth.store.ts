@@ -3,15 +3,13 @@
 import { useSyncExternalStore } from "react";
 
 import {
-  authService,
   enrichTeacherUser,
-} from "@/services/auth/auth.service";
+  login as loginRequest,
+  logout as logoutRequest,
+  refresh as refreshRequest,
+} from "@/services/auth";
 import { ApiError } from "@/services/data";
-import type {
-  AuthState,
-  AuthUser,
-  LoginPayload,
-} from "@/services/auth/type";
+import type { AuthState, AuthUser, LoginPayload } from "@/services/auth";
 
 const STORAGE_KEY = "sln-caf.auth";
 
@@ -169,7 +167,7 @@ function hydrate() {
 }
 
 async function login(payload: LoginPayload) {
-  const session = await authService.login(payload);
+  const session = await loginRequest(payload);
 
   storageKind = payload.remember === false ? "session" : "local";
 
@@ -188,7 +186,7 @@ async function logout() {
   const refreshToken = state.refreshToken;
 
   try {
-    if (refreshToken) await authService.logout(refreshToken);
+    if (refreshToken) await logoutRequest(refreshToken);
   } finally {
     clearSession();
   }
@@ -203,7 +201,7 @@ async function refresh() {
   }
 
   try {
-    const result = await authService.refresh(refreshToken);
+    const result = await refreshRequest(refreshToken);
 
     setState({
       accessToken: result.access,

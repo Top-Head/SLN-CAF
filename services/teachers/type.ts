@@ -14,6 +14,25 @@ export type TeacherListParams = {
   page?: number;
 };
 
+export type CreateTeacherPayload = {
+  username: string;
+  email: string;
+  password: string;
+  nome: string;
+  telefone: string;
+  bi: string;
+  genero: TeacherGender;
+};
+
+export type TeacherUpdatePayload = {
+  username: string;
+  email: string;
+  nome: string;
+  telefone: string;
+  bi: string;
+  genero: TeacherGender;
+};
+
 export type PaginatedTeachers = {
   count: number;
   next: string | null;

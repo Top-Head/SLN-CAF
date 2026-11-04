@@ -20,16 +20,6 @@ export type RegisterPayload = {
   password: string;
 };
 
-export type TeacherRegisterPayload = {
-  username: string;
-  email: string;
-  password: string;
-  nome: string;
-  telefone: string;
-  bi: string;
-  genero: "MASCULINO" | "FEMENINO";
-};
-
 export type AuthSession = {
   access: string;
   refresh: string;
