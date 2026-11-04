@@ -1,0 +1,4 @@
+# Falsos positivos conhecidos (fingerprint: commit:file:rule:line)
+# ACCESS_CODE_ALPHABET é o alfabeto público usado para gerar códigos de acesso,
+# não é uma credencial. Ver lib/utils/access-code.ts.
+7d510c45c812890b7e33bc9f7aaf4179205409e9:lib/utils/access-code.ts:generic-api-key:2
