@@ -1,11 +1,7 @@
 import { API } from "../data";
-import type {
-  PaginatedTeachers,
-  Teacher,
-  TeacherListParams,
-} from "./type";
+import type { PaginatedTeachers, TeacherListParams } from "./type";
 
-async function getAllTeachers(
+export async function getAllTeachers(
   params: TeacherListParams = {},
   accessToken?: string,
 ): Promise<PaginatedTeachers> {
@@ -24,20 +20,3 @@ async function getAllTeachers(
 
   return response.data;
 }
-
-async function getTeacherById(
-  id: string,
-  accessToken?: string,
-): Promise<Teacher> {
-  const response = await API.get<Teacher>(
-    `/api/auth/teachers/${encodeURIComponent(id)}/`,
-    { accessToken, cache: "no-store" },
-  );
-
-  return response.data;
-}
-
-export const teachersService = {
-  getAllTeachers,
-  getTeacherById,
-};

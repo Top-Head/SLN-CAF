@@ -14,6 +14,12 @@ export type LoginPayload = {
   remember?: boolean;
 };
 
+export type RegisterPayload = {
+  username: string;
+  email: string;
+  password: string;
+};
+
 export type AuthSession = {
   access: string;
   refresh: string;

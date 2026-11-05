@@ -161,15 +161,26 @@ export function LoginForm() {
         {isPending ? "A entrar..." : "Entrar no sistema"}
       </Button>
 
-      <p className="text-center text-[16px] text-[#999999]">
-        Ainda lembra da tua senha?{" "}
-        <Link
-          href="/forgot-password"
-          className="font-semibold text-[#E73959] hover:underline"
-        >
-          Recuperar senha
-        </Link>
-      </p>
+      <div className="space-y-3 text-center text-[16px] text-[#999999]">
+        <p>
+          Ainda lembra da tua senha?{" "}
+          <Link
+            href="/forgot-password"
+            className="font-semibold text-[#E73959] hover:underline"
+          >
+            Recuperar senha
+          </Link>
+        </p>
+        <p>
+          Ainda não tem conta?{" "}
+          <Link
+            href="/register"
+            className="font-semibold text-[#E73959] hover:underline"
+          >
+            Criar conta
+          </Link>
+        </p>
+      </div>
     </form>
   );
 }

@@ -2,13 +2,13 @@
 
 import { useSyncExternalStore } from "react";
 
-import { teachersService } from "@/services/teachers/teachers.service";
+import { getAllTeachers, getTeacherById } from "@/services/teachers";
 import type {
   PaginatedTeachers,
   Teacher,
   TeacherListParams,
   TeachersState,
-} from "@/services/teachers/type";
+} from "@/services/teachers";
 import { authStore } from "@/stores/use-auth.store";
 
 const INITIAL_STATE: TeachersState = {
@@ -82,7 +82,7 @@ async function fetchTeachers(
   setState({ listStatus: "loading", listError: null });
 
   try {
-    const result = await teachersService.getAllTeachers(
+    const result = await getAllTeachers(
       { page },
       authStore.getState().accessToken ?? undefined,
     );
@@ -123,7 +123,7 @@ async function loadTeacher(id: string): Promise<Teacher | null> {
   });
 
   try {
-    const teacher = await teachersService.getTeacherById(
+    const teacher = await getTeacherById(
       id,
       authStore.getState().accessToken ?? undefined,
     );

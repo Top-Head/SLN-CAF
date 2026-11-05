@@ -2,12 +2,19 @@
 
 import { useCallback, useEffect, useState } from "react";
 
-import { authService } from "@/services/auth/auth.service";
+import {
+  confirmPassword,
+  register,
+  registerTeacher,
+  requestPasswordReset,
+} from "@/services/auth";
 import type {
   ConfirmPasswordPayload,
   LoginPayload,
   PasswordResetPayload,
-} from "@/services/auth/type";
+  RegisterPayload,
+} from "@/services/auth";
+import type { CreateTeacherPayload } from "@/services/teachers";
 import { authStore, useAuthState } from "@/stores/use-auth.store";
 
 type ActionResult<TResult> =
@@ -92,16 +99,34 @@ export function useRequestPasswordReset() {
   const { run, isPending, error, resetError } = useAsyncAction<
     [PasswordResetPayload],
     void
-  >(authService.requestPasswordReset);
+  >(requestPasswordReset);
 
   return { requestPasswordReset: run, isPending, error, resetError };
+}
+
+export function useRegister() {
+  const { run, isPending, error, resetError } = useAsyncAction<
+    [RegisterPayload],
+    void
+  >(register);
+
+  return { register: run, isPending, error, resetError };
+}
+
+export function useRegisterTeacher() {
+  const { run, isPending, error, resetError } = useAsyncAction<
+    [CreateTeacherPayload],
+    void
+  >(registerTeacher);
+
+  return { registerTeacher: run, isPending, error, resetError };
 }
 
 export function useConfirmPassword() {
   const { run, isPending, error, resetError } = useAsyncAction<
     [ConfirmPasswordPayload],
     void
-  >(authService.confirmPassword);
+  >(confirmPassword);
 
   return { confirmPassword: run, isPending, error, resetError };
 }
