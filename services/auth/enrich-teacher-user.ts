@@ -1,12 +1,5 @@
-import { API } from "../data";
+import { findTeacherForUser } from "./find-teacher-for-user";
 import type { AuthUser } from "./type";
-
-type TeacherProfileApiResponse = {
-  id: string;
-  username: string;
-  email: string;
-  nome: string;
-};
 
 const TEACHER_ROLES = new Set([
   "teacher",
@@ -16,6 +9,11 @@ const TEACHER_ROLES = new Set([
   "diretor-de-turma",
   "diretor_de_turma",
 ]);
+
+/** Perfis que têm registo em /api/auth/teachers/{id}/. */
+export function isTeacherRole(role?: string) {
+  return Boolean(role && TEACHER_ROLES.has(role.trim().toLowerCase()));
+}
 
 export async function enrichTeacherUser(
   user: AuthUser,
@@ -28,15 +26,13 @@ export async function enrichTeacherUser(
   }
 
   try {
-    const { data } = await API.get<TeacherProfileApiResponse>(
-      `/api/auth/teachers/${encodeURIComponent(String(user.id))}/`,
-      { accessToken },
-    );
+    const teacher = await findTeacherForUser(user, accessToken);
+    if (!teacher) return user;
 
     return {
       ...user,
-      name: data.nome,
-      email: data.email || user.email,
+      name: teacher.nome,
+      email: teacher.email || user.email,
     };
   } catch {
     return user;

@@ -40,9 +40,20 @@ function SecurityItem({
 type SecurityCardProps = {
   security: SecuritySettings;
   sessions: ActiveSession[];
+  /** Ação do botão "Alterar" da palavra-passe. */
+  onChangePassword?: () => void;
+  passwordPending?: boolean;
+  /** Resultado da ação da palavra-passe. */
+  passwordMessage?: { tone: "success" | "error"; text: string } | null;
 };
 
-export function SecurityCard({ security, sessions: initialSessions }: SecurityCardProps) {
+export function SecurityCard({
+  security,
+  sessions: initialSessions,
+  onChangePassword,
+  passwordPending,
+  passwordMessage,
+}: SecurityCardProps) {
   const twoFactorId = useId();
   const [twoFactor, setTwoFactor] = useState(security.twoFactorEnabled);
   const [sessions, setSessions] = useState(initialSessions);
@@ -58,11 +69,25 @@ export function SecurityCard({ security, sessions: initialSessions }: SecurityCa
         <SecurityItem icon={Lock} title="Palavra-passe" description={security.passwordChanged}>
           <button
             type="button"
-            className="h-[34px] shrink-0 rounded-md border bg-card px-3.5 text-[13px] font-medium transition-colors hover:bg-muted"
+            onClick={onChangePassword}
+            disabled={passwordPending}
+            className="h-[34px] shrink-0 rounded-md border bg-card px-3.5 text-[13px] font-medium transition-colors hover:bg-muted disabled:opacity-60"
           >
-            Alterar
+            {passwordPending ? "A enviar..." : "Alterar"}
           </button>
         </SecurityItem>
+        {passwordMessage && (
+          <li
+            role={passwordMessage.tone === "error" ? "alert" : "status"}
+            className={
+              passwordMessage.tone === "error"
+                ? "rounded-md bg-red-50 px-3 py-2 text-xs text-red-600"
+                : "rounded-md bg-positive-soft px-3 py-2 text-xs text-positive"
+            }
+          >
+            {passwordMessage.text}
+          </li>
+        )}
         <hr className="border-border" />
         <SecurityItem
           icon={ShieldCheck}

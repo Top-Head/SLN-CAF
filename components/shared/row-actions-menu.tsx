@@ -28,6 +28,11 @@ export function RowActionsMenu({
   onDelete,
   triggerClassName,
 }: RowActionsMenuProps) {
+  // Sem handlers mostra todas as acções (modo ilustrativo); com handlers,
+  // mostra só as acções que o recurso suporta.
+  const placeholder = !onView && !onEdit && !onDelete;
+  const show = (handler?: () => void) => placeholder || Boolean(handler);
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger
@@ -43,21 +48,27 @@ export function RowActionsMenu({
         align="end"
         className="flex w-[220px] flex-col gap-1 rounded-lg p-2 shadow-[0_6px_8px_rgb(0_0_0/0.08)]"
       >
-        <DropdownMenuItem className={itemClass} onSelect={onView}>
-          <Eye className="text-muted-foreground" />
-          Ver
-        </DropdownMenuItem>
-        <DropdownMenuItem className={itemClass} onSelect={onEdit}>
-          <Pencil className="text-muted-foreground" />
-          Editar
-        </DropdownMenuItem>
-        <DropdownMenuItem
-          className={cn(itemClass, "text-primary focus:text-primary")}
-          onSelect={onDelete}
-        >
-          <Trash className="text-primary" />
-          Eliminar
-        </DropdownMenuItem>
+        {show(onView) && (
+          <DropdownMenuItem className={itemClass} onSelect={onView}>
+            <Eye className="text-muted-foreground" />
+            Ver
+          </DropdownMenuItem>
+        )}
+        {show(onEdit) && (
+          <DropdownMenuItem className={itemClass} onSelect={onEdit}>
+            <Pencil className="text-muted-foreground" />
+            Editar
+          </DropdownMenuItem>
+        )}
+        {show(onDelete) && (
+          <DropdownMenuItem
+            className={cn(itemClass, "text-primary focus:text-primary")}
+            onSelect={onDelete}
+          >
+            <Trash className="text-primary" />
+            Eliminar
+          </DropdownMenuItem>
+        )}
       </DropdownMenuContent>
     </DropdownMenu>
   );

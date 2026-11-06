@@ -1,6 +1,5 @@
-import { ClassesCatalog } from "./_components/classes-catalog";
-import { CLASSES } from "./_lib/mock-data";
+import { AcademicStructure } from "./_components/academic-structure";
 
 export default function ClassesPage() {
-  return <ClassesCatalog classes={CLASSES} />;
+  return <AcademicStructure />;
 }

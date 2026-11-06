@@ -162,7 +162,11 @@ export function TeachersList() {
                     <TableCell>{teacher.telefone}</TableCell>
                     <TableCell>{teacher.bi}</TableCell>
                     <TableCell>
-                      {teacher.genero === "MASCULINO" ? "Masculino" : "Feminino"}
+                      {teacher.genero === "MASCULINO"
+                        ? "Masculino"
+                        : teacher.genero === "FEMENINO"
+                          ? "Feminino"
+                          : "—"}
                     </TableCell>
                     <TableCell className="pr-4">
                       <div className="flex justify-center">

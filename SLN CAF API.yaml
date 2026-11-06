@@ -16,6 +16,8 @@ paths:
           type: integer
       tags:
       - Cursos
+      security:
+      - bearerAuth: []
       responses:
         '200':
           content:
@@ -40,6 +42,8 @@ paths:
             schema:
               $ref: '#/components/schemas/Course'
         required: true
+      security:
+      - bearerAuth: []
       responses:
         '201':
           content:
@@ -60,6 +64,8 @@ paths:
         required: true
       tags:
       - Cursos
+      security:
+      - bearerAuth: []
       responses:
         '200':
           content:
@@ -91,6 +97,8 @@ paths:
             schema:
               $ref: '#/components/schemas/Course'
         required: true
+      security:
+      - bearerAuth: []
       responses:
         '200':
           content:
@@ -121,6 +129,8 @@ paths:
           multipart/form-data:
             schema:
               $ref: '#/components/schemas/PatchedCourse'
+      security:
+      - bearerAuth: []
       responses:
         '200':
           content:
@@ -140,6 +150,8 @@ paths:
         required: true
       tags:
       - Cursos
+      security:
+      - bearerAuth: []
       responses:
         '204':
           description: No response body
@@ -155,6 +167,8 @@ paths:
           type: integer
       tags:
       - Classes
+      security:
+      - bearerAuth: []
       responses:
         '200':
           content:
@@ -179,6 +193,8 @@ paths:
             schema:
               $ref: '#/components/schemas/SchoolClass'
         required: true
+      security:
+      - bearerAuth: []
       responses:
         '201':
           content:
@@ -200,6 +216,8 @@ paths:
         required: true
       tags:
       - Classes
+      security:
+      - bearerAuth: []
       responses:
         '200':
           content:
@@ -231,6 +249,8 @@ paths:
             schema:
               $ref: '#/components/schemas/SchoolClass'
         required: true
+      security:
+      - bearerAuth: []
       responses:
         '200':
           content:
@@ -261,6 +281,8 @@ paths:
           multipart/form-data:
             schema:
               $ref: '#/components/schemas/PatchedSchoolClass'
+      security:
+      - bearerAuth: []
       responses:
         '200':
           content:
@@ -280,6 +302,8 @@ paths:
         required: true
       tags:
       - Classes
+      security:
+      - bearerAuth: []
       responses:
         '204':
           description: No response body
@@ -296,6 +320,8 @@ paths:
           type: integer
       tags:
       - Anos Letivos
+      security:
+      - bearerAuth: []
       responses:
         '200':
           content:
@@ -320,6 +346,8 @@ paths:
             schema:
               $ref: '#/components/schemas/SchoolYear'
         required: true
+      security:
+      - bearerAuth: []
       responses:
         '201':
           content:
@@ -341,6 +369,8 @@ paths:
         required: true
       tags:
       - Anos Letivos
+      security:
+      - bearerAuth: []
       responses:
         '200':
           content:
@@ -367,6 +397,8 @@ paths:
           type: string
       tags:
       - Alunos
+      security:
+      - bearerAuth: []
       responses:
         '200':
           content:
@@ -391,6 +423,8 @@ paths:
             schema:
               $ref: '#/components/schemas/Student'
         required: true
+      security:
+      - bearerAuth: []
       responses:
         '201':
           content:
@@ -411,6 +445,8 @@ paths:
         required: true
       tags:
       - Alunos
+      security:
+      - bearerAuth: []
       responses:
         '200':
           content:
@@ -442,6 +478,8 @@ paths:
             schema:
               $ref: '#/components/schemas/Student'
         required: true
+      security:
+      - bearerAuth: []
       responses:
         '200':
           content:
@@ -472,6 +510,8 @@ paths:
           multipart/form-data:
             schema:
               $ref: '#/components/schemas/PatchedStudent'
+      security:
+      - bearerAuth: []
       responses:
         '200':
           content:
@@ -491,6 +531,8 @@ paths:
         required: true
       tags:
       - Alunos
+      security:
+      - bearerAuth: []
       responses:
         '204':
           description: No response body
@@ -506,6 +548,8 @@ paths:
           type: integer
       tags:
       - Disciplinas
+      security:
+      - bearerAuth: []
       responses:
         '200':
           content:
@@ -530,6 +574,8 @@ paths:
             schema:
               $ref: '#/components/schemas/Subject'
         required: true
+      security:
+      - bearerAuth: []
       responses:
         '201':
           content:
@@ -550,6 +596,8 @@ paths:
         required: true
       tags:
       - Disciplinas
+      security:
+      - bearerAuth: []
       responses:
         '200':
           content:
@@ -581,6 +629,8 @@ paths:
             schema:
               $ref: '#/components/schemas/Subject'
         required: true
+      security:
+      - bearerAuth: []
       responses:
         '200':
           content:
@@ -611,6 +661,8 @@ paths:
           multipart/form-data:
             schema:
               $ref: '#/components/schemas/PatchedSubject'
+      security:
+      - bearerAuth: []
       responses:
         '200':
           content:
@@ -630,6 +682,8 @@ paths:
         required: true
       tags:
       - Disciplinas
+      security:
+      - bearerAuth: []
       responses:
         '204':
           description: No response body
@@ -646,6 +700,8 @@ paths:
           type: integer
       tags:
       - Turmas
+      security:
+      - bearerAuth: []
       responses:
         '200':
           content:
@@ -670,6 +726,8 @@ paths:
             schema:
               $ref: '#/components/schemas/Turma'
         required: true
+      security:
+      - bearerAuth: []
       responses:
         '201':
           content:
@@ -690,6 +748,8 @@ paths:
         required: true
       tags:
       - Turmas
+      security:
+      - bearerAuth: []
       responses:
         '200':
           content:
@@ -721,6 +781,8 @@ paths:
             schema:
               $ref: '#/components/schemas/Turma'
         required: true
+      security:
+      - bearerAuth: []
       responses:
         '200':
           content:
@@ -751,6 +813,8 @@ paths:
           multipart/form-data:
             schema:
               $ref: '#/components/schemas/PatchedTurma'
+      security:
+      - bearerAuth: []
       responses:
         '200':
           content:
@@ -770,9 +834,97 @@ paths:
         required: true
       tags:
       - Turmas
+      security:
+      - bearerAuth: []
       responses:
         '204':
           description: No response body
+  /api/acess-code/students/{student_id}/generate-code/:
+    post:
+      operationId: acess_code_students_generate_code_create
+      description: Gera um novo código de acesso para um aluno. O código é válido
+        durante 2 dias e revoga códigos anteriores.
+      parameters:
+      - in: path
+        name: student_id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - Códigos de Acesso
+      security:
+      - bearerAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StudentAccessCode'
+          description: ''
+        '400':
+          description: Não foi possível gerar o código.
+        '404':
+          description: Aluno não encontrado.
+  /api/acess-code/turmas/{turma_id}/generate-codes/:
+    post:
+      operationId: acess_code_turmas_generate_codes_create
+      description: Gera códigos de acesso para todos os alunos com matrícula ativa
+        numa turma. Cada código é válido durante 2 dias.
+      parameters:
+      - in: path
+        name: turma_id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - Códigos de Acesso
+      security:
+      - bearerAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TurmaAccessCodeResponse'
+          description: ''
+        '400':
+          description: A turma não tem alunos com matrícula ativa.
+        '404':
+          description: Turma não encontrada.
+  /api/acess-code/validate/:
+    post:
+      operationId: acess_code_validate_create
+      description: Valida o código de acesso de um aluno e devolve os seus dados e
+        as respetivas notas.
+      tags:
+      - Códigos de Acesso
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ValidateStudentAccessCode'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/ValidateStudentAccessCode'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ValidateStudentAccessCode'
+        required: true
+      security:
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AccessCodeValidationResponse'
+          description: ''
+        '400':
+          description: Código inválido, expirado ou já revogado.
+        '429':
+          description: Limite de tentativas excedido.
   /api/auth/confirm-password/:
     post:
       operationId: auth_confirm_password_create
@@ -927,6 +1079,7 @@ paths:
               $ref: '#/components/schemas/Register'
         required: true
       security:
+      - bearerAuth: []
       - {}
       responses:
         '201':
@@ -1085,6 +1238,26 @@ paths:
           description: No response body
 components:
   schemas:
+    AccessCodeValidationResponse:
+      type: object
+      properties:
+        student:
+          allOf:
+          - $ref: '#/components/schemas/StudentAccessCodeStudent'
+          readOnly: true
+        expires_at:
+          type: string
+          format: date-time
+          readOnly: true
+        grades:
+          type: array
+          items:
+            $ref: '#/components/schemas/StudentGrade'
+          readOnly: true
+      required:
+      - expires_at
+      - grades
+      - student
     BlankEnum:
       enum:
       - ''
@@ -1101,6 +1274,14 @@ components:
       required:
       - id
       - nome
+    Genero05aEnum:
+      enum:
+      - Masculino
+      - Feminino
+      type: string
+      description: |-
+        * `Masculino` - Masculino
+        * `Feminino` - Feminino
     GeneroC1eEnum:
       enum:
       - MASCULINO
@@ -1346,7 +1527,7 @@ components:
         genero:
           nullable: true
           oneOf:
-          - $ref: '#/components/schemas/StudentGeneroEnum'
+          - $ref: '#/components/schemas/Genero05aEnum'
           - $ref: '#/components/schemas/BlankEnum'
           - $ref: '#/components/schemas/NullEnum'
         created_at:
@@ -1480,6 +1661,20 @@ components:
       - ano_fim
       - ano_inicio
       - id
+    SchoolYearSummary:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        ano_inicio:
+          type: integer
+        ano_fim:
+          type: integer
+      required:
+      - ano_fim
+      - ano_inicio
+      - id
     Student:
       type: object
       properties:
@@ -1496,7 +1691,7 @@ components:
         genero:
           nullable: true
           oneOf:
-          - $ref: '#/components/schemas/StudentGeneroEnum'
+          - $ref: '#/components/schemas/Genero05aEnum'
           - $ref: '#/components/schemas/BlankEnum'
           - $ref: '#/components/schemas/NullEnum'
         created_at:
@@ -1508,14 +1703,102 @@ components:
       - id
       - nome
       - numero_processo
-    StudentGeneroEnum:
-      enum:
-      - Masculino
-      - Feminino
-      type: string
-      description: |-
-        * `Masculino` - Masculino
-        * `Feminino` - Feminino
+    StudentAccessCode:
+      type: object
+      properties:
+        student:
+          allOf:
+          - $ref: '#/components/schemas/StudentAccessCodeStudent'
+          readOnly: true
+        code:
+          type: string
+          readOnly: true
+        expires_at:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - code
+      - expires_at
+      - student
+    StudentAccessCodeStudent:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        numero_processo:
+          type: string
+          maxLength: 50
+        nome:
+          type: string
+          maxLength: 150
+        genero:
+          nullable: true
+          oneOf:
+          - $ref: '#/components/schemas/Genero05aEnum'
+          - $ref: '#/components/schemas/BlankEnum'
+          - $ref: '#/components/schemas/NullEnum'
+      required:
+      - id
+      - nome
+      - numero_processo
+    StudentGrade:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        subject:
+          type: string
+          readOnly: true
+        subject_id:
+          type: string
+          format: uuid
+          readOnly: true
+        turma:
+          type: string
+          readOnly: true
+        school_year:
+          allOf:
+          - $ref: '#/components/schemas/SchoolYearSummary'
+          readOnly: true
+        trimester:
+          type: integer
+          readOnly: true
+        assessment_number:
+          type: integer
+          maximum: 32767
+          minimum: -32768
+        value:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,2}(?:\.\d{0,2})?$
+        teacher:
+          type: string
+          readOnly: true
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - assessment_number
+      - created_at
+      - id
+      - school_year
+      - subject
+      - subject_id
+      - teacher
+      - trimester
+      - turma
+      - updated_at
+      - value
     Subject:
       type: object
       properties:
@@ -1662,3 +1945,43 @@ components:
       - school_class_nome
       - school_year
       - school_year_label
+    TurmaAccessCode:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        nome:
+          type: string
+          maxLength: 20
+      required:
+      - id
+      - nome
+    TurmaAccessCodeResponse:
+      type: object
+      properties:
+        count:
+          type: integer
+        turma:
+          $ref: '#/components/schemas/TurmaAccessCode'
+        codes:
+          type: array
+          items:
+            $ref: '#/components/schemas/StudentAccessCode'
+      required:
+      - codes
+      - count
+      - turma
+    ValidateStudentAccessCode:
+      type: object
+      properties:
+        codigo:
+          type: string
+      required:
+      - codigo
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
