@@ -239,6 +239,12 @@ async function refresh(): Promise<RefreshResult> {
   return refreshPromise;
 }
 
+/** Atualiza os dados do utilizador da sessão (ex.: depois de editar o perfil). */
+function updateUser(patch: Partial<AuthUser>) {
+  if (!state.user) return;
+  setState({ user: { ...state.user, ...patch } });
+}
+
 export const authStore = {
   subscribe(listener: () => void) {
     listeners.add(listener);
@@ -255,6 +261,7 @@ export const authStore = {
   logout,
   refresh,
   clearSession,
+  updateUser,
 };
 
 if (typeof window !== "undefined") {

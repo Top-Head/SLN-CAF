@@ -1,5 +1,6 @@
 export { confirmPassword } from "./confirm-password";
-export { enrichTeacherUser } from "./enrich-teacher-user";
+export { enrichTeacherUser, isTeacherRole } from "./enrich-teacher-user";
+export { findTeacherForUser } from "./find-teacher-for-user";
 export { login } from "./login";
 export { logout } from "./logout";
 export { refresh } from "./refresh";

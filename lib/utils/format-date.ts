@@ -27,3 +27,13 @@ export function addDays(value: Date, days: number) {
 
 export const plural = (n: number, one: string, many: string) =>
   `${n} ${n === 1 ? one : many}`;
+
+/** ISO → "06/11/2026, 14:30" (ou "—" se inválida). */
+export function formatDateTime(value: string) {
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return "—";
+  return new Intl.DateTimeFormat("pt-PT", {
+    dateStyle: "short",
+    timeStyle: "short",
+  }).format(date);
+}

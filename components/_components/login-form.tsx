@@ -171,6 +171,15 @@ export function LoginForm() {
             Recuperar senha
           </Link>
         </p>
+        <p>
+          É encarregado de educação?{" "}
+          <Link
+            href="/boletim"
+            className="font-semibold text-[#E73959] hover:underline"
+          >
+            Consultar boletim
+          </Link>
+        </p>
         {/* <p>
           Ainda não tem conta?{" "}
           <Link

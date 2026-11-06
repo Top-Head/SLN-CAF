@@ -1,6 +1,5 @@
-import { SubjectsCatalog } from "./_components/subjects-catalog";
-import { SUBJECTS } from "./_lib/mock-data";
+import { SubjectsList } from "./_components/subjects-list";
 
 export default function SubjectsPage() {
-  return <SubjectsCatalog subjects={SUBJECTS} />;
+  return <SubjectsList />;
 }
