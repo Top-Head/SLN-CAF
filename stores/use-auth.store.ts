@@ -8,8 +8,13 @@ import {
   logout as logoutRequest,
   refresh as refreshRequest,
 } from "@/services/auth";
-import { ApiError } from "@/services/data";
-import type { AuthState, AuthUser, LoginPayload } from "@/services/auth";
+import { ApiError, setAccessTokenRefresher } from "@/services/data";
+import type {
+  AuthState,
+  AuthUser,
+  LoginPayload,
+  RefreshResult,
+} from "@/services/auth";
 
 const STORAGE_KEY = "sln-caf.auth";
 
@@ -127,6 +132,7 @@ function applyPersistedSession() {
 }
 
 let userEnrichment: Promise<void> | null = null;
+let refreshPromise: Promise<RefreshResult> | null = null;
 
 async function enrichPersistedUser() {
   if (userEnrichment) return userEnrichment;
@@ -192,35 +198,45 @@ async function logout() {
   }
 }
 
-async function refresh() {
-  const refreshToken = state.refreshToken;
+async function refresh(): Promise<RefreshResult> {
+  if (refreshPromise) return refreshPromise;
 
-  if (!refreshToken) {
-    clearSession();
-    throw new ApiError("Sessão expirada.", 401);
-  }
+  refreshPromise = (async () => {
+    hydrate();
 
-  try {
-    const result = await refreshRequest(refreshToken);
+    const refreshToken = state.refreshToken;
 
-    setState({
-      accessToken: result.access,
-      refreshToken: result.refresh,
-      status: "authenticated",
-      hydrated: true,
-    });
-
-    return result;
-  } catch (error) {
-    if (
-      error instanceof ApiError &&
-      [400, 401, 403].includes(error.status)
-    ) {
+    if (!refreshToken) {
       clearSession();
+      throw new ApiError("Sessão expirada.", 401);
     }
 
-    throw error;
-  }
+    try {
+      const result = await refreshRequest(refreshToken);
+
+      setState({
+        accessToken: result.access,
+        refreshToken: result.refresh,
+        status: "authenticated",
+        hydrated: true,
+      });
+
+      return result;
+    } catch (error) {
+      if (
+        error instanceof ApiError &&
+        [400, 401, 403].includes(error.status)
+      ) {
+        clearSession();
+      }
+
+      throw error;
+    }
+  })().finally(() => {
+    refreshPromise = null;
+  });
+
+  return refreshPromise;
 }
 
 export const authStore = {
@@ -240,6 +256,17 @@ export const authStore = {
   refresh,
   clearSession,
 };
+
+if (typeof window !== "undefined") {
+  setAccessTokenRefresher(async () => {
+    try {
+      const result = await authStore.refresh();
+      return result.access;
+    } catch {
+      return null;
+    }
+  });
+}
 
 export function useAuthState() {
   return useSyncExternalStore(

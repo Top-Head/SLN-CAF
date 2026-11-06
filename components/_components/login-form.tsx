@@ -171,7 +171,7 @@ export function LoginForm() {
             Recuperar senha
           </Link>
         </p>
-        <p>
+        {/* <p>
           Ainda não tem conta?{" "}
           <Link
             href="/register"
@@ -179,7 +179,7 @@ export function LoginForm() {
           >
             Criar conta
           </Link>
-        </p>
+        </p> */}
       </div>
     </form>
   );
