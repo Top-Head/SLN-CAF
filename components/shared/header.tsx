@@ -4,7 +4,8 @@ import { Bell } from "lucide-react";
 import { usePathname } from "next/navigation";
 
 import { getPageTitle, roleFromPath, type Role } from "@/constants/navigation";
-import type { User } from "@/types/user";
+import { useAuth } from "@/hooks/auth/use-auth";
+import type { User } from "@/types/user.types";
 
 type HeaderProps = {
   user: User;
@@ -18,7 +19,15 @@ function getInitials(name: string) {
     .toUpperCase();
 }
 
-export function Header({ user, hasNotifications, role }: HeaderProps) {
+export function Header({ user: fallbackUser, hasNotifications, role }: HeaderProps) {
+  const { user: sessionUser } = useAuth();
+  // Utilizador da sessão; o `user` recebido só é usado sem sessão iniciada.
+  const user: User = sessionUser
+    ? {
+        name: sessionUser.name ?? sessionUser.nome ?? sessionUser.email,
+        email: sessionUser.email,
+      }
+    : fallbackUser;
   const pathname = usePathname();
   const inferredRole: Role = role ?? roleFromPath(pathname);
   const title = getPageTitle(pathname, inferredRole);

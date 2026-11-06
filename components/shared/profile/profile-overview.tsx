@@ -1,7 +1,7 @@
 import { Pencil } from "lucide-react";
 import Image from "next/image";
 
-import type { Profile } from "@/types/profile";
+import type { Profile } from "@/types/profile.types";
 
 function ContactItem({
   label,
@@ -27,7 +27,14 @@ function ContactItem({
   );
 }
 
-export function ProfileOverview({ profile }: { profile: Profile }) {
+export function ProfileOverview({
+  profile,
+  onEdit,
+}: {
+  profile: Profile;
+  /** Sem handler, o botão mantém-se apenas visual (sem endpoint na API). */
+  onEdit?: () => void;
+}) {
   return (
     <section className="relative overflow-hidden rounded-[20px] border border-black/[0.07] bg-card">
       <div aria-hidden className="relative h-[140px] overflow-hidden bg-primary shadow-card">
@@ -48,6 +55,7 @@ export function ProfileOverview({ profile }: { profile: Profile }) {
 
       <button
         type="button"
+        onClick={onEdit}
         className="absolute top-[136px] right-6 flex h-[38px] items-center gap-2 rounded-md border bg-card pr-4 pl-3.5 text-[13px] font-medium transition-colors hover:bg-muted md:right-[83px]"
       >
         <Pencil className="size-4 text-neutral" />

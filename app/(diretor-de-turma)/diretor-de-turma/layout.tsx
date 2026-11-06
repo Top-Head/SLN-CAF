@@ -1,6 +1,6 @@
 import { Header } from "@/components/shared/header";
 import { Sidebar } from "@/components/shared/sidebar";
-import type { User } from "@/types/user";
+import type { User } from "@/types/user.types";
 
 import { ReadOnlyCard } from "./_components/read-only-card";
 

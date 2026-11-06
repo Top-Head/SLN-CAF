@@ -10,7 +10,7 @@ import { ListTabs } from "@/components/shared/list-tabs";
 import { StatusBadge } from "@/components/shared/status-badge";
 import type { Tone } from "@/components/shared/tone";
 import { Table, TableBody, TableCell, TableRow } from "@/components/ui/table";
-import { paginate } from "@/hooks/use-catalog-state";
+import { paginate } from "@/hooks/catalog/use-catalog-state";
 import { cn } from "@/lib/utils";
 import { daysBetween, formatShortDate, plural } from "@/lib/utils/format-date";
 import { matchesSearch } from "@/lib/utils/matches-search";

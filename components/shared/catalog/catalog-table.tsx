@@ -4,7 +4,7 @@ import { ArrowDown, ArrowUp, ChevronDown, ChevronRight } from "lucide-react";
 import { Fragment } from "react";
 
 import { RowActionsMenu } from "@/components/shared/row-actions-menu";
-import type { SortDirection } from "@/hooks/use-catalog-state";
+import type { SortDirection } from "@/hooks/catalog/use-catalog-state";
 import { Checkbox } from "@/components/ui/checkbox";
 import { cn } from "@/lib/utils";
 

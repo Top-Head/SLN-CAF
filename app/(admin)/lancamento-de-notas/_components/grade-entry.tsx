@@ -21,7 +21,7 @@ import {
 import { GradeSheetViews } from "@/components/shared/grade-sheet-views";
 import { ListHeader } from "@/components/shared/list-header";
 import { SearchCard } from "@/components/shared/search-card";
-import { paginate } from "@/hooks/use-catalog-state";
+import { paginate } from "@/hooks/catalog/use-catalog-state";
 import { cn } from "@/lib/utils";
 import { averageOf, formatGrade, parseGrade } from "@/lib/utils/format-grade";
 import { matchesSearch } from "@/lib/utils/matches-search";

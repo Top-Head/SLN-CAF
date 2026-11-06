@@ -1,4 +1,4 @@
-import type { ActiveSession, Profile, ProfileField, SecuritySettings } from "@/types/profile";
+import type { ActiveSession, Profile, ProfileField, SecuritySettings } from "@/types/profile.types";
 
 export const PROFILE: Profile = {
   displayName: "Paulo Sanguli",

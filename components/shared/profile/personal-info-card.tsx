@@ -1,15 +1,18 @@
 import { Fragment } from "react";
 
-import type { ProfileField } from "@/types/profile";
+import type { ProfileField } from "@/types/profile.types";
 
 type PersonalInfoCardProps = {
   fields: ProfileField[];
   description?: string;
+  /** Sem handler, o botão mantém-se apenas visual (sem endpoint na API). */
+  onEdit?: () => void;
 };
 
 export function PersonalInfoCard({
   fields,
   description = "Dados usados em pautas, boletins e documentos oficiais",
+  onEdit,
 }: PersonalInfoCardProps) {
   const rows = Array.from({ length: Math.ceil(fields.length / 2) }, (_, i) =>
     fields.slice(i * 2, i * 2 + 2),
@@ -22,7 +25,11 @@ export function PersonalInfoCard({
           <h2 className="font-sans text-[15px] font-semibold">Informações pessoais</h2>
           <p className="text-xs text-muted-foreground">{description}</p>
         </div>
-        <button type="button" className="text-[13px] font-medium text-primary hover:underline">
+        <button
+          type="button"
+          onClick={onEdit}
+          className="text-[13px] font-medium text-primary hover:underline"
+        >
           Editar
         </button>
       </div>
