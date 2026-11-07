@@ -28,6 +28,7 @@ import { useAllSchoolClasses } from "@/hooks/academic/use-school-classes";
 import { useAllSchoolYears } from "@/hooks/academic/use-school-years";
 import { useTurmas } from "@/hooks/academic/use-turmas";
 import { useTeacherOptions } from "@/hooks/teachers/use-teacher-options";
+import { notify } from "@/lib/notify";
 import type { Teacher } from "@/services/teachers";
 import {
   createTurma,
@@ -78,7 +79,6 @@ export function TurmasList() {
   const [dialogOpen, setDialogOpen] = useState(false);
   const [selected, setSelected] = useState<Turma | null>(null);
   const [deletingId, setDeletingId] = useState<string | null>(null);
-  const [actionError, setActionError] = useState<string | null>(null);
 
   const turmas = useTurmas({ page, ...filters });
   const courses = useAllCourses();
@@ -113,7 +113,6 @@ export function TurmasList() {
   function openDialog(mode: DialogMode, turma?: Turma) {
     setDialogMode(mode);
     setSelected(turma ?? null);
-    setActionError(null);
     setDialogOpen(true);
   }
 
@@ -123,16 +122,14 @@ export function TurmasList() {
     }
 
     setDeletingId(turma.id);
-    setActionError(null);
 
     try {
       await deleteTurma(turma.id, currentAccessToken());
+      notify.success(`Turma ${turma.nome} eliminada.`);
       if (turmas.items.length === 1 && page > 1) setPage(page - 1);
       else await turmasStore.invalidate();
     } catch (cause) {
-      setActionError(
-        cause instanceof Error ? cause.message : "Não foi possível eliminar a turma.",
-      );
+      notify.error(cause, "Não foi possível eliminar a turma.");
     } finally {
       setDeletingId(null);
     }
@@ -156,10 +153,19 @@ export function TurmasList() {
     if (!unresolvedDirector) payload.director_teacher_id = director || null;
 
     const token = currentAccessToken();
-    if (dialogMode === "create") await createTurma(payload, token);
-    else if (selected) await updateTurma(selected.id, payload, token);
+    if (dialogMode === "create") {
+      await createTurma(payload, token);
+      notify.success(`Turma ${payload.nome} criada com sucesso.`);
+    } else if (selected) {
+      await updateTurma(selected.id, payload, token);
+      notify.success(`Turma ${payload.nome} atualizada.`);
+      if (unresolvedDirector) {
+        notify.info(
+          "O diretor de turma atual não foi encontrado na lista de professores e foi mantido.",
+        );
+      }
+    }
 
-    setActionError(null);
     await turmasStore.invalidate();
   }
 
@@ -194,12 +200,12 @@ export function TurmasList() {
         />
       </div>
 
-      {(actionError || turmas.status === "error") && (
+      {turmas.status === "error" && (
         <p
           role="alert"
           className="mt-4 rounded-md bg-red-50 px-3 py-2 text-sm text-red-600"
         >
-          {actionError ?? turmas.error}
+          {turmas.error}
         </p>
       )}
 

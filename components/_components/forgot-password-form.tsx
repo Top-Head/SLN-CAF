@@ -1,5 +1,6 @@
 "use client";
 
+import { notify } from "@/lib/notify";
 import { useRequestPasswordReset } from "@/hooks/auth/use-auth";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -20,6 +21,7 @@ export default function ForgotPasswordForm() {
     const result = await requestPasswordReset({ email: email.trim() });
 
     if (result.ok) {
+      notify.success(`Enviámos o link de redefinição para ${email.trim()}.`);
       router.push("/sending-email");
     }
   }

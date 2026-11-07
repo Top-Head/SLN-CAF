@@ -3,6 +3,7 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { notify } from "@/lib/notify";
 import { useLogin } from "@/hooks/auth/use-auth";
 import Image from "next/image";
 import Link from "next/link";
@@ -46,7 +47,10 @@ export function LoginForm() {
 
     if (!result.ok) return;
 
-    router.replace(getHomePath(result.data.user.role));
+    const user = result.data.user;
+    const name = user.name ?? user.nome ?? user.username;
+    notify.success(name ? `Bem-vindo, ${name}.` : "Sessão iniciada.");
+    router.replace(getHomePath(user.role));
   }
 
   return (

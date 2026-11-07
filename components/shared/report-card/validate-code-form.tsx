@@ -8,6 +8,8 @@ import {
   type AccessCodeValidation,
 } from "@/services/access-codes";
 
+import { notify } from "@/lib/notify";
+
 import { StudentGradesReport } from "./student-grades-report";
 
 /** Formulário que valida um código de acesso e mostra o boletim do aluno. */
@@ -29,13 +31,20 @@ export function ValidateCodeForm({ autoFocus }: { autoFocus?: boolean }) {
     setResult(null);
 
     try {
-      setResult(await validateAccessCode({ codigo: code }));
+      const validation = await validateAccessCode({ codigo: code });
+      setResult(validation);
+      if (validation.grades.length === 0) {
+        notify.info(`Código válido. Ainda não há notas lançadas para ${validation.student.nome}.`);
+      } else {
+        notify.success(`Boletim de ${validation.student.nome} carregado.`);
+      }
     } catch (cause) {
-      setError(
+      const message =
         cause instanceof Error
           ? cause.message
-          : "Código inválido, expirado ou já revogado.",
-      );
+          : "Código inválido, expirado ou já revogado.";
+      setError(message);
+      notify.error(message);
     } finally {
       setPending(false);
     }

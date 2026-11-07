@@ -10,6 +10,7 @@ import { RowActionsMenu } from "@/components/shared/row-actions-menu";
 import { SearchCard } from "@/components/shared/search-card";
 import { Table, TableBody, TableCell, TableRow } from "@/components/ui/table";
 import { useResourceAll } from "@/hooks/resources/use-resource";
+import { notify } from "@/lib/notify";
 import { matchesSearch } from "@/lib/utils/matches-search";
 import type {
   ResourceListParams,
@@ -58,6 +59,12 @@ type ResourceManagerProps<T extends { id: string }> = {
     validate?: (values: FormValues) => string | null;
     renderView?: (item: T) => ReactNode;
   };
+  /** Textos dos toasts de sucesso; sem eles usa mensagens genéricas. */
+  messages?: {
+    created?: (values: FormValues) => string;
+    updated?: (item: T, values: FormValues) => string;
+    deleted?: (item: T) => string;
+  };
   fetchOne?: (id: string, accessToken?: string) => Promise<T>;
   onCreate: (values: FormValues, accessToken?: string) => Promise<unknown>;
   /** Sem `onUpdate` a acção "Editar" não aparece. */
@@ -89,6 +96,7 @@ export function ResourceManager<T extends { id: string }>({
   compare,
   pageSize = 10,
   dialog,
+  messages,
   fetchOne,
   onCreate,
   onUpdate,
@@ -101,7 +109,6 @@ export function ResourceManager<T extends { id: string }>({
   const [dialogOpen, setDialogOpen] = useState(false);
   const [selected, setSelected] = useState<T | null>(null);
   const [deletingId, setDeletingId] = useState<string | null>(null);
-  const [actionError, setActionError] = useState<string | null>(null);
 
   const filtered = items
     .filter((item) => matchesSearch(query, ...searchText(item)))
@@ -121,7 +128,6 @@ export function ResourceManager<T extends { id: string }>({
   function openDialog(mode: DialogMode, item?: T) {
     setDialogMode(mode);
     setSelected(item ?? null);
-    setActionError(null);
     setDialogOpen(true);
   }
 
@@ -132,15 +138,15 @@ export function ResourceManager<T extends { id: string }>({
     }
 
     setDeletingId(item.id);
-    setActionError(null);
 
     try {
       await onDelete(item, currentAccessToken());
+      notify.success(
+        messages?.deleted?.(item) ?? `${getLabel(item)} eliminado com sucesso.`,
+      );
       await store.invalidate();
     } catch (cause) {
-      setActionError(
-        cause instanceof Error ? cause.message : "Não foi possível eliminar.",
-      );
+      notify.error(cause, `Não foi possível eliminar ${getLabel(item)}.`);
     } finally {
       setDeletingId(null);
     }
@@ -169,12 +175,12 @@ export function ResourceManager<T extends { id: string }>({
         />
       </div>
 
-      {(actionError || status === "error") && (
+      {status === "error" && (
         <p
           role="alert"
           className="mt-4 rounded-md bg-red-50 px-3 py-2 text-sm text-red-600"
         >
-          {actionError ?? error}
+          {error}
         </p>
       )}
 
@@ -251,10 +257,16 @@ export function ResourceManager<T extends { id: string }>({
           const token = currentAccessToken();
           if (dialogMode === "create") {
             await onCreate(values, token);
+            notify.success(
+              messages?.created?.(values) ?? "Registo criado com sucesso.",
+            );
           } else if (selected && onUpdate) {
             await onUpdate(selected, values, token);
+            notify.success(
+              messages?.updated?.(selected, values) ??
+                `${getLabel(selected)} atualizado com sucesso.`,
+            );
           }
-          setActionError(null);
           await store.invalidate();
         }}
       />

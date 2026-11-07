@@ -14,6 +14,7 @@ import { useState } from "react";
 import { FilterSelect } from "@/components/shared/filter-select";
 import { PageContext } from "@/components/shared/page-context";
 import { SummaryCards } from "@/components/shared/summary-cards";
+import { notify } from "@/lib/notify";
 import { formatDateTime } from "@/lib/utils/format-date";
 import { useAllTurmas } from "@/hooks/academic/use-turmas";
 import type { StudentAccessCode } from "@/services/access-codes";
@@ -58,7 +59,6 @@ export function AccessCodesWorkspace() {
   const [turmaId, setTurmaId] = useState<string | null>(null);
   const [revealed, setRevealed] = useState<Set<string>>(new Set());
   const [pending, setPending] = useState<string | null>(null);
-  const [error, setError] = useState<string | null>(null);
 
   const turmaLabel = (t: { nome: string; school_year_label: string }) =>
     t.school_year_label ? `${t.nome} · ${t.school_year_label}` : t.nome;
@@ -89,14 +89,22 @@ export function AccessCodesWorkspace() {
     }
 
     setPending("turma");
-    setError(null);
     try {
       const result = await accessCodesStore.generateForTurma(turma.id);
       setRevealed(new Set(result.codes.map((c) => c.student.id)));
+      const total = result.codes.length;
+      if (total === 0) {
+        notify.info(`A turma ${turma.nome} não tem alunos com matrícula activa.`);
+      } else {
+        notify.success(
+          total === 1
+            ? `1 código gerado para a turma ${turma.nome}.`
+            : `${total} códigos gerados para a turma ${turma.nome}.`,
+        );
+        notify.info("Partilhe os códigos antes de sair: não ficam guardados neste dispositivo.");
+      }
     } catch (cause) {
-      setError(
-        cause instanceof Error ? cause.message : "Não foi possível gerar os códigos.",
-      );
+      notify.error(cause, "Não foi possível gerar os códigos.");
     } finally {
       setPending(null);
     }
@@ -105,14 +113,17 @@ export function AccessCodesWorkspace() {
   async function regenerate(studentId: string) {
     if (!turma) return;
     setPending(studentId);
-    setError(null);
     try {
       await accessCodesStore.generateForStudent(turma.id, studentId);
       setRevealed((current) => new Set([...current, studentId]));
-    } catch (cause) {
-      setError(
-        cause instanceof Error ? cause.message : "Não foi possível gerar o código.",
+      const name = rows.find((r) => r.student.id === studentId)?.student.nome;
+      notify.success(
+        name
+          ? `Novo código gerado para ${name}. O anterior deixou de ser válido.`
+          : "Novo código gerado. O anterior deixou de ser válido.",
       );
+    } catch (cause) {
+      notify.error(cause, "Não foi possível gerar o código.");
     } finally {
       setPending(null);
     }
@@ -171,12 +182,15 @@ export function AccessCodesWorkspace() {
           options={options.map(turmaLabel)}
           onChange={(label) => {
             setTurmaId(options.find((t) => turmaLabel(t) === label)?.id ?? null);
-            setError(null);
           }}
         />
         <button
           type="button"
-          onClick={() => turma && exportCsv(rows, turma.nome)}
+          onClick={() => {
+            if (!turma) return;
+            exportCsv(rows, turma.nome);
+            notify.success(`Lista da turma ${turma.nome} exportada (sem os códigos).`);
+          }}
           disabled={rows.length === 0}
           className="flex h-10 items-center gap-2 rounded-md border bg-card pr-4 pl-3.5 text-[13px] transition-colors hover:bg-muted disabled:opacity-50"
         >
@@ -195,9 +209,9 @@ export function AccessCodesWorkspace() {
         </button>
       </div>
 
-      {(error || turmas.status === "error") && (
+      {turmas.status === "error" && (
         <p role="alert" className="rounded-md bg-red-50 px-3 py-2 text-sm text-red-600">
-          {error ?? turmas.error}
+          {turmas.error}
         </p>
       )}
 
