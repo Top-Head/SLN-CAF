@@ -1,5 +1,4 @@
 import Link from "next/link";
-import { connection } from "next/server";
 
 import { ArrowRight } from "./arrow-right";
 import { daysUntil, formatDeadlineDay, greeting } from "../_lib/utils";
@@ -17,7 +16,8 @@ type WelcomeBannerProps = {
   classesHref?: string;
 };
 
-export async function WelcomeBanner({
+/** Banner de boas-vindas. Calcula datas: renderizar só no cliente. */
+export function WelcomeBanner({
   name,
   pendingStudents,
   pendingReports,
@@ -25,7 +25,6 @@ export async function WelcomeBanner({
   continueHref = "/teacher/lancamento-de-notas",
   classesHref = "/teacher/turmas",
 }: WelcomeBannerProps) {
-  await connection();
   const days = daysUntil(nextDeadline.date);
   const deadlineDay = formatDeadlineDay(nextDeadline.date);
 

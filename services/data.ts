@@ -14,7 +14,31 @@ export type Paginated<T> = {
   results: T[];
 };
 
-export type QueryValue = string | number | boolean | null | undefined;
+/**
+ * Normaliza uma listagem para `Paginated<T>`. Alguns endpoints (ex.:
+ * `/api/teacher/*`) devolvem uma lista simples ou um único objeto, apesar de
+ * o schema os documentar como paginados.
+ */
+export function toPaginated<T>(data: unknown): Paginated<T> {
+  if (Array.isArray(data)) {
+    return { count: data.length, next: null, previous: null, results: data as T[] };
+  }
+  if (data && typeof data === "object") {
+    const record = data as Partial<Paginated<T>>;
+    if (Array.isArray(record.results)) {
+      return {
+        count: typeof record.count === "number" ? record.count : record.results.length,
+        next: record.next ?? null,
+        previous: record.previous ?? null,
+        results: record.results,
+      };
+    }
+    return { count: 1, next: null, previous: null, results: [data as T] };
+  }
+  return { count: 0, next: null, previous: null, results: [] };
+}
+
+export type QueryValue =string | number | boolean | null | undefined;
 
 /** Acrescenta a query string a `path`, ignorando valores vazios. */
 export function withQuery(
@@ -56,6 +80,8 @@ export type RequestConfig = {
   accessToken?: string;
   cache?: RequestCache;
   fallbackErrorMessage?: string;
+  /** "blob" devolve o corpo binário (ex.: PDF) em vez de JSON. */
+  responseType?: "json" | "blob";
 };
 
 type AccessTokenRefresher = () => Promise<string | null>;
@@ -149,7 +175,7 @@ async function request<T>(
   const response = await fetch(new URL(path, `${API_BASE_URL}/`), {
     method,
     headers: {
-      Accept: "application/json",
+      Accept: config.responseType === "blob" ? "*/*" : "application/json",
       ...(body !== undefined ? { "Content-Type": "application/json" } : {}),
       ...(config.accessToken
         ? { Authorization: `Bearer ${config.accessToken}` }
@@ -158,6 +184,10 @@ async function request<T>(
     ...(body !== undefined ? { body: JSON.stringify(body) } : {}),
     ...(config.cache ? { cache: config.cache } : {}),
   });
+
+  if (response.ok && config.responseType === "blob") {
+    return (await response.blob()) as T;
+  }
 
   const data = parseBody(await response.text());
 

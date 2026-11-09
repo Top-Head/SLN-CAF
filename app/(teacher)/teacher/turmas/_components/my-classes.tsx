@@ -37,7 +37,7 @@ const STATUS_STYLES: Record<ClassStatus, { badge: string; dot: string }> = {
 
 function ClassCard({ item }: { item: TeacherClass }) {
   const isCompleted = item.status === "completed";
-  const percentage = Math.round((item.completed / item.total) * 100);
+  const percentage = item.total > 0 ? Math.round((item.completed / item.total) * 100) : 0;
   const status = STATUS_STYLES[item.status];
   const PrimaryIcon =
     item.status === "in_progress" ? Play : item.status === "not_started" ? Pencil : Pencil;
@@ -143,7 +143,7 @@ function ClassCard({ item }: { item: TeacherClass }) {
 
       <div className="mt-5 grid grid-cols-2 gap-2">
         <Link
-          href="/teacher/lancamento-de-notas"
+          href={item.launchHref ?? "/teacher/lancamento-de-notas"}
           className={cn(
             "flex items-center justify-center gap-1.5 rounded-lg px-3 py-2 text-xs font-semibold transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring",
             isCompleted
@@ -156,7 +156,7 @@ function ClassCard({ item }: { item: TeacherClass }) {
         </Link>
 
         <Link
-          href="/teacher/mini-pautas"
+          href={item.miniPautaHref ?? "/teacher/mini-pautas"}
           className="flex items-center justify-center gap-1.5 rounded-lg border bg-card px-3 py-2 text-xs font-semibold text-foreground transition-colors hover:bg-muted focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
         >
           <FileText className="size-3.5 text-muted-foreground" />
@@ -167,15 +167,32 @@ function ClassCard({ item }: { item: TeacherClass }) {
   );
 }
 
-export function MyClasses({ classes }: { classes: TeacherClass[] }) {
+export function MyClasses({
+  classes,
+  years = ACADEMIC_YEARS,
+  trimesters = TRIMESTERS,
+  initialTrimester,
+  status,
+}: {
+  classes: TeacherClass[];
+  years?: string[];
+  trimesters?: string[];
+  initialTrimester?: string;
+  /** Mensagem no lugar da grelha (a carregar, erro). */
+  status?: string | null;
+}) {
   const [view, setView] = useState<View>("all");
   const [query, setQuery] = useState("");
-  const [year, setYear] = useState(ACADEMIC_YEARS[0]);
-  const [trimester, setTrimester] = useState(TRIMESTERS[0]);
+  const [selectedYear, setYear] = useState<string | null>(null);
+  const [selectedTrimester, setTrimester] = useState<string | null>(null);
+  // Enquanto os dados carregam as opções mudam: usa a primeira até haver escolha.
+  const year = selectedYear ?? years[0] ?? "";
+  const trimester = selectedTrimester ?? initialTrimester ?? trimesters[0] ?? "";
 
   const visible = useMemo(
     () =>
       classes
+        .filter((item) => !item.year || item.year === year)
         .filter((item) => item.trimester === trimester)
         .filter((item) =>
           matchesSearch(
@@ -185,7 +202,7 @@ export function MyClasses({ classes }: { classes: TeacherClass[] }) {
             `${item.grade} ${item.subGroup}`,
           ),
         ),
-    [classes, query, trimester],
+    [classes, query, trimester, year],
   );
 
   const filtered =
@@ -233,14 +250,14 @@ export function MyClasses({ classes }: { classes: TeacherClass[] }) {
             <FilterSelect
               label="Ano lectivo"
               value={year}
-              options={ACADEMIC_YEARS}
+              options={years}
               onChange={setYear}
               icon={Calendar}
             />
             <FilterSelect
               label="Trimestre"
               value={trimester}
-              options={TRIMESTERS}
+              options={trimesters}
               onChange={setTrimester}
             />
 
@@ -300,7 +317,7 @@ export function MyClasses({ classes }: { classes: TeacherClass[] }) {
 
           {filtered.length === 0 && (
             <p className="col-span-full rounded-xl border border-dashed py-10 text-center text-sm text-muted-foreground">
-              Nenhuma turma encontrada para os filtros selecionados.
+              {status ?? "Nenhuma turma encontrada para os filtros selecionados."}
             </p>
           )}
         </div>

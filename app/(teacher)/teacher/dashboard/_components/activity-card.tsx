@@ -1,6 +1,11 @@
 import { CheckCircle2, Eye, Lock, Pencil } from "lucide-react";
 
-import { ACTIVIDADE_RECENTE_MOCK } from "../_lib/mock-data";
+export type ActivityItem = {
+  id: string;
+  type: keyof typeof ICONS;
+  title: string;
+  subtitle: string;
+};
 
 const ICONS = {
   pencil: { Icon: Pencil, className: "text-rose-500 bg-rose-50" },
@@ -9,13 +14,22 @@ const ICONS = {
   lock: { Icon: Lock, className: "text-amber-500 bg-amber-50" },
 } as const;
 
-export function ActivityCard() {
+export function ActivityCard({
+  items,
+  emptyMessage = "Sem actividade recente.",
+}: {
+  items: ActivityItem[];
+  emptyMessage?: string;
+}) {
   return (
     <div className="space-y-4 rounded-2xl border border-gray-100 bg-white p-5 shadow-sm">
       <h3 className="text-sm font-bold text-gray-900">Actividade recente</h3>
 
       <div className="space-y-3">
-        {ACTIVIDADE_RECENTE_MOCK.map((activity) => {
+        {items.length === 0 && (
+          <p className="text-xs text-gray-400">{emptyMessage}</p>
+        )}
+        {items.map((activity) => {
           const { Icon, className } = ICONS[activity.type];
 
           return (

@@ -1,6 +1,5 @@
-import { MyClasses } from "./_components/my-classes";
-import { CLASSES } from "./_lib/mock-data";
+import { TeacherClassesView } from "./_components/teacher-classes-view";
 
 export default function TeacherTurmasPage() {
-  return <MyClasses classes={CLASSES} />;
+  return <TeacherClassesView />;
 }

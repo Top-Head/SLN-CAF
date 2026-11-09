@@ -175,7 +175,7 @@ export function LoginForm() {
             Recuperar senha
           </Link>
         </p>
-        <p>
+        {/* <p>
           É encarregado de educação?{" "}
           <Link
             href="/boletim"
@@ -183,7 +183,7 @@ export function LoginForm() {
           >
             Consultar boletim
           </Link>
-        </p>
+        </p> */}
         {/* <p>
           Ainda não tem conta?{" "}
           <Link
