@@ -33,6 +33,7 @@ import {
   updateStudent,
 } from "@/services/students";
 import type { Student, StudentGender } from "@/services/students";
+import { notify } from "@/lib/notify";
 import { authStore } from "@/stores/use-auth.store";
 import { studentsStore } from "@/stores/use-students.store";
 
@@ -135,8 +136,10 @@ export function StudentDialog({
     try {
       if (mode === "create") {
         await createStudent(payload, accessToken);
+        notify.success(`Estudante ${nome} cadastrado com sucesso.`);
       } else {
         await updateStudent(studentId!, payload, accessToken);
+        notify.success(`Dados de ${nome} atualizados.`);
       }
 
       studentsStore.clearStudent();

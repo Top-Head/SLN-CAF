@@ -10,6 +10,7 @@ import { ListTabs } from "@/components/shared/list-tabs";
 import { StatusBadge } from "@/components/shared/status-badge";
 import { Table, TableBody, TableCell, TableRow } from "@/components/ui/table";
 import { paginate } from "@/hooks/catalog/use-catalog-state";
+import { notify } from "@/lib/notify";
 import { cn } from "@/lib/utils";
 import { formatDateTime } from "@/lib/utils/format-date";
 import { matchesSearch } from "@/lib/utils/matches-search";
@@ -65,9 +66,11 @@ export function AccessCodesTable({
     try {
       await navigator.clipboard.writeText(row.code);
       setCopiedId(row.student.id);
+      notify.success(`Código de ${row.student.nome} copiado.`);
     } catch {
       // Sem permissão para a área de transferência: revela para copiar à mão.
       onToggleReveal(row.student.id);
+      notify.info("Não foi possível copiar automaticamente. O código foi revelado para copiar à mão.");
     }
   };
 

@@ -59,6 +59,11 @@ export function SubjectsList() {
         emptyValues: { nome: "" },
         toValues: (subject) => ({ nome: subject.nome }),
       }}
+      messages={{
+        created: (values) => `Disciplina "${values.nome}" criada com sucesso.`,
+        updated: (_, values) => `Disciplina "${values.nome}" atualizada.`,
+        deleted: (subject) => `Disciplina "${subject.nome}" eliminada.`,
+      }}
       fetchOne={getSubjectById}
       onCreate={(values, token) => createSubject({ nome: values.nome }, token)}
       onUpdate={(subject, values, token) =>

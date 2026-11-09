@@ -5,6 +5,12 @@ import type {
 } from "@/services/access-codes";
 
 const TRIMESTERS = [1, 2, 3] as const;
+const COMPONENT_ORDER = ["MAC", "PP", "PT"];
+const COMPONENT_LABELS: Record<string, string> = {
+  MAC: "Média das avaliações contínuas",
+  PP: "Prova do professor",
+  PT: "Prova trimestral",
+};
 
 type SubjectRow = {
   subject: string;
@@ -23,7 +29,10 @@ function groupBySubject(grades: StudentGrade[]): SubjectRow[] {
 
   for (const row of rows.values()) {
     for (const list of Object.values(row.byTrimester)) {
-      list.sort((a, b) => a.assessment_number - b.assessment_number);
+      list.sort(
+        (a, b) =>
+          COMPONENT_ORDER.indexOf(a.component) - COMPONENT_ORDER.indexOf(b.component),
+      );
     }
   }
 
@@ -88,13 +97,16 @@ export function StudentGradesReport({ result }: { result: AccessCodeValidation }
                           {row.byTrimester[t].map((g) => (
                             <span
                               key={g.id}
-                              title={`Avaliação ${g.assessment_number} · ${g.teacher}`}
+                              title={`${COMPONENT_LABELS[g.component] ?? g.component} · ${g.teacher}`}
                               className={
                                 Number(g.value) < 10
                                   ? "rounded-sm bg-accent px-1.5 py-0.5 text-primary"
                                   : "rounded-sm bg-positive-soft px-1.5 py-0.5 text-positive"
                               }
                             >
+                              <span className="mr-1 text-[10px] opacity-70">
+                                {g.component}
+                              </span>
                               {formatValue(g.value)}
                             </span>
                           ))}

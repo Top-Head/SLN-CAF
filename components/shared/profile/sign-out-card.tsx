@@ -6,6 +6,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
+import { notify } from "@/lib/notify";
 import { authStore } from "@/stores/use-auth.store";
 
 export function SignOutCard() {
@@ -18,8 +19,12 @@ export function SignOutCard() {
       // POST /api/auth/logout/ (revoga o refresh token) e limpa a sessão local,
       // mesmo que o pedido à API falhe.
       await authStore.logout();
+      notify.success("Sessão terminada.");
     } catch {
       // A sessão local já foi limpa pelo `finally` de authStore.logout.
+      notify.warning(
+        "Sessão terminada neste dispositivo, mas o servidor não confirmou o pedido.",
+      );
     } finally {
       router.replace("/login");
     }

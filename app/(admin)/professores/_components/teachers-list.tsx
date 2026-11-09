@@ -18,6 +18,7 @@ import { matchesSearch } from "@/lib/utils/matches-search";
 import { useTeachers } from "@/hooks/teachers/use-teachers";
 import { deleteTeacher } from "@/services/teachers";
 import type { Teacher } from "@/services/teachers";
+import { notify } from "@/lib/notify";
 import { authStore } from "@/stores/use-auth.store";
 
 import { TeacherDialog } from "./teacher-dialog";
@@ -42,7 +43,6 @@ export function TeachersList() {
   const [dialogOpen, setDialogOpen] = useState(false);
   const [selectedTeacher, setSelectedTeacher] = useState<Teacher | null>(null);
   const [deletingId, setDeletingId] = useState<string | null>(null);
-  const [actionError, setActionError] = useState<string | null>(null);
   const {
     teachers,
     count,
@@ -69,7 +69,6 @@ export function TeachersList() {
   function openDialog(mode: DialogMode, teacher?: Teacher) {
     setDialogMode(mode);
     setSelectedTeacher(teacher ?? null);
-    setActionError(null);
     setDialogOpen(true);
   }
 
@@ -80,13 +79,13 @@ export function TeachersList() {
 
     authStore.hydrate();
     setDeletingId(teacher.id);
-    setActionError(null);
 
     try {
       await deleteTeacher(
         teacher.id,
         authStore.getState().accessToken ?? undefined,
       );
+      notify.success(`Professor ${teacher.nome} eliminado.`);
 
       if (teachers.length === 1 && page > 1) {
         setPage(page - 1);
@@ -94,11 +93,7 @@ export function TeachersList() {
         await refetch();
       }
     } catch (cause) {
-      setActionError(
-        cause instanceof Error
-          ? cause.message
-          : "Não foi possível eliminar o professor.",
-      );
+      notify.error(cause, "Não foi possível eliminar o professor.");
     } finally {
       setDeletingId(null);
     }
@@ -120,12 +115,12 @@ export function TeachersList() {
         />
       </div>
 
-      {(actionError || listStatus === "error") && (
+      {listStatus === "error" && (
         <p
           role="alert"
           className="mt-4 rounded-md bg-red-50 px-3 py-2 text-sm text-red-600"
         >
-          {actionError ?? listError}
+          {listError}
         </p>
       )}
 
@@ -217,7 +212,6 @@ export function TeachersList() {
         teacher={selectedTeacher}
         onOpenChange={setDialogOpen}
         onSaved={() => {
-          setActionError(null);
           void refetch();
         }}
       />

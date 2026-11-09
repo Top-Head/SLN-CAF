@@ -1,5 +1,5 @@
-import { GradeLaunchWorkspace } from "./_components/grade-launch-workspace";
+import { TeacherGradesTabs } from "./_components/teacher-grades-tabs";
 
 export default function TeacherLancamentoNotasPage() {
-  return <GradeLaunchWorkspace />;
+  return <TeacherGradesTabs />;
 }
