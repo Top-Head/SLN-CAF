@@ -77,6 +77,11 @@ export function CoursesManager() {
         emptyValues: { nome: "" },
         toValues: (course) => ({ nome: course.nome }),
       }}
+      messages={{
+        created: (values) => `Curso "${values.nome}" criado com sucesso.`,
+        updated: (_, values) => `Curso "${values.nome}" atualizado.`,
+        deleted: (course) => `Curso "${course.nome}" eliminado.`,
+      }}
       fetchOne={getCourseById}
       onCreate={(values, token) => createCourse({ nome: values.nome }, token)}
       onUpdate={(course, values, token) =>
@@ -146,6 +151,11 @@ export function SchoolClassesManager() {
           parseClassNumber(values.numero) === null
             ? "O número da classe deve ser um inteiro entre 1 e 13."
             : null,
+      }}
+      messages={{
+        created: (values) => `${values.numero}.ª classe criada com sucesso.`,
+        updated: (_, values) => `${values.numero}.ª classe atualizada.`,
+        deleted: (c) => `${schoolClassLabel(c)} eliminada.`,
       }}
       fetchOne={getSchoolClassById}
       onCreate={(values, token) =>
@@ -248,6 +258,10 @@ export function SchoolYearsManager() {
           }
           return null;
         },
+      }}
+      messages={{
+        created: (values) =>
+          `Ano letivo ${values.ano_inicio}/${values.ano_fim} criado com sucesso.`,
       }}
       fetchOne={getSchoolYearById}
       onCreate={(values, token) =>

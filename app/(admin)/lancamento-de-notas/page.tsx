@@ -1,6 +1,5 @@
-import { GradeEntry } from "./_components/grade-entry";
-import { STUDENTS } from "./_lib/mock-data";
+import { GradesTabs } from "./_components/grades-tabs";
 
 export default function GradeEntryPage() {
-  return <GradeEntry students={STUDENTS} />;
+  return <GradesTabs />;
 }

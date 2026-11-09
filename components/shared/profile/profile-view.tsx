@@ -8,6 +8,7 @@ import {
   type FormValues,
 } from "@/components/shared/resource/resource-form-dialog";
 import { useCurrentProfile } from "@/hooks/auth/use-current-profile";
+import { notify } from "@/lib/notify";
 import { requestPasswordReset } from "@/services/auth";
 import type { Teacher, TeacherGender } from "@/services/teachers";
 import type {
@@ -87,13 +88,9 @@ function toValues(teacher: Teacher): FormValues {
  * com os valores de demonstração até a API os disponibilizar.
  */
 export function ProfileView({ fallback, description }: ProfileViewProps) {
-  const { user, teacher, canEdit, error, update } = useCurrentProfile();
+  const { user, teacher, canEdit, loading, error, update } = useCurrentProfile();
   const [editOpen, setEditOpen] = useState(false);
   const [passwordPending, setPasswordPending] = useState(false);
-  const [passwordMessage, setPasswordMessage] = useState<{
-    tone: "success" | "error";
-    text: string;
-  } | null>(null);
 
   const role = roleLabel(user?.role);
   const displayName =
@@ -121,29 +118,28 @@ export function ProfileView({ fallback, description }: ProfileViewProps) {
   async function handleChangePassword() {
     if (!email) return;
     setPasswordPending(true);
-    setPasswordMessage(null);
     try {
       // A API não tem "alterar palavra-passe" autenticado: envia o link de
       // redefinição para o email da conta.
       await requestPasswordReset({ email });
-      setPasswordMessage({
-        tone: "success",
-        text: `Enviámos um link para ${email} para definir uma nova palavra-passe.`,
-      });
+      notify.success(
+        `Enviámos um link para ${email} para definir uma nova palavra-passe.`,
+      );
     } catch (cause) {
-      setPasswordMessage({
-        tone: "error",
-        text:
-          cause instanceof Error
-            ? cause.message
-            : "Não foi possível enviar o link de redefinição.",
-      });
+      notify.error(cause, "Não foi possível enviar o link de redefinição.");
     } finally {
       setPasswordPending(false);
     }
   }
 
-  const openEdit = canEdit && teacher ? () => setEditOpen(true) : undefined;
+  // Sem endpoint (administrador) ou ainda a carregar: o botão informa em vez de
+  // não fazer nada.
+  const openEdit = () => {
+    if (canEdit && teacher) setEditOpen(true);
+    else if (canEdit && loading) notify.info("Aguarde, os dados do perfil ainda estão a carregar.");
+    else if (canEdit) notify.error(error ?? "Não foi possível carregar o perfil para edição.");
+    else notify.info("A edição do perfil de administrador ainda não está disponível.");
+  };
 
   return (
     <div className="flex flex-col gap-6">
@@ -164,7 +160,6 @@ export function ProfileView({ fallback, description }: ProfileViewProps) {
           sessions={fallback.sessions}
           onChangePassword={email ? () => void handleChangePassword() : undefined}
           passwordPending={passwordPending}
-          passwordMessage={passwordMessage}
         />
       </div>
       <SignOutCard />
@@ -221,7 +216,12 @@ export function ProfileView({ fallback, description }: ProfileViewProps) {
             const changed = Object.fromEntries(
               Object.entries(values).filter(([key, value]) => original[key] !== value),
             );
-            if (Object.keys(changed).length > 0) await update(changed);
+            if (Object.keys(changed).length === 0) {
+              notify.info("Não há alterações para guardar.");
+              return;
+            }
+            await update(changed);
+            notify.success("Perfil atualizado com sucesso.");
           }}
           onOpenChange={setEditOpen}
         />

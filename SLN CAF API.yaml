@@ -925,6 +925,83 @@ paths:
           description: Código inválido, expirado ou já revogado.
         '429':
           description: Limite de tentativas excedido.
+  /api/audit/logs/:
+    get:
+      operationId: audit_logs_list
+      summary: Listar registos de auditoria
+      parameters:
+      - in: query
+        name: action
+        schema:
+          type: string
+      - in: query
+        name: date_from
+        schema:
+          type: string
+      - in: query
+        name: date_to
+        schema:
+          type: string
+      - in: query
+        name: entity
+        schema:
+          type: string
+      - in: query
+        name: entity_id
+        schema:
+          type: string
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - in: query
+        name: search
+        schema:
+          type: string
+      - in: query
+        name: status_code
+        schema:
+          type: integer
+      - in: query
+        name: user
+        schema:
+          type: string
+      tags:
+      - Auditoria
+      security:
+      - bearerAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedAuditLogList'
+          description: ''
+  /api/audit/logs/{id}/:
+    get:
+      operationId: audit_logs_retrieve
+      summary: Detalhar registo de auditoria
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Registo de Auditoria.
+        required: true
+      tags:
+      - Auditoria
+      security:
+      - bearerAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuditLog'
+          description: ''
   /api/auth/confirm-password/:
     post:
       operationId: auth_confirm_password_create
@@ -1236,6 +1313,663 @@ paths:
       responses:
         '204':
           description: No response body
+  /api/avaliacoes/exams/:
+    get:
+      operationId: avaliacoes_exams_list
+      summary: Listar notas de exame
+      parameters:
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      tags:
+      - Exames
+      security:
+      - bearerAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedExamGradeList'
+          description: ''
+    post:
+      operationId: avaliacoes_exams_create
+      summary: Lançar nota de exame
+      tags:
+      - Exames
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ExamGrade'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/ExamGrade'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ExamGrade'
+        required: true
+      security:
+      - bearerAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExamGrade'
+          description: ''
+  /api/avaliacoes/exams/{id}/:
+    get:
+      operationId: avaliacoes_exams_retrieve
+      summary: Detalhar nota de exame
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Nota de Exame.
+        required: true
+      tags:
+      - Exames
+      security:
+      - bearerAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExamGrade'
+          description: ''
+    put:
+      operationId: avaliacoes_exams_update
+      summary: Atualizar nota de exame
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Nota de Exame.
+        required: true
+      tags:
+      - Exames
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ExamGrade'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/ExamGrade'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ExamGrade'
+        required: true
+      security:
+      - bearerAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExamGrade'
+          description: ''
+    patch:
+      operationId: avaliacoes_exams_partial_update
+      summary: Atualizar nota de exame parcialmente
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Nota de Exame.
+        required: true
+      tags:
+      - Exames
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedExamGrade'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedExamGrade'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedExamGrade'
+      security:
+      - bearerAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExamGrade'
+          description: ''
+    delete:
+      operationId: avaliacoes_exams_destroy
+      summary: Eliminar nota de exame
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Nota de Exame.
+        required: true
+      tags:
+      - Exames
+      security:
+      - bearerAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/avaliacoes/grades/:
+    get:
+      operationId: avaliacoes_grades_list
+      summary: Listar notas
+      parameters:
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      tags:
+      - Notas
+      security:
+      - bearerAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedGradeList'
+          description: ''
+    post:
+      operationId: avaliacoes_grades_create
+      summary: Lançar nota (MAC/PP/PT)
+      tags:
+      - Notas
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Grade'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Grade'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Grade'
+        required: true
+      security:
+      - bearerAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Grade'
+          description: ''
+  /api/avaliacoes/grades/{id}/:
+    get:
+      operationId: avaliacoes_grades_retrieve
+      summary: Detalhar nota
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Nota.
+        required: true
+      tags:
+      - Notas
+      security:
+      - bearerAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Grade'
+          description: ''
+    put:
+      operationId: avaliacoes_grades_update
+      summary: Atualizar nota
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Nota.
+        required: true
+      tags:
+      - Notas
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Grade'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Grade'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Grade'
+        required: true
+      security:
+      - bearerAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Grade'
+          description: ''
+    patch:
+      operationId: avaliacoes_grades_partial_update
+      summary: Atualizar nota parcialmente
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Nota.
+        required: true
+      tags:
+      - Notas
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedGrade'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedGrade'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedGrade'
+      security:
+      - bearerAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Grade'
+          description: ''
+    delete:
+      operationId: avaliacoes_grades_destroy
+      summary: Eliminar nota
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Nota.
+        required: true
+      tags:
+      - Notas
+      security:
+      - bearerAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/avaliacoes/promotion-decisions/:
+    get:
+      operationId: avaliacoes_promotion_decisions_list
+      summary: Listar decisões de promoção
+      parameters:
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      tags:
+      - Decisões
+      security:
+      - bearerAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedPromotionDecisionList'
+          description: ''
+    post:
+      operationId: avaliacoes_promotion_decisions_create
+      summary: Registar decisão (Subdirector/Admin)
+      tags:
+      - Decisões
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PromotionDecision'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PromotionDecision'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PromotionDecision'
+        required: true
+      security:
+      - bearerAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PromotionDecision'
+          description: ''
+  /api/avaliacoes/promotion-decisions/{id}/:
+    get:
+      operationId: avaliacoes_promotion_decisions_retrieve
+      summary: Detalhar decisão
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Decisão de Promoção.
+        required: true
+      tags:
+      - Decisões
+      security:
+      - bearerAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PromotionDecision'
+          description: ''
+  /api/avaliacoes/results/:
+    get:
+      operationId: avaliacoes_results_list
+      description: Cálculo de resultados com base na configuração vigente.
+      summary: Listar resultados
+      parameters:
+      - in: query
+        name: enrollment
+        schema:
+          type: string
+          format: uuid
+        required: true
+      - in: query
+        name: trimester
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - Resultados
+      security:
+      - bearerAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/TrimesterResult'
+          description: ''
+  /api/avaliacoes/results/annual/:
+    get:
+      operationId: avaliacoes_results_annual_retrieve
+      description: Cálculo de resultados com base na configuração vigente.
+      summary: Resultado anual por disciplina
+      parameters:
+      - in: query
+        name: enrollment
+        schema:
+          type: string
+          format: uuid
+        required: true
+      - in: query
+        name: school_year
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - Resultados
+      security:
+      - bearerAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AnnualResult'
+          description: ''
+  /api/avaliacoes/results/promotion/:
+    get:
+      operationId: avaliacoes_results_promotion_retrieve
+      description: Cálculo de resultados com base na configuração vigente.
+      summary: Situação de transição/reprovação
+      parameters:
+      - in: query
+        name: enrollment
+        schema:
+          type: string
+          format: uuid
+        required: true
+      - in: query
+        name: school_year
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - Resultados
+      security:
+      - bearerAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PromotionResult'
+          description: ''
+  /api/avaliacoes/results/trimester/:
+    get:
+      operationId: avaliacoes_results_trimester_retrieve
+      description: Cálculo de resultados com base na configuração vigente.
+      summary: Resultado de um trimestre
+      parameters:
+      - in: query
+        name: enrollment
+        schema:
+          type: string
+          format: uuid
+        required: true
+      - in: query
+        name: trimester
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - Resultados
+      security:
+      - bearerAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TrimesterResult'
+          description: ''
+  /api/avaliacoes/trimesters/:
+    get:
+      operationId: avaliacoes_trimesters_list
+      summary: Listar trimestres
+      parameters:
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      tags:
+      - Trimestres
+      security:
+      - bearerAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedTrimesterList'
+          description: ''
+    post:
+      operationId: avaliacoes_trimesters_create
+      summary: Criar trimestre
+      tags:
+      - Trimestres
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Trimester'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Trimester'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Trimester'
+        required: true
+      security:
+      - bearerAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Trimester'
+          description: ''
+  /api/avaliacoes/trimesters/{id}/:
+    get:
+      operationId: avaliacoes_trimesters_retrieve
+      summary: Detalhar trimestre
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Trimestre.
+        required: true
+      tags:
+      - Trimestres
+      security:
+      - bearerAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Trimester'
+          description: ''
+    put:
+      operationId: avaliacoes_trimesters_update
+      summary: Atualizar trimestre
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Trimestre.
+        required: true
+      tags:
+      - Trimestres
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Trimester'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Trimester'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Trimester'
+        required: true
+      security:
+      - bearerAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Trimester'
+          description: ''
+    patch:
+      operationId: avaliacoes_trimesters_partial_update
+      summary: Atualizar trimestre parcialmente
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Trimestre.
+        required: true
+      tags:
+      - Trimestres
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedTrimester'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedTrimester'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedTrimester'
+      security:
+      - bearerAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Trimester'
+          description: ''
+    delete:
+      operationId: avaliacoes_trimesters_destroy
+      summary: Eliminar trimestre
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Trimestre.
+        required: true
+      tags:
+      - Trimestres
+      security:
+      - bearerAuth: []
+      responses:
+        '204':
+          description: No response body
 components:
   schemas:
     AccessCodeValidationResponse:
@@ -1258,9 +1992,232 @@ components:
       - expires_at
       - grades
       - student
+    ActionEnum:
+      enum:
+      - CREATE
+      - UPDATE
+      - DELETE
+      - LOGIN
+      - LOGIN_FAILED
+      - LOGOUT
+      - REFRESH
+      - REGISTER
+      - PASSWORD_RESET
+      - VALIDATE
+      - OTHER
+      type: string
+      description: |-
+        * `CREATE` - Criação
+        * `UPDATE` - Atualização
+        * `DELETE` - Eliminação
+        * `LOGIN` - Início de sessão
+        * `LOGIN_FAILED` - Tentativa de início de sessão falhada
+        * `LOGOUT` - Fim de sessão
+        * `REFRESH` - Renovação de token
+        * `REGISTER` - Registo
+        * `PASSWORD_RESET` - Recuperação de password
+        * `VALIDATE` - Validação
+        * `OTHER` - Outra ação
+    AnnualResult:
+      type: object
+      properties:
+        enrollment:
+          type: string
+          format: uuid
+        student:
+          type: string
+        turma:
+          type: string
+        school_class:
+          type: integer
+        school_year:
+          type: string
+        scale_min:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,2}(?:\.\d{0,2})?$
+        scale_max:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,2}(?:\.\d{0,2})?$
+        passing_grade:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,2}(?:\.\d{0,2})?$
+        subjects:
+          type: array
+          items:
+            $ref: '#/components/schemas/AnnualResultSubject'
+      required:
+      - enrollment
+      - passing_grade
+      - scale_max
+      - scale_min
+      - school_class
+      - school_year
+      - student
+      - subjects
+      - turma
+    AnnualResultSubject:
+      type: object
+      properties:
+        turma_disciplina:
+          type: string
+          format: uuid
+        subject:
+          type: string
+        mt1:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,2}(?:\.\d{0,2})?$
+          nullable: true
+        mt2:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,2}(?:\.\d{0,2})?$
+          nullable: true
+        mt3:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,2}(?:\.\d{0,2})?$
+          nullable: true
+        mfd:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,2}(?:\.\d{0,2})?$
+          nullable: true
+        exam_type:
+          type: string
+        exam:
+          allOf:
+          - $ref: '#/components/schemas/ExamDetail'
+          nullable: true
+        mf:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,2}(?:\.\d{0,2})?$
+          nullable: true
+        negative:
+          type: boolean
+        is_complete:
+          type: boolean
+      required:
+      - exam
+      - exam_type
+      - is_complete
+      - mf
+      - mfd
+      - mt1
+      - mt2
+      - mt3
+      - negative
+      - subject
+      - turma_disciplina
+    AuditLog:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        user:
+          type: string
+          format: uuid
+          readOnly: true
+          nullable: true
+        user_username:
+          type: string
+          readOnly: true
+        user_role:
+          type: string
+          readOnly: true
+        action:
+          allOf:
+          - $ref: '#/components/schemas/ActionEnum'
+          readOnly: true
+        entity:
+          type: string
+          readOnly: true
+        entity_id:
+          type: string
+          readOnly: true
+        description:
+          type: string
+          readOnly: true
+        changes:
+          readOnly: true
+        method:
+          type: string
+          readOnly: true
+        path:
+          type: string
+          readOnly: true
+        status_code:
+          type: integer
+          readOnly: true
+          nullable: true
+        ip_address:
+          type: string
+          readOnly: true
+          nullable: true
+        user_agent:
+          type: string
+          readOnly: true
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - action
+      - changes
+      - created_at
+      - description
+      - entity
+      - entity_id
+      - id
+      - ip_address
+      - method
+      - path
+      - status_code
+      - user
+      - user_agent
+      - user_role
+      - user_username
     BlankEnum:
       enum:
       - ''
+    ComponentEnum:
+      enum:
+      - MAC
+      - PP
+      - PT
+      type: string
+      description: |-
+        * `MAC` - Média das Avaliações Contínuas
+        * `PP` - Prova do Professor
+        * `PT` - Prova Trimestral
+    ComponentValue:
+      type: object
+      properties:
+        MAC:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,2}(?:\.\d{0,2})?$
+          nullable: true
+        PP:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,2}(?:\.\d{0,2})?$
+          nullable: true
+        PT:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,2}(?:\.\d{0,2})?$
+          nullable: true
+      required:
+      - MAC
+      - PP
+      - PT
     Course:
       type: object
       properties:
@@ -1274,6 +2231,122 @@ components:
       required:
       - id
       - nome
+    ExamDetail:
+      type: object
+      properties:
+        type:
+          type: string
+        value:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,2}(?:\.\d{0,2})?$
+          nullable: true
+        nee:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,2}(?:\.\d{0,2})?$
+          nullable: true
+        neo:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,2}(?:\.\d{0,2})?$
+          nullable: true
+      required:
+      - type
+    ExamGrade:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        enrollment:
+          type: string
+          format: uuid
+        student_nome:
+          type: string
+          readOnly: true
+        turma:
+          type: string
+          format: uuid
+          readOnly: true
+        school_year:
+          type: string
+          format: uuid
+          readOnly: true
+        turma_disciplina:
+          type: string
+          format: uuid
+        subject_nome:
+          type: string
+          readOnly: true
+        school_class_numero:
+          type: integer
+          readOnly: true
+        exam_type:
+          $ref: '#/components/schemas/ExamTypeEnum'
+        exam_value:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,2}(?:\.\d{0,2})?$
+          nullable: true
+        nee:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,2}(?:\.\d{0,2})?$
+          nullable: true
+        neo:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,2}(?:\.\d{0,2})?$
+          nullable: true
+        scale:
+          type: object
+          properties:
+            min:
+              type: number
+            max:
+              type: number
+            passing:
+              type: number
+            rounding:
+              type: string
+          readOnly: true
+        created_by_teacher:
+          type: string
+          format: uuid
+          readOnly: true
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - created_at
+      - created_by_teacher
+      - enrollment
+      - id
+      - scale
+      - school_class_numero
+      - school_year
+      - student_nome
+      - subject_nome
+      - turma
+      - turma_disciplina
+      - updated_at
+    ExamTypeEnum:
+      enum:
+      - SIMPLE
+      - MEC
+      - SPECIAL
+      type: string
+      description: |-
+        * `SIMPLE` - Exame simples
+        * `MEC` - Média de exame escrito e oral (MEC)
+        * `SPECIAL` - Exame especial (substitui a média final)
     Genero05aEnum:
       enum:
       - Masculino
@@ -1290,6 +2363,94 @@ components:
       description: |-
         * `MASCULINO` - Masculino
         * `FEMENINO` - Femenino
+    Grade:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        enrollment:
+          type: string
+          format: uuid
+        student_nome:
+          type: string
+          readOnly: true
+        turma:
+          type: string
+          format: uuid
+          readOnly: true
+        turma_nome:
+          type: string
+          readOnly: true
+        school_year:
+          type: string
+          format: uuid
+          readOnly: true
+        turma_disciplina:
+          type: string
+          format: uuid
+        subject_nome:
+          type: string
+          readOnly: true
+        trimester:
+          type: string
+          format: uuid
+        trimester_numero:
+          type: integer
+          readOnly: true
+        component:
+          allOf:
+          - $ref: '#/components/schemas/ComponentEnum'
+          default: MAC
+        value:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,2}(?:\.\d{0,2})?$
+        school_class_numero:
+          type: integer
+          readOnly: true
+        scale:
+          type: object
+          properties:
+            min:
+              type: number
+            max:
+              type: number
+            passing:
+              type: number
+            rounding:
+              type: string
+          readOnly: true
+        created_by_teacher:
+          type: string
+          format: uuid
+          readOnly: true
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - created_at
+      - created_by_teacher
+      - enrollment
+      - id
+      - scale
+      - school_class_numero
+      - school_year
+      - student_nome
+      - subject_nome
+      - trimester
+      - trimester_numero
+      - turma
+      - turma_disciplina
+      - turma_nome
+      - updated_at
+      - value
     Login:
       type: object
       properties:
@@ -1305,6 +2466,29 @@ components:
     NullEnum:
       enum:
       - null
+    PaginatedAuditLogList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/AuditLog'
     PaginatedCourseList:
       type: object
       required:
@@ -1328,6 +2512,75 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Course'
+    PaginatedExamGradeList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/ExamGrade'
+    PaginatedGradeList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Grade'
+    PaginatedPromotionDecisionList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/PromotionDecision'
     PaginatedSchoolClassList:
       type: object
       required:
@@ -1443,6 +2696,29 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Teacher'
+    PaginatedTrimesterList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Trimester'
     PaginatedTurmaList:
       type: object
       required:
@@ -1500,6 +2776,148 @@ components:
         nome:
           type: string
           maxLength: 100
+    PatchedExamGrade:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        enrollment:
+          type: string
+          format: uuid
+        student_nome:
+          type: string
+          readOnly: true
+        turma:
+          type: string
+          format: uuid
+          readOnly: true
+        school_year:
+          type: string
+          format: uuid
+          readOnly: true
+        turma_disciplina:
+          type: string
+          format: uuid
+        subject_nome:
+          type: string
+          readOnly: true
+        school_class_numero:
+          type: integer
+          readOnly: true
+        exam_type:
+          $ref: '#/components/schemas/ExamTypeEnum'
+        exam_value:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,2}(?:\.\d{0,2})?$
+          nullable: true
+        nee:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,2}(?:\.\d{0,2})?$
+          nullable: true
+        neo:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,2}(?:\.\d{0,2})?$
+          nullable: true
+        scale:
+          type: object
+          properties:
+            min:
+              type: number
+            max:
+              type: number
+            passing:
+              type: number
+            rounding:
+              type: string
+          readOnly: true
+        created_by_teacher:
+          type: string
+          format: uuid
+          readOnly: true
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+    PatchedGrade:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        enrollment:
+          type: string
+          format: uuid
+        student_nome:
+          type: string
+          readOnly: true
+        turma:
+          type: string
+          format: uuid
+          readOnly: true
+        turma_nome:
+          type: string
+          readOnly: true
+        school_year:
+          type: string
+          format: uuid
+          readOnly: true
+        turma_disciplina:
+          type: string
+          format: uuid
+        subject_nome:
+          type: string
+          readOnly: true
+        trimester:
+          type: string
+          format: uuid
+        trimester_numero:
+          type: integer
+          readOnly: true
+        component:
+          allOf:
+          - $ref: '#/components/schemas/ComponentEnum'
+          default: MAC
+        value:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,2}(?:\.\d{0,2})?$
+        school_class_numero:
+          type: integer
+          readOnly: true
+        scale:
+          type: object
+          properties:
+            min:
+              type: number
+            max:
+              type: number
+            passing:
+              type: number
+            rounding:
+              type: string
+          readOnly: true
+        created_by_teacher:
+          type: string
+          format: uuid
+          readOnly: true
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
     PatchedSchoolClass:
       type: object
       properties:
@@ -1566,6 +2984,26 @@ components:
           minLength: 6
         genero:
           $ref: '#/components/schemas/GeneroC1eEnum'
+    PatchedTrimester:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        school_year:
+          type: string
+          format: uuid
+        school_year_detail:
+          allOf:
+          - $ref: '#/components/schemas/SchoolYearDetail'
+          readOnly: true
+        numero:
+          type: integer
+          maximum: 32767
+          minimum: -32768
+        status:
+          $ref: '#/components/schemas/TrimesterStatusEnum'
     PatchedTurma:
       type: object
       properties:
@@ -1602,6 +3040,129 @@ components:
         school_year_label:
           type: string
           readOnly: true
+    PromotionDecision:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        enrollment:
+          type: string
+          format: uuid
+        school_year:
+          type: string
+          format: uuid
+        status:
+          $ref: '#/components/schemas/StatusDfbEnum'
+        reason:
+          type: string
+        details:
+          readOnly: true
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - created_at
+      - details
+      - enrollment
+      - id
+      - reason
+      - school_year
+      - status
+    PromotionDecisionDetail:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        status:
+          $ref: '#/components/schemas/StatusDfbEnum'
+        reason:
+          type: string
+        details: {}
+        decided_by:
+          type: string
+          readOnly: true
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - created_at
+      - decided_by
+      - id
+      - reason
+      - status
+    PromotionResult:
+      type: object
+      properties:
+        enrollment:
+          type: string
+          format: uuid
+        student:
+          type: string
+        turma:
+          type: string
+        school_class:
+          type: integer
+        school_year:
+          type: string
+        status:
+          type: string
+        suggested_status:
+          type: string
+        negative_count:
+          type: integer
+        allowed_negative_count:
+          type: integer
+        is_complete:
+          type: boolean
+        subjects:
+          type: array
+          items:
+            $ref: '#/components/schemas/PromotionSubject'
+        decision:
+          allOf:
+          - $ref: '#/components/schemas/PromotionDecisionDetail'
+          nullable: true
+      required:
+      - allowed_negative_count
+      - decision
+      - enrollment
+      - is_complete
+      - negative_count
+      - school_class
+      - school_year
+      - status
+      - student
+      - subjects
+      - suggested_status
+      - turma
+    PromotionSubject:
+      type: object
+      properties:
+        subject:
+          type: string
+        mfd:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,2}(?:\.\d{0,2})?$
+          nullable: true
+        mf:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,2}(?:\.\d{0,2})?$
+          nullable: true
+        negative:
+          type: boolean
+      required:
+      - mf
+      - mfd
+      - negative
+      - subject
     Refresh:
       type: object
       properties:
@@ -1661,6 +3222,20 @@ components:
       - ano_fim
       - ano_inicio
       - id
+    SchoolYearDetail:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        ano_inicio:
+          type: integer
+        ano_fim:
+          type: integer
+      required:
+      - ano_fim
+      - ano_inicio
+      - id
     SchoolYearSummary:
       type: object
       properties:
@@ -1675,6 +3250,20 @@ components:
       - ano_fim
       - ano_inicio
       - id
+    StatusDfbEnum:
+      enum:
+      - APROVADO
+      - REPROVADO
+      - RECURSO
+      - EXAME_ESPECIAL
+      - PENDENTE_DECISAO
+      type: string
+      description: |-
+        * `APROVADO` - Aprovado
+        * `REPROVADO` - Reprovado
+        * `RECURSO` - Recurso
+        * `EXAME_ESPECIAL` - Exame especial
+        * `PENDENTE_DECISAO` - Pendente de decisão
     Student:
       type: object
       properties:
@@ -1768,10 +3357,8 @@ components:
         trimester:
           type: integer
           readOnly: true
-        assessment_number:
-          type: integer
-          maximum: 32767
-          minimum: -32768
+        component:
+          $ref: '#/components/schemas/ComponentEnum'
         value:
           type: string
           format: decimal
@@ -1788,7 +3375,6 @@ components:
           format: date-time
           readOnly: true
       required:
-      - assessment_number
       - created_at
       - id
       - school_year
@@ -1899,6 +3485,113 @@ components:
           minLength: 6
         genero:
           $ref: '#/components/schemas/GeneroC1eEnum'
+    Trimester:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        school_year:
+          type: string
+          format: uuid
+        school_year_detail:
+          allOf:
+          - $ref: '#/components/schemas/SchoolYearDetail'
+          readOnly: true
+        numero:
+          type: integer
+          maximum: 32767
+          minimum: -32768
+        status:
+          $ref: '#/components/schemas/TrimesterStatusEnum'
+      required:
+      - id
+      - numero
+      - school_year
+      - school_year_detail
+    TrimesterResult:
+      type: object
+      properties:
+        enrollment:
+          type: string
+          format: uuid
+        student:
+          type: string
+        turma:
+          type: string
+        school_class:
+          type: integer
+        trimester:
+          type: integer
+        scale_min:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,2}(?:\.\d{0,2})?$
+        scale_max:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,2}(?:\.\d{0,2})?$
+        passing_grade:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,2}(?:\.\d{0,2})?$
+        is_initiation:
+          type: boolean
+        subjects:
+          type: array
+          items:
+            $ref: '#/components/schemas/TrimesterResultSubject'
+      required:
+      - enrollment
+      - is_initiation
+      - passing_grade
+      - scale_max
+      - scale_min
+      - school_class
+      - student
+      - subjects
+      - trimester
+      - turma
+    TrimesterResultSubject:
+      type: object
+      properties:
+        turma_disciplina:
+          type: string
+          format: uuid
+        subject:
+          type: string
+        teacher:
+          type: string
+        components:
+          $ref: '#/components/schemas/ComponentValue'
+        required_components:
+          type: array
+          items:
+            type: string
+        average:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,2}(?:\.\d{0,2})?$
+          nullable: true
+        is_complete:
+          type: boolean
+      required:
+      - average
+      - components
+      - is_complete
+      - required_components
+      - subject
+      - teacher
+      - turma_disciplina
+    TrimesterStatusEnum:
+      enum:
+      - ABERTO
+      - FECHADO
+      type: string
+      description: |-
+        * `ABERTO` - Aberto
+        * `FECHADO` - Fechado
     Turma:
       type: object
       properties:

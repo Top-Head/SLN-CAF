@@ -11,6 +11,7 @@ import { Table, TableBody, TableCell, TableRow } from "@/components/ui/table";
 import { useStudents } from "@/hooks/students/use-students";
 import { deleteStudent } from "@/services/students";
 import type { Student } from "@/services/students";
+import { notify } from "@/lib/notify";
 import { authStore } from "@/stores/use-auth.store";
 import { studentsStore } from "@/stores/use-students.store";
 
@@ -37,7 +38,6 @@ export function StudentsList() {
   const [dialogOpen, setDialogOpen] = useState(false);
   const [selectedStudent, setSelectedStudent] = useState<Student | null>(null);
   const [deletingId, setDeletingId] = useState<string | null>(null);
-  const [actionError, setActionError] = useState<string | null>(null);
   const {
     students,
     count,
@@ -49,7 +49,6 @@ export function StudentsList() {
   function openDialog(mode: DialogMode, student?: Student) {
     setDialogMode(mode);
     setSelectedStudent(student ?? null);
-    setActionError(null);
     setDialogOpen(true);
   }
 
@@ -60,7 +59,6 @@ export function StudentsList() {
 
     authStore.hydrate();
     setDeletingId(student.id);
-    setActionError(null);
 
     try {
       await deleteStudent(
@@ -68,6 +66,7 @@ export function StudentsList() {
         authStore.getState().accessToken ?? undefined,
       );
       studentsStore.clearStudent();
+      notify.success(`Estudante ${student.nome} eliminado.`);
 
       if (students.length === 1 && page > 1) {
         setPage(page - 1);
@@ -75,11 +74,7 @@ export function StudentsList() {
         await refetch();
       }
     } catch (cause) {
-      setActionError(
-        cause instanceof Error
-          ? cause.message
-          : "Não foi possível eliminar o estudante.",
-      );
+      notify.error(cause, "Não foi possível eliminar o estudante.");
     } finally {
       setDeletingId(null);
     }
@@ -105,12 +100,12 @@ export function StudentsList() {
         />
       </div>
 
-      {(actionError || listStatus === "error") && (
+      {listStatus === "error" && (
         <p
           role="alert"
           className="mt-4 rounded-md bg-red-50 px-3 py-2 text-sm text-red-600"
         >
-          {actionError ?? listError}
+          {listError}
         </p>
       )}
 
@@ -196,7 +191,6 @@ export function StudentsList() {
         student={selectedStudent}
         onOpenChange={setDialogOpen}
         onSaved={() => {
-          setActionError(null);
           void refetch();
         }}
       />

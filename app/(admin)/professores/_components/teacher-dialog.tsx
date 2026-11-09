@@ -44,6 +44,7 @@ import type {
   TeacherGender,
   TeacherUpdatePayload,
 } from "@/services/teachers";
+import { notify } from "@/lib/notify";
 import { authStore } from "@/stores/use-auth.store";
 import { teachersStore } from "@/stores/use-teachers.store";
 
@@ -167,12 +168,14 @@ export function TeacherDialog({
           { ...payload, password: form.password },
           accessToken,
         );
+        notify.success(`Professor ${payload.nome} cadastrado com sucesso.`);
       } else {
         if (!teacherId) {
           setError("Não foi possível identificar o professor.");
           return;
         }
         await updateTeacher(teacherId, payload, accessToken);
+        notify.success(`Dados de ${payload.nome} atualizados.`);
       }
 
       teachersStore.clearTeacher();

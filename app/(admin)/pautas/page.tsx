@@ -1,6 +1,5 @@
-import { ClassReport } from "./_components/class-report";
-import { REPORT_STUDENTS } from "./_lib/mock-data";
+import { ReportsTabs } from "./_components/reports-tabs";
 
 export default function ReportsPage() {
-  return <ClassReport students={REPORT_STUDENTS} />;
+  return <ReportsTabs />;
 }

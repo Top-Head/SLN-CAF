@@ -1,5 +1,6 @@
 "use client";
 
+import { notify } from "@/lib/notify";
 import { useConfirmPassword } from "@/hooks/auth/use-auth";
 import Image from "next/image";
 import Link from "next/link";
@@ -118,7 +119,10 @@ export default function ResetPassword({ token }: ResetPasswordProps) {
       confirmPassword: confirmPasswordValue,
     });
 
-    if (result.ok) setIsSuccess(true);
+    if (result.ok) {
+      setIsSuccess(true);
+      notify.success("Palavra-passe redefinida. Já pode iniciar sessão.");
+    }
   }
 
   return (

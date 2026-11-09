@@ -8,6 +8,7 @@ import { useState, type FormEvent } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { notify } from "@/lib/notify";
 import { useRegister } from "@/hooks/auth/use-auth";
 
 const DEFAULT_FORM = {
@@ -55,6 +56,7 @@ export function RegisterForm() {
 
     if (!result.ok) return;
 
+    notify.success("Conta criada com sucesso. Inicie sessão para continuar.");
     router.replace("/login");
   }
 
