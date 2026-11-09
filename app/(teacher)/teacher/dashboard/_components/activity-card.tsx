@@ -1,6 +1,6 @@
-import { CheckCircle2, Eye, Lock, Pencil } from "lucide-react";
+"use client";
 
-import { ACTIVIDADE_RECENTE_MOCK } from "../_lib/mock-data";
+import { CheckCircle2, Eye, Lock, Pencil } from "lucide-react";
 
 const ICONS = {
   pencil: { Icon: Pencil, className: "text-rose-500 bg-rose-50" },
@@ -9,32 +9,49 @@ const ICONS = {
   lock: { Icon: Lock, className: "text-amber-500 bg-amber-50" },
 } as const;
 
-export function ActivityCard() {
+type ActivityItem = {
+  id: string;
+  type: keyof typeof ICONS;
+  title: string;
+  subtitle: string;
+};
+
+type ActivityCardProps = {
+  items: ActivityItem[];
+};
+
+export function ActivityCard({ items }: ActivityCardProps) {
   return (
     <div className="space-y-4 rounded-2xl border border-gray-100 bg-white p-5 shadow-sm">
       <h3 className="text-sm font-bold text-gray-900">Actividade recente</h3>
 
-      <div className="space-y-3">
-        {ACTIVIDADE_RECENTE_MOCK.map((activity) => {
-          const { Icon, className } = ICONS[activity.type];
+      {items.length === 0 ? (
+        <p className="text-xs text-gray-400">Ainda não há actividade recente.</p>
+      ) : (
+        <div className="space-y-3">
+          {items.map((activity) => {
+            const { Icon, className } = ICONS[activity.type];
 
-          return (
-            <div key={activity.id} className="flex items-start space-x-3">
-              <div
-                className={`mt-0.5 flex size-8 shrink-0 items-center justify-center rounded-full ${className}`}
-              >
-                <Icon className="size-3.5" />
+            return (
+              <div key={activity.id} className="flex items-start space-x-3">
+                <div
+                  className={`mt-0.5 flex size-8 shrink-0 items-center justify-center rounded-full ${className}`}
+                >
+                  <Icon className="size-3.5" />
+                </div>
+                <div>
+                  <p className="text-xs font-semibold leading-snug text-gray-800">
+                    {activity.title}
+                  </p>
+                  <p className="mt-0.5 text-[10px] text-gray-400">
+                    {activity.subtitle}
+                  </p>
+                </div>
               </div>
-              <div>
-                <p className="text-xs font-semibold leading-snug text-gray-800">
-                  {activity.title}
-                </p>
-                <p className="mt-0.5 text-[10px] text-gray-400">{activity.subtitle}</p>
-              </div>
-            </div>
-          );
-        })}
-      </div>
+            );
+          })}
+        </div>
+      )}
     </div>
   );
 }
