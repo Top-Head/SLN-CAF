@@ -41,6 +41,7 @@ export const TEACHER_DASHBOARD_MOCK = {
   name: "Paulo",
   pendingStudents: 55,
   pendingReports: 3,
+  trimester: 1,
   nextDeadline: {
     subject: "Física · 10.ª IB",
     label: "Física · 08 Dez, 23:59",
