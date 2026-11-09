@@ -1,3 +1,4 @@
+import type { GradeComponent } from "../grades/type";
 import type { StudentGender } from "../students/type";
 
 export type AccessCodeStudent = {
@@ -32,7 +33,8 @@ export type StudentGrade = {
   turma: string;
   school_year: SchoolYearSummary;
   trimester: number;
-  assessment_number: number;
+  /** MAC, PP ou PT (substituiu `assessment_number`). */
+  component: GradeComponent;
   /** Decimal serializado como string, ex.: "14.50". */
   value: string;
   teacher: string;

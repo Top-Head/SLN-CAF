@@ -1,5 +1,5 @@
-import { PeriodsWorkspace } from "./_components/periods-workspace";
+import { PeriodsTabs } from "./_components/periods-tabs";
 
 export default function LaunchPeriodsPage() {
-  return <PeriodsWorkspace />;
+  return <PeriodsTabs />;
 }
