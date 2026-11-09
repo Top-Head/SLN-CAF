@@ -4,7 +4,6 @@ import { BookOpenCheck } from "lucide-react";
 import Link from "next/link";
 
 import { ArrowRight } from "./arrow-right";
-import { greeting } from "../_lib/utils";
 
 type WelcomeBannerProps = {
   name: string;
@@ -37,10 +36,9 @@ export function WelcomeBanner({
       <div className="flex flex-col gap-6 md:flex-row md:items-center md:justify-between">
         <div className="max-w-xl">
           <h2
-            suppressHydrationWarning
             className="text-[22px] font-bold leading-7 tracking-tight"
           >
-            {greeting()}, {name}
+            Bem-vindo, {name}
           </h2>
 
           <p className="mt-2 text-[13px] leading-5 text-white/90">
