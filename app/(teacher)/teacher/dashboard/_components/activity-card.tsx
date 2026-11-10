@@ -1,4 +1,4 @@
-import { CheckCircle2, Eye, Lock, Pencil } from "lucide-react";
+"use client";
 
 export type ActivityItem = {
   id: string;
@@ -32,23 +32,26 @@ export function ActivityCard({
         {items.map((activity) => {
           const { Icon, className } = ICONS[activity.type];
 
-          return (
-            <div key={activity.id} className="flex items-start space-x-3">
-              <div
-                className={`mt-0.5 flex size-8 shrink-0 items-center justify-center rounded-full ${className}`}
-              >
-                <Icon className="size-3.5" />
+            return (
+              <div key={activity.id} className="flex items-start space-x-3">
+                <div
+                  className={`mt-0.5 flex size-8 shrink-0 items-center justify-center rounded-full ${className}`}
+                >
+                  <Icon className="size-3.5" />
+                </div>
+                <div>
+                  <p className="text-xs font-semibold leading-snug text-gray-800">
+                    {activity.title}
+                  </p>
+                  <p className="mt-0.5 text-[10px] text-gray-400">
+                    {activity.subtitle}
+                  </p>
+                </div>
               </div>
-              <div>
-                <p className="text-xs font-semibold leading-snug text-gray-800">
-                  {activity.title}
-                </p>
-                <p className="mt-0.5 text-[10px] text-gray-400">{activity.subtitle}</p>
-              </div>
-            </div>
-          );
-        })}
-      </div>
+            );
+          })}
+        </div>
+      )}
     </div>
   );
 }

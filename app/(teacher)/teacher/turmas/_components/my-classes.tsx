@@ -8,7 +8,6 @@ import {
   HelpCircle,
   Pencil,
   Play,
-  Ruler,
   Search,
   Users,
 } from "lucide-react";
@@ -16,18 +15,22 @@ import Link from "next/link";
 import { useMemo, useState } from "react";
 
 import { FilterSelect } from "@/components/shared/filter-select";
+import { useMinhasTurmas } from "@/hooks/teachers/use-minhas-turmas";
 import { cn } from "@/lib/utils";
-import { matchesSearch } from "@/lib/utils/matches-search";
-
 import {
-  ACADEMIC_YEARS,
-  STATUS_LABEL,
-  TRIMESTERS,
+  normalizeClassStatus,
   type ClassStatus,
-  type TeacherClass,
-} from "../_lib/mock-data";
+} from "@/lib/utils/class-status";
+import { matchesSearch } from "@/lib/utils/matches-search";
+import type { MinhaTurma } from "@/services/minhas-turmas";
 
 type View = "all" | ClassStatus;
+
+const STATUS_LABEL: Record<ClassStatus, string> = {
+  in_progress: "Em curso",
+  not_started: "Por iniciar",
+  completed: "Concluído",
+};
 
 const STATUS_STYLES: Record<ClassStatus, { badge: string; dot: string }> = {
   in_progress: { badge: "bg-pending-soft text-pending", dot: "bg-pending" },
@@ -42,9 +45,9 @@ function ClassCard({ item }: { item: TeacherClass }) {
   const PrimaryIcon =
     item.status === "in_progress" ? Play : item.status === "not_started" ? Pencil : Pencil;
   const primaryLabel =
-    item.status === "in_progress"
+    statusKey === "in_progress"
       ? "Continuar"
-      : item.status === "not_started"
+      : statusKey === "not_started"
         ? "Lançar notas"
         : "Editar notas";
 
@@ -59,18 +62,18 @@ function ClassCard({ item }: { item: TeacherClass }) {
                 isCompleted ? "bg-positive-soft text-positive" : "bg-accent text-primary",
               )}
             >
-              <span>{item.grade}</span>
+              <span>{item.classe}.ª</span>
               <span className="-mt-1 text-[9px] font-normal opacity-80">
-                {item.subGroup}
+                classe
               </span>
             </div>
 
             <div className="min-w-0">
               <h3 className="truncate text-sm leading-tight font-bold text-foreground">
-                {item.subject}
+                {item.disciplina}
               </h3>
               <p className="mt-0.5 truncate text-xs text-muted-foreground">
-                {item.course}
+                {item.turma} · {item.curso}
               </p>
             </div>
           </div>
@@ -82,43 +85,43 @@ function ClassCard({ item }: { item: TeacherClass }) {
             )}
           >
             <span className={cn("size-1.5 rounded-full", status.dot)} />
-            {STATUS_LABEL[item.status]}
+            {STATUS_LABEL[statusKey]}
           </span>
         </div>
 
         <div className="mt-4 flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-muted-foreground">
           <div className="flex items-center gap-1">
             <Users className="size-3.5" />
-            <span>{item.students} estudantes</span>
+            <span>{item.total_alunos} estudantes</span>
           </div>
           <div className="flex items-center gap-1">
-            <Ruler className="size-3.5" />
-            <span>{item.scale}</span>
+            <Calendar className="size-3.5" />
+            <span>{item.ano_letivo}</span>
           </div>
-          {item.badge && (
+          {item.is_classe_exame && (
             <span className="rounded bg-info-soft px-2 py-0.5 text-[10px] font-semibold text-info">
-              {item.badge}
+              Classe de exame
             </span>
           )}
         </div>
 
         <div className="mt-4 space-y-2 rounded-xl border bg-muted/60 p-3">
           <div className="flex items-center justify-between text-xs">
-            <span className="font-semibold text-foreground">{item.trimester}</span>
+            <span className="font-semibold text-foreground">Progresso</span>
             <span className="font-bold text-foreground">
-              {item.completed}{" "}
+              {item.completos}{" "}
               <span className="font-normal text-muted-foreground">
-                / {item.total} completas
+                / {item.total_alunos} completas
               </span>
             </span>
           </div>
 
           <div
             role="meter"
-            aria-label={`Progresso de ${item.subject} da ${item.grade} ${item.subGroup}`}
+            aria-label={`Progresso de ${item.disciplina} da ${item.turma}`}
             aria-valuemin={0}
-            aria-valuemax={item.total}
-            aria-valuenow={item.completed}
+            aria-valuemax={100}
+            aria-valuenow={percentage}
             className="h-1.5 w-full overflow-hidden rounded-full bg-border"
           >
             <div
@@ -136,7 +139,7 @@ function ClassCard({ item }: { item: TeacherClass }) {
             ) : (
               <Clock className="size-3.5 shrink-0" />
             )}
-            <span className="truncate">{item.deadline}</span>
+            <span className="truncate">{percentage}% concluído</span>
           </div>
         </div>
       </div>
@@ -197,38 +200,41 @@ export function MyClasses({
         .filter((item) =>
           matchesSearch(
             query,
-            item.subject,
-            item.course,
-            `${item.grade} ${item.subGroup}`,
+            item.disciplina,
+            item.turma,
+            item.curso,
+            `${item.classe}.ª`,
           ),
         ),
     [classes, query, trimester, year],
   );
 
   const filtered =
-    view === "all" ? visible : visible.filter((item) => item.status === view);
+    view === "all" ? visible : visible.filter((item) => statusOf(item) === view);
 
-  const classCount = new Set(visible.map((item) => `${item.grade}${item.subGroup}`)).size;
-  const subjectCount = new Set(visible.map((item) => item.subject)).size;
+  const classCount = new Set(visible.map((item) => item.turma)).size;
+  const subjectCount = new Set(visible.map((item) => item.disciplina)).size;
 
   const tabs: { key: View; label: string; count: number }[] = [
     { key: "all", label: "Todas", count: visible.length },
     {
       key: "in_progress",
       label: "Em curso",
-      count: visible.filter((item) => item.status === "in_progress").length,
+      count: visible.filter((item) => statusOf(item) === "in_progress").length,
     },
     {
       key: "not_started",
       label: "Por iniciar",
-      count: visible.filter((item) => item.status === "not_started").length,
+      count: visible.filter((item) => statusOf(item) === "not_started").length,
     },
     {
       key: "completed",
       label: "Concluídas",
-      count: visible.filter((item) => item.status === "completed").length,
+      count: visible.filter((item) => statusOf(item) === "completed").length,
     },
   ];
+
+  const isLoading = status === "loading" && items.length === 0;
 
   return (
     <div className="flex flex-col gap-6">
@@ -310,10 +316,26 @@ export function MyClasses({
           })}
         </div>
 
-        <div className="grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-3">
-          {filtered.map((item) => (
-            <ClassCard key={item.id} item={item} />
-          ))}
+        {error ? (
+          <div className="flex flex-col items-center gap-3 rounded-xl border border-dashed py-10 text-center">
+            <p className="text-sm text-rose-500">{error}</p>
+            <button
+              type="button"
+              onClick={() => void refetch()}
+              className="rounded-lg border bg-card px-3 py-1.5 text-xs font-semibold text-foreground transition-colors hover:bg-muted"
+            >
+              Tentar novamente
+            </button>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-3">
+            {isLoading &&
+              Array.from({ length: 3 }).map((_, index) => (
+                <div
+                  key={index}
+                  className="h-[260px] animate-pulse rounded-xl border bg-muted/40"
+                />
+              ))}
 
           {filtered.length === 0 && (
             <p className="col-span-full rounded-xl border border-dashed py-10 text-center text-sm text-muted-foreground">
