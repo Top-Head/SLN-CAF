@@ -38,16 +38,12 @@ const STATUS_STYLES: Record<ClassStatus, { badge: string; dot: string }> = {
   completed: { badge: "bg-positive-soft text-positive", dot: "bg-positive" },
 };
 
-function statusOf(item: MinhaTurma) {
-  return normalizeClassStatus(item.estado, item.progresso, item.completos);
-}
-
-function ClassCard({ item }: { item: MinhaTurma }) {
-  const statusKey = statusOf(item);
-  const isCompleted = statusKey === "completed";
-  const percentage = Math.min(100, Math.max(0, Math.round(item.progresso)));
-  const status = STATUS_STYLES[statusKey];
-  const PrimaryIcon = statusKey === "in_progress" ? Play : Pencil;
+function ClassCard({ item }: { item: TeacherClass }) {
+  const isCompleted = item.status === "completed";
+  const percentage = item.total > 0 ? Math.round((item.completed / item.total) * 100) : 0;
+  const status = STATUS_STYLES[item.status];
+  const PrimaryIcon =
+    item.status === "in_progress" ? Play : item.status === "not_started" ? Pencil : Pencil;
   const primaryLabel =
     statusKey === "in_progress"
       ? "Continuar"
@@ -150,7 +146,7 @@ function ClassCard({ item }: { item: MinhaTurma }) {
 
       <div className="mt-5 grid grid-cols-2 gap-2">
         <Link
-          href="/teacher/lancamento-de-notas"
+          href={item.launchHref ?? "/teacher/lancamento-de-notas"}
           className={cn(
             "flex items-center justify-center gap-1.5 rounded-lg px-3 py-2 text-xs font-semibold transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring",
             isCompleted
@@ -163,7 +159,7 @@ function ClassCard({ item }: { item: MinhaTurma }) {
         </Link>
 
         <Link
-          href={`/teacher/mini-pautas?turma_disciplina_id=${item.id}`}
+          href={item.miniPautaHref ?? "/teacher/mini-pautas"}
           className="flex items-center justify-center gap-1.5 rounded-lg border bg-card px-3 py-2 text-xs font-semibold text-foreground transition-colors hover:bg-muted focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
         >
           <FileText className="size-3.5 text-muted-foreground" />
@@ -174,27 +170,33 @@ function ClassCard({ item }: { item: MinhaTurma }) {
   );
 }
 
-export function MyClasses() {
-  const { items, status, error, refetch } = useMinhasTurmas();
-
+export function MyClasses({
+  classes,
+  years = ACADEMIC_YEARS,
+  trimesters = TRIMESTERS,
+  initialTrimester,
+  status,
+}: {
+  classes: TeacherClass[];
+  years?: string[];
+  trimesters?: string[];
+  initialTrimester?: string;
+  /** Mensagem no lugar da grelha (a carregar, erro). */
+  status?: string | null;
+}) {
   const [view, setView] = useState<View>("all");
   const [query, setQuery] = useState("");
-  const [year, setYear] = useState("Todos");
-
-  const years = useMemo(
-    () =>
-      Array.from(new Set(items.map((item) => item.ano_letivo))).sort((a, b) =>
-        b.localeCompare(a),
-      ),
-    [items],
-  );
-
-  const activeYear = years.includes(year) ? year : "Todos";
+  const [selectedYear, setYear] = useState<string | null>(null);
+  const [selectedTrimester, setTrimester] = useState<string | null>(null);
+  // Enquanto os dados carregam as opções mudam: usa a primeira até haver escolha.
+  const year = selectedYear ?? years[0] ?? "";
+  const trimester = selectedTrimester ?? initialTrimester ?? trimesters[0] ?? "";
 
   const visible = useMemo(
     () =>
-      items
-        .filter((item) => activeYear === "Todos" || item.ano_letivo === activeYear)
+      classes
+        .filter((item) => !item.year || item.year === year)
+        .filter((item) => item.trimester === trimester)
         .filter((item) =>
           matchesSearch(
             query,
@@ -204,7 +206,7 @@ export function MyClasses() {
             `${item.classe}.ª`,
           ),
         ),
-    [items, query, activeYear],
+    [classes, query, trimester, year],
   );
 
   const filtered =
@@ -253,10 +255,16 @@ export function MyClasses() {
           <div className="flex flex-wrap items-center gap-3">
             <FilterSelect
               label="Ano lectivo"
-              value={activeYear}
-              options={["Todos", ...years]}
+              value={year}
+              options={years}
               onChange={setYear}
               icon={Calendar}
+            />
+            <FilterSelect
+              label="Trimestre"
+              value={trimester}
+              options={trimesters}
+              onChange={setTrimester}
             />
 
             <div className="relative min-w-[220px] flex-1 sm:w-64 sm:flex-none">
@@ -329,16 +337,12 @@ export function MyClasses() {
                 />
               ))}
 
-            {!isLoading &&
-              filtered.map((item) => <ClassCard key={item.id} item={item} />)}
-
-            {!isLoading && filtered.length === 0 && (
-              <p className="col-span-full rounded-xl border border-dashed py-10 text-center text-sm text-muted-foreground">
-                Nenhuma turma encontrada para os filtros selecionados.
-              </p>
-            )}
-          </div>
-        )}
+          {filtered.length === 0 && (
+            <p className="col-span-full rounded-xl border border-dashed py-10 text-center text-sm text-muted-foreground">
+              {status ?? "Nenhuma turma encontrada para os filtros selecionados."}
+            </p>
+          )}
+        </div>
 
         <div className="flex items-start gap-3 rounded-xl border bg-muted/60 p-4 text-xs text-muted-foreground">
           <HelpCircle className="mt-0.5 size-4 shrink-0" />

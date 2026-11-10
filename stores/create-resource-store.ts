@@ -192,6 +192,21 @@ export function createResourceStore<T, P extends ResourceListParams>({
     return useSyncExternalStore(subscribe, getState, getServerState);
   }
 
+  // Os dados dependem de quem tem sessão (ex.: turmas do professor):
+  // descarta a cache ao terminar sessão ou ao mudar de utilizador.
+  if (typeof window !== "undefined") {
+    let sessionKey: string | null | undefined;
+    authStore.subscribe(() => {
+      const auth = authStore.getState();
+      if (!auth.hydrated) return;
+      const next = auth.accessToken ? String(auth.user?.id ?? auth.user?.email ?? "") : null;
+      if (sessionKey !== undefined && next !== sessionKey && state !== initialState) {
+        reset();
+      }
+      sessionKey = next;
+    });
+  }
+
   return {
     subscribe,
     getState,

@@ -1,4 +1,4 @@
-import { TeacherDashboardView } from "./_components/dashboard-view";
+import { TeacherDashboardView } from "./_components/teacher-dashboard-view";
 
 export default function TeacherDashboardPage() {
   return <TeacherDashboardView />;

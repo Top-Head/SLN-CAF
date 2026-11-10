@@ -1,14 +1,15 @@
-import { API, withQuery } from "../data";
-import type { MiniPautaListParams, PaginatedMiniPautas } from "./type";
+import { API, toPaginated, withQuery } from "../data";
+import type { MiniPautaParams, PaginatedMiniPautas } from "./type";
 
+/** `GET /api/teacher/mini-pautas/` — mini-pauta de uma turma-disciplina (só leitura). */
 export async function getMiniPautas(
-  params: MiniPautaListParams,
+  params: MiniPautaParams,
   accessToken?: string,
 ): Promise<PaginatedMiniPautas> {
-  const response = await API.get<PaginatedMiniPautas>(
+  const response = await API.get<unknown>(
     withQuery("/api/teacher/mini-pautas/", params),
     { accessToken, cache: "no-store" },
   );
 
-  return response.data;
+  return toPaginated(response.data);
 }

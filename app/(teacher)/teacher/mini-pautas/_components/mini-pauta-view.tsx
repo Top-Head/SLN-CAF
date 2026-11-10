@@ -14,194 +14,157 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
-import { useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 
-import {
-  useMiniPautas,
-  useMiniPautasQuadro,
-} from "@/hooks/assessments/use-mini-pautas";
+import { formatDecimal } from "@/components/shared/assessments/labels";
+import { currentAccessToken } from "@/components/shared/resource/resource-manager";
+import { useMiniPauta } from "@/hooks/teacher-dashboard/use-mini-pauta";
+import { useTeacherClasses } from "@/hooks/teacher-dashboard/use-teacher-dashboard";
 import { paginate } from "@/hooks/catalog/use-catalog-state";
+import { notify } from "@/lib/notify";
 import { cn } from "@/lib/utils";
-import { formatGrade } from "@/lib/utils/format-grade";
-import { matchesSearch } from "@/lib/utils/matches-search";
+import {
+  downloadMiniPautaPdf,
+  type MiniPautaResultFilter,
+  type MiniPautaStudent,
+} from "@/services/mini-pautas";
 
 const PAGE_SIZE = 8;
-
+const SEARCH_DELAY_MS = 400;
 const TRIMESTERS = [1, 2, 3] as const;
-type Trimester = (typeof TRIMESTERS)[number];
 
-const TRIMESTER_LABEL: Record<Trimester, string> = {
-  1: "1.º Trimestre",
-  2: "2.º Trimestre",
-  3: "3.º Trimestre",
-};
-
-type PeriodStatus = "open" | "closed" | "upcoming";
-
-const PERIOD_STATUS: Record<PeriodStatus, { label: string; className: string; dot: string }> = {
-  open: {
-    label: "Em lançamento",
-    className: "bg-amber-50 text-amber-600",
-    dot: "bg-amber-500",
-  },
-  closed: {
-    label: "Concluída",
-    className: "bg-emerald-50 text-emerald-600",
-    dot: "bg-emerald-500",
-  },
-  upcoming: {
-    label: "Por iniciar",
-    className: "bg-gray-100 text-gray-500",
-    dot: "bg-gray-400",
-  },
-};
-
-type View = "all" | "positive" | "negative" | "pending";
-
-type ResultTone = "positive" | "negative" | "pending" | "unknown";
+type ResultTone = "positive" | "negative" | "pending";
 
 const selectClass =
   "h-9 appearance-none rounded-xl border border-gray-200 bg-white pl-3 pr-8 text-xs font-semibold text-gray-700 shadow-sm transition hover:bg-gray-50 focus:outline-none focus:ring-1 focus:ring-rose-500 disabled:cursor-not-allowed disabled:opacity-60";
 
-function parseTrimester(value: string | null): Trimester {
-  const number = Number(value);
-  return TRIMESTERS.includes(number as Trimester)
-    ? (number as Trimester)
-    : 1;
+/** "Positivo", "NEGATIVA", "pendente"… → tom do resultado devolvido pela API. */
+function toneOf(resultado: string): ResultTone | null {
+  const value = resultado.trim().toLowerCase();
+  if (value.startsWith("posit") || value.startsWith("aprov")) return "positive";
+  if (value.startsWith("negat") || value.startsWith("reprov")) return "negative";
+  if (value.startsWith("pend") || value === "") return "pending";
+  return null;
 }
 
-function toGrade(value: string | null): number | null {
-  if (value === null || value === "") return null;
-  const number = Number(value);
-  return Number.isFinite(number) ? number : null;
-}
-
-function formatComponent(value: number | null) {
-  if (value === null) return "—";
-  return Number.isInteger(value)
-    ? formatGrade(value, 0)
-    : formatGrade(value, 1);
-}
-
-function resultTone(resultado: string): ResultTone {
-  const normalized = resultado.trim().toLowerCase();
-  if (normalized.startsWith("positiv")) return "positive";
-  if (normalized.startsWith("negativ")) return "negative";
-  if (normalized.startsWith("pend")) return "pending";
-  return "unknown";
-}
-
-function periodStatus(estado: string): PeriodStatus {
-  const normalized = estado.trim().toLowerCase();
-  if (
-    normalized.includes("aberto") ||
-    normalized.includes("lançamento") ||
-    normalized.includes("lancamento")
-  ) {
-    return "open";
+/** Estado da mini-pauta → estilo do selo. */
+function estadoStyle(estado: string) {
+  const value = estado.toLowerCase();
+  if (value.includes("conclu") || value.includes("fechad")) {
+    return { className: "bg-emerald-50 text-emerald-600", dot: "bg-emerald-500" };
   }
-  if (normalized.includes("fechado") || normalized.includes("conclu")) {
-    return "closed";
+  if (value.includes("inici") || value.includes("aguard")) {
+    return { className: "bg-gray-100 text-gray-500", dot: "bg-gray-400" };
   }
-  return "upcoming";
+  return { className: "bg-amber-50 text-amber-600", dot: "bg-amber-500" };
 }
 
+function GradeText({ value }: { value: string | null }) {
+  if (value === null || value === "") return <span className="text-gray-300">—</span>;
+  return (
+    <span className={Number(value) < 10 ? "font-bold text-rose-500" : "text-gray-800"}>
+      {formatDecimal(value)}
+    </span>
+  );
+}
+
+function saveFile(blob: Blob, filename: string) {
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = filename;
+  link.click();
+  URL.revokeObjectURL(url);
+}
+
+/**
+ * Mini-pauta (só leitura) de uma turma-disciplina do professor:
+ * `GET /api/teacher/mini-pautas/` e `GET /api/teacher/mini-pautas/pdf/`.
+ */
 export function MiniPautaView() {
   const searchParams = useSearchParams();
-  const quadro = useMiniPautasQuadro();
-
-  const [selectedId, setSelectedId] = useState(
-    () => searchParams.get("turma_disciplina_id") ?? "",
-  );
-  const [trimester, setTrimester] = useState<Trimester>(() =>
-    parseTrimester(searchParams.get("trimestre")),
-  );
-  const [view, setView] = useState<View>("all");
+  const classes = useTeacherClasses();
+  const [selectedId, setSelectedId] = useState(searchParams.get("turmaDisciplina") ?? "");
+  const [trimestre, setTrimestre] = useState<number | "">(() => {
+    const value = Number(searchParams.get("trimestre"));
+    return TRIMESTERS.includes(value as 1 | 2 | 3) ? value : "";
+  });
+  const [view, setView] = useState<MiniPautaResultFilter>("todos");
   const [query, setQuery] = useState("");
+  const [search, setSearch] = useState("");
   const [page, setPage] = useState(1);
+  const [downloading, setDownloading] = useState(false);
 
-  const turmaDisciplinaId = selectedId || quadro.items[0]?.id || "";
+  // Pesquisa no servidor depois de o professor parar de escrever.
+  useEffect(() => {
+    const timer = setTimeout(() => setSearch(query.trim()), SEARCH_DELAY_MS);
+    return () => clearTimeout(timer);
+  }, [query]);
 
-  const miniPautas = useMiniPautas(
-    { turma_disciplina_id: turmaDisciplinaId, trimestre: trimester },
-    { enabled: Boolean(turmaDisciplinaId) },
+  const options = [...classes.items].sort(
+    (a, b) =>
+      a.classe - b.classe ||
+      a.turma.localeCompare(b.turma, "pt", { numeric: true }) ||
+      a.disciplina.localeCompare(b.disciplina, "pt"),
   );
+  const turmaDisciplinaId = selectedId || options[0]?.id || "";
+  const params = turmaDisciplinaId
+    ? {
+        turma_disciplina_id: turmaDisciplinaId,
+        trimestre: trimestre || undefined,
+        resultado: view === "todos" ? undefined : view,
+        search: search || undefined,
+      }
+    : null;
+  const { miniPauta, status, error } = useMiniPauta(params);
 
-  const sheet = useMemo(
-    () =>
-      miniPautas.items.find(
-        (item) => item.turma_disciplina_id === turmaDisciplinaId,
-      ) ?? null,
-    [miniPautas.items, turmaDisciplinaId],
-  );
-
-  const filtered = useMemo(() => {
-    const students = sheet?.alunos ?? [];
-    const searched = students.filter((student) =>
-      matchesSearch(query, student.aluno, student.numero_processo),
-    );
-
-    if (view === "pending") {
-      return searched.filter(
-        (student) => resultTone(student.resultado) === "pending",
-      );
-    }
-    if (view === "positive") {
-      return searched.filter(
-        (student) => resultTone(student.resultado) === "positive",
-      );
-    }
-    if (view === "negative") {
-      return searched.filter(
-        (student) => resultTone(student.resultado) === "negative",
-      );
-    }
-    return searched;
-  }, [sheet, query, view]);
-
-  const counts = {
-    all: sheet?.total ?? 0,
-    positive: sheet?.positivas ?? 0,
-    negative: sheet?.negativas ?? 0,
-    pending: sheet?.pendentes ?? 0,
-  };
-
-  const totalPages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
+  const students: MiniPautaStudent[] = miniPauta?.alunos ?? [];
+  const totalPages = Math.max(1, Math.ceil(students.length / PAGE_SIZE));
   const currentPage = Math.min(page, totalPages);
-  const rows = paginate(filtered, currentPage, PAGE_SIZE);
-  const firstRow = filtered.length === 0 ? 0 : (currentPage - 1) * PAGE_SIZE + 1;
-  const lastRow = Math.min(currentPage * PAGE_SIZE, filtered.length);
+  const rows = paginate(students, currentPage, PAGE_SIZE);
+  const firstRow = students.length === 0 ? 0 : (currentPage - 1) * PAGE_SIZE + 1;
+  const lastRow = Math.min(currentPage * PAGE_SIZE, students.length);
+  const launchHref = turmaDisciplinaId
+    ? `/teacher/lancamento-de-notas?turmaDisciplina=${turmaDisciplinaId}`
+    : "/teacher/lancamento-de-notas";
 
-  const changeTurma = (id: string) => {
-    setSelectedId(id);
-    setPage(1);
-  };
+  const loading =
+    classes.status === "loading" || classes.status === "idle" || status === "loading";
 
-  const changeTrimester = (value: Trimester) => {
-    setTrimester(value);
-    setPage(1);
-  };
-
-  const changeView = (next: View) => {
+  const changeView = (next: MiniPautaResultFilter) => {
     setView(next);
     setPage(1);
   };
 
-  const metadata = sheet
+  async function downloadPdf() {
+    if (!params) return;
+    setDownloading(true);
+    try {
+      const { turma_disciplina_id, trimestre: t, resultado, search: s } = params;
+      const blob = await downloadMiniPautaPdf(
+        { turma_disciplina_id, trimestre: t, resultado, search: s },
+        currentAccessToken(),
+      );
+      const name = (miniPauta?.titulo || "mini-pauta").replace(/[^\p{L}\p{N}]+/gu, "-");
+      saveFile(blob, `${name}.pdf`);
+      notify.success("PDF da mini-pauta descarregado.");
+    } catch (cause) {
+      notify.error(cause, "Não foi possível gerar o PDF da mini-pauta.");
+    } finally {
+      setDownloading(false);
+    }
+  }
+
+  const metadata = miniPauta
     ? [
-        { label: "Turma", value: sheet.turma },
-        { label: "Curso", value: sheet.curso },
-        { label: "Disciplina", value: sheet.disciplina },
-        { label: "Período", value: sheet.periodo },
-        {
-          label: "Média da turma",
-          value:
-            sheet.media_turma === null
-              ? "—"
-              : formatGrade(toGrade(sheet.media_turma), 1),
-        },
+        { label: "Turma", value: miniPauta.turma },
+        { label: "Curso", value: miniPauta.curso || "—" },
+        { label: "Disciplina", value: miniPauta.disciplina },
+        { label: "Período", value: miniPauta.periodo || "—" },
+        { label: "Média da turma", value: formatDecimal(miniPauta.media_turma) },
       ]
     : [];
+  const estado = miniPauta ? estadoStyle(miniPauta.estado) : null;
 
   const status = sheet ? periodStatus(sheet.estado) : null;
   const anoLetivo = sheet?.ano_letivo ?? quadro.items[0]?.ano_letivo ?? "—";
@@ -215,58 +178,58 @@ export function MiniPautaView() {
       <div className="flex flex-col justify-between gap-4 lg:flex-row lg:items-center">
         <div>
           <h2 className="text-xl font-bold text-gray-900">
-            {sheet ? sheet.titulo : "Mini-pauta"}
+            {miniPauta ? miniPauta.titulo || `${miniPauta.disciplina} · ${miniPauta.turma}` : "Mini-pauta"}
           </h2>
           <p className="mt-0.5 text-xs text-gray-400">
-            {sheet
-              ? `${sheet.periodo} · ${sheet.total} alunos`
-              : isLoading
-                ? "A carregar mini-pauta..."
+            {miniPauta
+              ? `${miniPauta.periodo || "Trimestre aberto"} · ${miniPauta.total} alunos`
+              : loading
+                ? "A carregar a mini-pauta..."
                 : "Sem mini-pauta disponível para esta seleção"}
           </p>
         </div>
 
-        <div className="flex flex-wrap items-center gap-2.5">
-          <button
-            type="button"
-            className="flex h-9 items-center gap-2 rounded-xl border border-gray-200 bg-white px-3 text-xs font-semibold text-gray-700 shadow-sm transition hover:bg-gray-50"
-          >
+        <div className="flex flex-wrap items-center gap-2.5 print:hidden">
+          <span className="flex h-9 items-center gap-2 rounded-xl border border-gray-200 bg-white px-3 text-xs font-semibold text-gray-700 shadow-sm">
             <Calendar className="size-3.5 text-gray-400" />
-            <span>{anoLetivo}</span>
-            <ChevronDown className="ml-1 size-3.5 text-gray-400" />
-          </button>
+            <span>{miniPauta?.ano_letivo || options[0]?.ano_letivo || "—"}</span>
+          </span>
 
           <label className="relative">
             <span className="sr-only">Trimestre</span>
             <select
-              value={trimester}
-              onChange={(event) =>
-                changeTrimester(Number(event.target.value) as Trimester)
-              }
+              value={trimestre}
+              onChange={(event) => {
+                setTrimestre(event.target.value ? Number(event.target.value) : "");
+                setPage(1);
+              }}
               className={selectClass}
             >
-              {TRIMESTERS.map((value) => (
-                <option key={value} value={value}>
-                  {TRIMESTER_LABEL[value]}
+              <option value="">Trimestre aberto</option>
+              {TRIMESTERS.map((t) => (
+                <option key={t} value={t}>
+                  {t}.º Trimestre
                 </option>
               ))}
             </select>
-            <ChevronDown className="pointer-events-none absolute right-2.5 top-1/2 size-3.5 -translate-y-1/2 text-gray-400" />
+            <ChevronDown className="pointer-events-none absolute top-1/2 right-2.5 size-3.5 -translate-y-1/2 text-gray-400" />
           </label>
 
           <label className="relative">
             <span className="sr-only">Turma e disciplina</span>
             <select
               value={turmaDisciplinaId}
-              onChange={(event) => changeTurma(event.target.value)}
-              disabled={quadro.items.length === 0}
+              onChange={(event) => {
+                setSelectedId(event.target.value);
+                setPage(1);
+              }}
+              disabled={options.length === 0}
               className={selectClass}
             >
-              {quadro.items.length === 0 ? (
-                <option value="">
-                  {quadro.status === "loading"
-                    ? "A carregar..."
-                    : "Sem turmas atribuídas"}
+              {options.length === 0 && <option value="">Sem turmas atribuídas</option>}
+              {options.map((item) => (
+                <option key={item.id} value={item.id}>
+                  {item.turma} · {item.disciplina}
                 </option>
               ) : (
                 quadro.items.map((item) => (
@@ -276,13 +239,14 @@ export function MiniPautaView() {
                 ))
               )}
             </select>
-            <ChevronDown className="pointer-events-none absolute right-2.5 top-1/2 size-3.5 -translate-y-1/2 text-gray-400" />
+            <ChevronDown className="pointer-events-none absolute top-1/2 right-2.5 size-3.5 -translate-y-1/2 text-gray-400" />
           </label>
 
           <button
             type="button"
             onClick={() => window.print()}
-            className="flex h-9 items-center gap-1.5 rounded-xl border border-gray-200 bg-white px-3 text-xs font-semibold text-gray-700 shadow-sm transition hover:bg-gray-50"
+            disabled={!miniPauta}
+            className="flex h-9 items-center gap-1.5 rounded-xl border border-gray-200 bg-white px-3 text-xs font-semibold text-gray-700 shadow-sm transition hover:bg-gray-50 disabled:opacity-50"
           >
             <Printer className="size-3.5 text-gray-500" />
             <span>Imprimir</span>
@@ -290,58 +254,52 @@ export function MiniPautaView() {
 
           <button
             type="button"
-            onClick={() => window.print()}
-            className="flex h-9 items-center gap-1.5 rounded-xl bg-rose-500 px-4 text-xs font-bold text-white shadow-sm transition hover:bg-rose-600"
+            onClick={() => void downloadPdf()}
+            disabled={!miniPauta || downloading}
+            className="flex h-9 items-center gap-1.5 rounded-xl bg-rose-500 px-4 text-xs font-bold text-white shadow-sm transition hover:bg-rose-600 disabled:opacity-50"
           >
             <FileDown className="size-3.5" />
-            <span>Exportar PDF</span>
+            <span>{downloading ? "A gerar..." : "Exportar PDF"}</span>
           </button>
         </div>
       </div>
 
+      {(error || classes.error) && (
+        <p role="alert" className="rounded-md bg-red-50 px-3 py-2 text-sm text-red-600">
+          {error ?? classes.error}
+        </p>
+      )}
+
       {/* Banner com metadados */}
       <div className="grid grid-cols-2 gap-4 rounded-2xl border border-gray-100 bg-white p-4 text-xs shadow-sm md:grid-cols-6">
-        {error ? (
-          <p className="col-span-2 text-xs text-rose-500 md:col-span-6">
-            {error}
-          </p>
-        ) : sheet && status ? (
+        {miniPauta && estado ? (
           <>
             {metadata.map((item) => (
               <div key={item.label}>
-                <p className="text-[10px] font-semibold uppercase text-gray-400">
-                  {item.label}
-                </p>
-                <p className="mt-1 truncate font-bold text-gray-900">
-                  {item.value}
-                </p>
+                <p className="text-[10px] font-semibold text-gray-400 uppercase">{item.label}</p>
+                <p className="mt-1 truncate font-bold text-gray-900">{item.value}</p>
               </div>
             ))}
             <div>
-              <p className="text-[10px] font-semibold uppercase text-gray-400">
-                Estado
-              </p>
+              <p className="text-[10px] font-semibold text-gray-400 uppercase">Estado</p>
               <span
                 className={cn(
                   "mt-1 inline-flex items-center gap-1 rounded-md px-2 py-0.5 text-[10px] font-semibold",
-                  PERIOD_STATUS[status].className,
+                  estado.className,
                 )}
               >
-                <span
-                  className={cn(
-                    "size-1.5 rounded-full",
-                    PERIOD_STATUS[status].dot,
-                  )}
-                />
-                {PERIOD_STATUS[status].label}
+                <span className={cn("size-1.5 rounded-full", estado.dot)} />
+                {miniPauta.estado || "—"}
               </span>
             </div>
           </>
         ) : (
           <p className="col-span-2 text-xs text-gray-400 md:col-span-6">
-            {isLoading
-              ? "A carregar mini-pauta..."
-              : "Escolha outro trimestre ou turma para ver a mini-pauta."}
+            {loading
+              ? "A carregar..."
+              : options.length === 0
+                ? "Ainda não tem turmas e disciplinas atribuídas."
+                : "Escolha outro trimestre ou turma para ver a mini-pauta."}
           </p>
         )}
       </div>
@@ -350,37 +308,32 @@ export function MiniPautaView() {
       <div className="space-y-4 rounded-2xl border border-gray-100 bg-white p-6 shadow-sm">
         <div className="flex flex-col justify-between gap-4 border-b border-gray-100 pb-4 sm:flex-row sm:items-center">
           <div className="flex flex-wrap items-center gap-x-6 gap-y-2 text-xs font-medium">
-            <ViewTab
-              label="Todos"
-              count={counts.all}
-              active={view === "all"}
-              onClick={() => changeView("all")}
-            />
+            <ViewTab label="Todos" count={miniPauta?.total ?? 0} active={view === "todos"} onClick={() => changeView("todos")} />
             <ViewTab
               label="Positivos"
-              count={counts.positive}
-              active={view === "positive"}
-              onClick={() => changeView("positive")}
+              count={miniPauta?.positivas ?? 0}
+              active={view === "positivas"}
+              onClick={() => changeView("positivas")}
               tone="positive"
             />
             <ViewTab
               label="Negativos"
-              count={counts.negative}
-              active={view === "negative"}
-              onClick={() => changeView("negative")}
+              count={miniPauta?.negativas ?? 0}
+              active={view === "negativas"}
+              onClick={() => changeView("negativas")}
               tone="negative"
             />
             <ViewTab
               label="Pendentes"
-              count={counts.pending}
-              active={view === "pending"}
-              onClick={() => changeView("pending")}
+              count={miniPauta?.pendentes ?? 0}
+              active={view === "pendentes"}
+              onClick={() => changeView("pendentes")}
               tone="pending"
             />
           </div>
 
           <div className="relative w-full sm:w-64">
-            <Search className="absolute left-3 top-1/2 size-3.5 -translate-y-1/2 text-gray-400" />
+            <Search className="absolute top-1/2 left-3 size-3.5 -translate-y-1/2 text-gray-400" />
             <input
               type="search"
               value={query}
@@ -389,137 +342,88 @@ export function MiniPautaView() {
                 setPage(1);
               }}
               placeholder="Pesquisar nome ou processo"
-              className="w-full rounded-xl border border-gray-200 py-1.5 pl-9 pr-3 text-xs text-gray-700 placeholder:text-gray-400 focus:border-rose-500 focus:outline-none focus:ring-1 focus:ring-rose-500"
+              className="w-full rounded-xl border border-gray-200 py-1.5 pr-3 pl-9 text-xs text-gray-700 placeholder:text-gray-400 focus:border-rose-500 focus:ring-1 focus:ring-rose-500 focus:outline-none"
             />
           </div>
         </div>
 
-        {sheet ? (
-          <div className="overflow-x-auto">
-            <table className="w-full border-collapse text-left">
-              <thead>
-                <tr className="border-b border-gray-100 bg-gray-50/80 text-[10px] font-bold uppercase tracking-wider text-gray-400">
-                  <th className="px-3 py-2.5">N.º</th>
-                  <th className="px-3 py-2.5">Estudante</th>
-                  <th className="px-3 py-2.5 text-center">Sexo</th>
-                  <th className="px-3 py-2.5 text-center">
-                    <div>MAC</div>
-                    <div className="text-[8px] font-normal lowercase text-gray-400">
-                      Aval. contínua
-                    </div>
+        <div className="overflow-x-auto">
+          <table className="w-full border-collapse text-left">
+            <thead>
+              <tr className="border-b border-gray-100 bg-gray-50/80 text-[10px] font-bold tracking-wider text-gray-400 uppercase">
+                <th className="px-3 py-2.5">N.º</th>
+                <th className="px-3 py-2.5">Estudante</th>
+                <th className="px-3 py-2.5 text-center">Sexo</th>
+                {[
+                  ["MAC", "aval. contínua"],
+                  ["PP", "prova professor"],
+                  ["PT", "prova trimestre"],
+                ].map(([label, description]) => (
+                  <th key={label} className="px-3 py-2.5 text-center">
+                    <div>{label}</div>
+                    <div className="text-[8px] font-normal text-gray-400 lowercase">{description}</div>
                   </th>
-                  <th className="px-3 py-2.5 text-center">
-                    <div>PP</div>
-                    <div className="text-[8px] font-normal lowercase text-gray-400">
-                      Prova professor
-                    </div>
-                  </th>
-                  <th className="px-3 py-2.5 text-center">
-                    <div>PT</div>
-                    <div className="text-[8px] font-normal lowercase text-gray-400">
-                      Prova trimestre
-                    </div>
-                  </th>
-                  <th className="px-3 py-2.5 text-center">MT</th>
-                  <th className="px-3 py-2.5 text-center">Resultado</th>
-                  <th className="px-3 py-2.5"></th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-gray-100 text-xs">
-                {rows.map((student) => {
-                  const tone = resultTone(student.resultado);
-                  const mt = toGrade(student.mt);
-
-                  return (
-                    <tr
-                      key={student.enrollment_id}
-                      className={cn(
-                        "transition hover:bg-gray-50/50",
-                        tone === "pending" && "bg-amber-50/20",
+                ))}
+                <th className="px-3 py-2.5 text-center">MT</th>
+                <th className="px-3 py-2.5 text-center">Resultado</th>
+                <th className="px-3 py-2.5"></th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-gray-100 text-xs">
+              {rows.map((student) => {
+                const tone = toneOf(student.resultado);
+                return (
+                  <tr
+                    key={student.enrollment_id}
+                    className={cn("transition hover:bg-gray-50/50", tone === "pending" && "bg-amber-50/20")}
+                  >
+                    <td className="px-3 py-3 font-semibold text-gray-400">
+                      {String(student.numero).padStart(2, "0")}
+                    </td>
+                    <td className="px-3 py-3">
+                      <p className="font-bold text-gray-900">{student.aluno}</p>
+                      <p className="text-[10px] text-gray-400">{student.numero_processo}</p>
+                    </td>
+                    <td className="px-3 py-3 text-center font-medium text-gray-500">
+                      {student.sexo || "—"}
+                    </td>
+                    <td className="px-3 py-3 text-center font-semibold"><GradeText value={student.mac} /></td>
+                    <td className="px-3 py-3 text-center font-semibold"><GradeText value={student.pp} /></td>
+                    <td className="px-3 py-3 text-center font-semibold"><GradeText value={student.pt} /></td>
+                    <td className="px-3 py-3 text-center font-black"><GradeText value={student.mt} /></td>
+                    <td className="px-3 py-3 text-center">
+                      {tone ? (
+                        <ResultBadge tone={tone}>{student.resultado || "Pendente"}</ResultBadge>
+                      ) : (
+                        <span className="text-gray-500">{student.resultado}</span>
                       )}
-                    >
-                      <td className="px-3 py-3 font-semibold text-gray-400">
-                        {String(student.numero).padStart(2, "0")}
-                      </td>
+                    </td>
+                    <td className="px-3 py-3 text-right">
+                      <Link
+                        href={launchHref}
+                        className="inline-flex size-8 items-center justify-center rounded-lg text-gray-300 transition hover:bg-gray-100 hover:text-gray-600"
+                        aria-label={`Ver lançamento de ${student.aluno}`}
+                      >
+                        <ChevronRight className="size-4" />
+                      </Link>
+                    </td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
 
-                      <td className="px-3 py-3">
-                        <p className="font-bold text-gray-900">
-                          {student.aluno}
-                        </p>
-                        <p className="text-[10px] text-gray-400">
-                          {student.numero_processo}
-                        </p>
-                      </td>
-
-                      <td className="px-3 py-3 text-center font-medium text-gray-500">
-                        {student.sexo}
-                      </td>
-
-                      <GradeCell value={toGrade(student.mac)} />
-                      <GradeCell value={toGrade(student.pp)} />
-                      <GradeCell value={toGrade(student.pt)} />
-
-                      <td className="px-3 py-3 text-center font-black">
-                        {mt === null ? (
-                          <span className="font-normal text-gray-300">—</span>
-                        ) : (
-                          <span
-                            className={
-                              mt < 10 ? "text-rose-500" : "text-gray-900"
-                            }
-                          >
-                            {formatGrade(mt, 1)}
-                          </span>
-                        )}
-                      </td>
-
-                      <td className="px-3 py-3 text-center">
-                        {tone === "unknown" ? (
-                          <span className="text-gray-400">
-                            {student.resultado || "—"}
-                          </span>
-                        ) : (
-                          <ResultBadge tone={tone}>
-                            {student.resultado}
-                          </ResultBadge>
-                        )}
-                      </td>
-
-                      <td className="px-3 py-3 text-right">
-                        <Link
-                          href="/teacher/lancamento-de-notas"
-                          className="inline-flex size-8 items-center justify-center rounded-lg text-gray-300 transition hover:bg-gray-100 hover:text-gray-600"
-                          aria-label={`Ver lançamento de ${student.aluno}`}
-                        >
-                          <ChevronRight className="size-4" />
-                        </Link>
-                      </td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
-
-            {rows.length === 0 && (
-              <p className="py-10 text-center text-xs text-gray-400">
-                Nenhum estudante encontrado.
-              </p>
-            )}
-          </div>
-        ) : (
-          <p className="py-10 text-center text-xs text-gray-400">
-            {error
-              ? error
-              : isLoading
-                ? "A carregar mini-pauta..."
-                : "Esta mini-pauta ainda não está disponível."}
-          </p>
-        )}
+          {rows.length === 0 && (
+            <p className="py-10 text-center text-xs text-gray-400">
+              {loading ? "A carregar estudantes..." : "Nenhum estudante encontrado."}
+            </p>
+          )}
+        </div>
 
         <div className="flex flex-col items-center justify-between gap-3 border-t border-gray-100 pt-3 text-xs text-gray-400 sm:flex-row">
           <p>
-            {firstRow}–{lastRow} de {filtered.length} estudantes · Negativas
-            (abaixo de 10) a vermelho · — nota em falta
+            {firstRow}–{lastRow} de {students.length} estudantes · Negativas (abaixo de 10) a
+            vermelho · — nota em falta
           </p>
 
           <div className="flex items-center gap-1">
@@ -567,7 +471,7 @@ export function MiniPautaView() {
       </div>
 
       {/* Alerta inferior */}
-      <div className="flex flex-col items-center justify-between gap-4 rounded-2xl border border-gray-100 bg-white p-4 shadow-sm sm:flex-row">
+      <div className="flex flex-col items-center justify-between gap-4 rounded-2xl border border-gray-100 bg-white p-4 shadow-sm sm:flex-row print:hidden">
         <div className="flex items-center gap-3">
           <div className="flex size-10 shrink-0 items-center justify-center rounded-xl border border-gray-100 bg-gray-50 text-gray-400">
             <Info className="size-5" />
@@ -584,6 +488,7 @@ export function MiniPautaView() {
         </div>
 
         <div className="flex w-full items-center justify-end gap-2.5 sm:w-auto">
+          {/* Sem endpoint de histórico por mini-pauta: mantém-se como estava. */}
           <button
             type="button"
             className="flex items-center gap-1.5 rounded-xl border border-gray-200 px-4 py-2.5 text-xs font-semibold text-gray-700 transition hover:bg-gray-50"
@@ -592,7 +497,7 @@ export function MiniPautaView() {
             <span>Ver histórico</span>
           </button>
           <Link
-            href="/teacher/lancamento-de-notas"
+            href={launchHref}
             className="flex items-center gap-1.5 rounded-xl bg-rose-500 px-4 py-2.5 text-xs font-bold text-white shadow-sm transition hover:bg-rose-600"
           >
             <Pencil className="size-3.5" />
@@ -646,31 +551,16 @@ function ViewTab({
       onClick={onClick}
       className={cn(
         "flex items-center gap-1 pb-1 transition",
-        active
-          ? "border-b-2 border-rose-500 font-semibold text-rose-500"
-          : "text-gray-500 hover:text-gray-700",
+        active ? "border-b-2 border-rose-500 font-semibold text-rose-500" : "text-gray-500 hover:text-gray-700",
       )}
     >
       <span>{label}</span>
-      <span
-        className={cn(
-          "rounded-full px-1.5 py-px text-[10px] font-bold",
-          badge,
-        )}
-      >
-        {count}
-      </span>
+      <span className={cn("rounded-full px-1.5 py-px text-[10px] font-bold", badge)}>{count}</span>
     </button>
   );
 }
 
-function ResultBadge({
-  tone,
-  children,
-}: {
-  tone: Exclude<ResultTone, "unknown">;
-  children: React.ReactNode;
-}) {
+function ResultBadge({ tone, children }: { tone: ResultTone; children: React.ReactNode }) {
   const styles = {
     positive: "bg-emerald-50 text-emerald-600 [&>span]:bg-emerald-500",
     negative: "bg-rose-50 text-rose-600 [&>span]:bg-rose-500",
@@ -678,12 +568,7 @@ function ResultBadge({
   }[tone];
 
   return (
-    <span
-      className={cn(
-        "inline-flex items-center gap-1 rounded-md px-2 py-0.5 text-[10px] font-bold",
-        styles,
-      )}
-    >
+    <span className={cn("inline-flex items-center gap-1 rounded-md px-2 py-0.5 text-[10px] font-bold", styles)}>
       <span className="size-1.5 rounded-full" />
       {children}
     </span>

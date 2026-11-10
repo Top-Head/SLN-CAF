@@ -1,6 +1,11 @@
 "use client";
 
-import { CheckCircle2, Eye, Lock, Pencil } from "lucide-react";
+export type ActivityItem = {
+  id: string;
+  type: keyof typeof ICONS;
+  title: string;
+  subtitle: string;
+};
 
 const ICONS = {
   pencil: { Icon: Pencil, className: "text-rose-500 bg-rose-50" },
@@ -9,28 +14,23 @@ const ICONS = {
   lock: { Icon: Lock, className: "text-amber-500 bg-amber-50" },
 } as const;
 
-type ActivityItem = {
-  id: string;
-  type: keyof typeof ICONS;
-  title: string;
-  subtitle: string;
-};
-
-type ActivityCardProps = {
+export function ActivityCard({
+  items,
+  emptyMessage = "Sem actividade recente.",
+}: {
   items: ActivityItem[];
-};
-
-export function ActivityCard({ items }: ActivityCardProps) {
+  emptyMessage?: string;
+}) {
   return (
     <div className="space-y-4 rounded-2xl border border-gray-100 bg-white p-5 shadow-sm">
       <h3 className="text-sm font-bold text-gray-900">Actividade recente</h3>
 
-      {items.length === 0 ? (
-        <p className="text-xs text-gray-400">Ainda não há actividade recente.</p>
-      ) : (
-        <div className="space-y-3">
-          {items.map((activity) => {
-            const { Icon, className } = ICONS[activity.type];
+      <div className="space-y-3">
+        {items.length === 0 && (
+          <p className="text-xs text-gray-400">{emptyMessage}</p>
+        )}
+        {items.map((activity) => {
+          const { Icon, className } = ICONS[activity.type];
 
             return (
               <div key={activity.id} className="flex items-start space-x-3">

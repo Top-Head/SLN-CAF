@@ -1,20 +1,22 @@
 import type { Paginated } from "../data";
 
-/** Linha de aluno dentro de uma mini-pauta (notas como decimal em string). */
-export type MiniPautaAluno = {
+export type MiniPautaResultFilter = "todos" | "positivas" | "negativas" | "pendentes";
+
+export type MiniPautaStudent = {
   enrollment_id: string;
   numero: number;
   aluno: string;
   numero_processo: string;
   sexo: string;
+  /** Decimais serializados como string, ou `null` sem nota. */
   mac: string | null;
   pp: string | null;
   pt: string | null;
+  /** Média trimestral. */
   mt: string | null;
   resultado: string;
 };
 
-/** Mini-pauta de uma turma-disciplina num trimestre. */
 export type MiniPauta = {
   turma_disciplina_id: string;
   titulo: string;
@@ -29,46 +31,21 @@ export type MiniPauta = {
   positivas: number;
   negativas: number;
   pendentes: number;
-  alunos: MiniPautaAluno[];
+  alunos: MiniPautaStudent[];
 };
 
-/** Filtro de resultado aceite pela API. */
-export type MiniPautaResultado =
-  | "todos"
-  | "positivas"
-  | "negativas"
-  | "pendentes";
-
-export type MiniPautaListParams = {
-  page?: number;
-  /** Obrigatório: id da turma-disciplina. */
+/**
+ * Filtros da mini-pauta. O schema só documenta `page` na listagem, mas o PDF
+ * usa os mesmos filtros; a listagem recebe-os também.
+ */
+export type MiniPautaParams = {
   turma_disciplina_id: string;
-  /** 1, 2 ou 3. Se vazio, a API usa o trimestre aberto. */
+  /** 1, 2 ou 3. Vazio: o trimestre aberto. */
   trimestre?: number;
-  resultado?: MiniPautaResultado;
-  /** Nome ou nº de processo do aluno. */
+  resultado?: MiniPautaResultFilter;
+  /** Nome ou n.º de processo do aluno. */
   search?: string;
-};
-
-/** Item do quadro de mini-pautas do professor (turma-disciplina). */
-export type QuadroMiniPauta = {
-  id: string;
-  turma: string;
-  disciplina: string;
-  classe: number;
-  curso: string;
-  ano_letivo: string;
-  total_alunos: number;
-  lancadas: number;
-  esperado: number;
-  progresso: number;
-  estado: string;
-};
-
-export type QuadroMiniPautaListParams = {
   page?: number;
 };
 
 export type PaginatedMiniPautas = Paginated<MiniPauta>;
-
-export type PaginatedQuadroMiniPauta = Paginated<QuadroMiniPauta>;

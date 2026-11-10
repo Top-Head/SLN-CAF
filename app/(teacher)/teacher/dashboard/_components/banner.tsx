@@ -14,6 +14,7 @@ type WelcomeBannerProps = {
   classesHref?: string;
 };
 
+/** Banner de boas-vindas. Calcula datas: renderizar só no cliente. */
 export function WelcomeBanner({
   name,
   pendingStudents,
@@ -22,6 +23,9 @@ export function WelcomeBanner({
   continueHref = "/teacher/lancamento-de-notas",
   classesHref = "/teacher/turmas",
 }: WelcomeBannerProps) {
+  const days = daysUntil(nextDeadline.date);
+  const deadlineDay = formatDeadlineDay(nextDeadline.date);
+
   return (
     <section className="relative isolate min-h-[181px] overflow-hidden rounded-xl bg-[#E8395B] px-6 py-6 text-white sm:px-8 sm:py-7">
       <div
