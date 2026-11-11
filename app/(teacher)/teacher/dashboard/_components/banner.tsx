@@ -14,7 +14,7 @@ type WelcomeBannerProps = {
   classesHref?: string;
 };
 
-/** Banner de boas-vindas. Calcula datas: renderizar só no cliente. */
+/** Banner de boas-vindas do professor. */
 export function WelcomeBanner({
   name,
   pendingStudents,
@@ -23,22 +23,15 @@ export function WelcomeBanner({
   continueHref = "/teacher/lancamento-de-notas",
   classesHref = "/teacher/turmas",
 }: WelcomeBannerProps) {
-  const days = daysUntil(nextDeadline.date);
-  const deadlineDay = formatDeadlineDay(nextDeadline.date);
-
   return (
-<<<<<<< HEAD
-    <section className="relative h-[181px] isolate overflow-hidden rounded-xl bg-primary px-8 py-7 text-white">
-=======
-    <section className="relative isolate min-h-[181px] overflow-hidden rounded-xl bg-[#E8395B] px-6 py-6 text-white sm:px-8 sm:py-7">
->>>>>>> 303d924928077c099ab8835278508316d11448ed
+    <section className="relative isolate min-h-[181px] overflow-hidden rounded-xl bg-primary px-6 py-6 text-white sm:px-8 sm:py-7">
       <div
         aria-hidden
         className="pointer-events-none absolute right-11 top-15.5 -z-10 h-62.5 w-62.5 rounded-full bg-leaf"
       />
       <div
         aria-hidden
-        className="pointer-events-none absolute -right-[106px] top-[10px] -z-10 h-[300px] w-[300px] rounded-full bg-[#FFC43D]"
+        className="pointer-events-none absolute -right-[106px] top-[10px] -z-10 h-[300px] w-[300px] rounded-full bg-warning"
       />
 
       <div className="flex flex-col gap-6 md:flex-row md:items-center md:justify-between">
@@ -75,28 +68,10 @@ export function WelcomeBanner({
           </div>
         </div>
 
-<<<<<<< HEAD
-        <aside
-          aria-label="Próximo prazo"
-          className="w-full rounded-xl bg-white px-5 py-4 text-center shadow-[0_8px_20px_rgba(0,0,0,0.12)] md:w-40 md:shrink-0"
-        >
-          <p className="text-[10px] font-medium uppercase leading-3 text-neutral-500">
-            Próximo prazo
-          </p>
-          <p className="mt-1 flex items-baseline justify-center gap-1.5 text-neutral-900">
-            <span className="text-4xl font-bold leading-none">{days}</span>
-            <span className="text-[13px] font-medium text-neutral-500">
-              {days === 1 ? "dia" : "dias"}
-            </span>
-          </p>
-          <p className="mt-1.5 text-[11px] font-medium leading-3.5 text-primary">
-            {nextDeadline.label}
-          </p>
-=======
         <aside className="flex w-full items-center gap-3 rounded-xl bg-white px-4 py-3.5 text-neutral-900 shadow-[0_8px_20px_rgba(0,0,0,0.12)] sm:px-5 md:w-56 md:shrink-0">
           {trimester !== undefined ? (
             <>
-              <span className="flex size-11 shrink-0 items-center justify-center rounded-xl bg-rose-50 text-[#E8395B]">
+              <span className="flex size-11 shrink-0 items-center justify-center rounded-xl bg-accent text-primary">
                 <BookOpenCheck aria-hidden="true" className="size-5" />
               </span>
               <span>
@@ -106,14 +81,14 @@ export function WelcomeBanner({
                 <span className="mt-0.5 block text-xl font-bold leading-tight">
                   {trimester}.º trimestre
                 </span>
-                <span className="mt-1 block text-[11px] text-[#E8395B]">
+                <span className="mt-1 block text-[11px] text-primary">
                   Lançamento de notas
                 </span>
               </span>
             </>
           ) : (
             <>
-              <span className="flex size-11 shrink-0 items-center justify-center rounded-xl bg-rose-50 text-[#E8395B]">
+              <span className="flex size-11 shrink-0 items-center justify-center rounded-xl bg-accent text-primary">
                 <BookOpenCheck aria-hidden="true" className="size-5" />
               </span>
               <span>
@@ -129,7 +104,6 @@ export function WelcomeBanner({
               </span>
             </>
           )}
->>>>>>> 303d924928077c099ab8835278508316d11448ed
         </aside>
       </div>
     </section>

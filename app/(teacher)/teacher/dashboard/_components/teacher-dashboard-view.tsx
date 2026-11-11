@@ -18,7 +18,7 @@ import {
 import { formatDateTime } from "@/lib/utils/format-date";
 
 import { launchStatusOf, miniPautaHref, trimesterLabel } from "../../_lib/teacher-api";
-import { NEXT_DEADLINE_MOCK, PROXIMOS_PRAZOS_MOCK } from "../_lib/mock-data";
+import { PROXIMOS_PRAZOS_MOCK } from "../_lib/mock-data";
 import { ActivityCard, type ActivityItem } from "./activity-card";
 import { WelcomeBanner } from "./banner";
 
@@ -106,7 +106,7 @@ export function TeacherDashboardView() {
           name={firstName || "professor"}
           pendingStudents={summary.por_completar}
           pendingReports={pendingReports}
-          nextDeadline={NEXT_DEADLINE_MOCK}
+          trimester={summary.trimestre}
         />
       )}
 

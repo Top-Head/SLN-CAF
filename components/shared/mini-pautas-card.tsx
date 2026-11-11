@@ -120,23 +120,13 @@ export function MiniPautasCard({
                   </td>
 
                   {/* Prazo */}
-<<<<<<< HEAD
-                  <td className="py-3 px-3">
-                    <p className="whitespace-nowrap font-semibold leading-tight text-gray-800">
-                      {item.prazo.date}
-                    </p>
-                    {item.prazo.subLabel && (
-                      <p className="mt-0.5 whitespace-nowrap text-[10px] font-bold text-primary">
-                        {item.prazo.subLabel}
-=======
                   {showPrazo && (
                     <td className="py-3 px-3">
                       <p className="whitespace-nowrap font-semibold leading-tight text-gray-800">
                         {item.prazo?.date ?? "—"}
->>>>>>> 303d924928077c099ab8835278508316d11448ed
                       </p>
                       {item.prazo?.subLabel && (
-                        <p className="mt-0.5 whitespace-nowrap text-[10px] font-bold text-rose-500">
+                        <p className="mt-0.5 whitespace-nowrap text-[10px] font-bold text-primary">
                           {item.prazo.subLabel}
                         </p>
                       )}
