@@ -36,7 +36,7 @@ const TRIMESTERS = [1, 2, 3] as const;
 type ResultTone = "positive" | "negative" | "pending";
 
 const selectClass =
-  "h-9 appearance-none rounded-xl border border-gray-200 bg-white pl-3 pr-8 text-xs font-semibold text-gray-700 shadow-sm transition hover:bg-gray-50 focus:outline-none focus:ring-1 focus:ring-rose-500";
+  "h-9 appearance-none rounded-xl border border-gray-200 bg-white pl-3 pr-8 text-xs font-semibold text-gray-700 shadow-sm transition hover:bg-gray-50 focus:outline-none focus:ring-1 focus:ring-primary";
 
 /** "Positivo", "NEGATIVA", "pendente"… → tom do resultado devolvido pela API. */
 function toneOf(resultado: string): ResultTone | null {
@@ -62,7 +62,7 @@ function estadoStyle(estado: string) {
 function GradeText({ value }: { value: string | null }) {
   if (value === null || value === "") return <span className="text-gray-300">—</span>;
   return (
-    <span className={Number(value) < 10 ? "font-bold text-rose-500" : "text-gray-800"}>
+    <span className={Number(value) < 10 ? "font-bold text-negative" : "text-gray-800"}>
       {formatDecimal(value)}
     </span>
   );
@@ -244,7 +244,7 @@ export function MiniPautaView() {
             type="button"
             onClick={() => void downloadPdf()}
             disabled={!miniPauta || downloading}
-            className="flex h-9 items-center gap-1.5 rounded-xl bg-rose-500 px-4 text-xs font-bold text-white shadow-sm transition hover:bg-rose-600 disabled:opacity-50"
+            className="flex h-9 items-center gap-1.5 rounded-xl bg-primary px-4 text-xs font-bold text-white shadow-sm transition hover:bg-primary/90 disabled:opacity-50"
           >
             <FileDown className="size-3.5" />
             <span>{downloading ? "A gerar..." : "Exportar PDF"}</span>
@@ -330,7 +330,7 @@ export function MiniPautaView() {
                 setPage(1);
               }}
               placeholder="Pesquisar nome ou processo"
-              className="w-full rounded-xl border border-gray-200 py-1.5 pr-3 pl-9 text-xs text-gray-700 placeholder:text-gray-400 focus:border-rose-500 focus:ring-1 focus:ring-rose-500 focus:outline-none"
+              className="w-full rounded-xl border border-gray-200 py-1.5 pr-3 pl-9 text-xs text-gray-700 placeholder:text-gray-400 focus:border-primary focus:ring-1 focus:ring-primary focus:outline-none"
             />
           </div>
         </div>
@@ -433,7 +433,7 @@ export function MiniPautaView() {
                 className={cn(
                   "flex size-7 items-center justify-center rounded-lg text-xs transition",
                   value === currentPage
-                    ? "bg-rose-50 font-bold text-rose-600"
+                    ? "bg-accent font-bold text-primary"
                     : "border border-gray-100 text-gray-600 hover:bg-gray-50",
                 )}
               >
@@ -479,7 +479,7 @@ export function MiniPautaView() {
           </button>
           <Link
             href={launchHref}
-            className="flex items-center gap-1.5 rounded-xl bg-rose-500 px-4 py-2.5 text-xs font-bold text-white shadow-sm transition hover:bg-rose-600"
+            className="flex items-center gap-1.5 rounded-xl bg-primary px-4 py-2.5 text-xs font-bold text-white shadow-sm transition hover:bg-primary/90"
           >
             <Pencil className="size-3.5" />
             <span>Ir para lançamento</span>
@@ -504,9 +504,9 @@ function ViewTab({
   tone?: "all" | "positive" | "negative" | "pending";
 }) {
   const badge = {
-    all: "bg-rose-50 text-rose-600",
+    all: "bg-accent text-primary",
     positive: "bg-emerald-50 text-emerald-600",
-    negative: "bg-rose-50 text-rose-600",
+    negative: "bg-negative-soft text-negative",
     pending: "bg-amber-50 text-amber-600",
   }[tone];
 
@@ -516,7 +516,7 @@ function ViewTab({
       onClick={onClick}
       className={cn(
         "flex items-center gap-1 pb-1 transition",
-        active ? "border-b-2 border-rose-500 font-semibold text-rose-500" : "text-gray-500 hover:text-gray-700",
+        active ? "border-b-2 border-primary font-semibold text-primary" : "text-gray-500 hover:text-gray-700",
       )}
     >
       <span>{label}</span>
@@ -528,7 +528,7 @@ function ViewTab({
 function ResultBadge({ tone, children }: { tone: ResultTone; children: React.ReactNode }) {
   const styles = {
     positive: "bg-emerald-50 text-emerald-600 [&>span]:bg-emerald-500",
-    negative: "bg-rose-50 text-rose-600 [&>span]:bg-rose-500",
+    negative: "bg-negative-soft text-negative [&>span]:bg-negative",
     pending: "bg-amber-50 text-amber-600 [&>span]:bg-amber-500",
   }[tone];
 

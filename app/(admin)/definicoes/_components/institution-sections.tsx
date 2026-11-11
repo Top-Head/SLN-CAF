@@ -35,7 +35,7 @@ export function IdentitySection({ value, onChange }: SectionProps<"identity">) {
             // eslint-disable-next-line @next/next/no-img-element -- pré-visualização local (blob:)
             <img src={value.logo} alt="Logótipo carregado" className="size-full object-contain p-2" />
           ) : (
-            <Image src="/logo.svg" alt="Logótipo actual" width={44} height={44} />
+            <Image src="/logo/colegio-arvore-da-felicidade.png" alt="Logótipo actual" width={44} height={44} />
           )}
         </div>
         <div className="flex min-w-0 flex-1 flex-col gap-1">

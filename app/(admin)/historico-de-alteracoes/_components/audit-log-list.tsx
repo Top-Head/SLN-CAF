@@ -36,8 +36,8 @@ const RESULT_FILTERS: Record<string, number | undefined> = {
 const ACTION_TONES: Partial<Record<AuditAction, Tone>> = {
   CREATE: "positive",
   UPDATE: "info",
-  DELETE: "primary",
-  LOGIN_FAILED: "primary",
+  DELETE: "negative",
+  LOGIN_FAILED: "negative",
   LOGIN: "neutral",
   LOGOUT: "neutral",
 };
@@ -61,7 +61,7 @@ export function ActionBadge({ action }: { action: AuditAction }) {
 export function StatusCode({ code }: { code: number | null }) {
   if (code === null) return <span className="text-muted-foreground">—</span>;
   return (
-    <span className={code >= 400 ? "font-medium text-primary" : "font-medium text-positive"}>
+    <span className={code >= 400 ? "font-medium text-negative" : "font-medium text-positive"}>
       {code}
     </span>
   );

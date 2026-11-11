@@ -28,7 +28,7 @@ export function ApprovalDonut({
   const total = approval.passed + approval.failed + approval.other;
   const segments = [
     { name: "Aprovados", value: approval.passed, color: "var(--positive)" },
-    { name: "Reprovados", value: approval.failed, color: "var(--primary)" },
+    { name: "Reprovados", value: approval.failed, color: "var(--negative)" },
     { name: otherLabel, value: approval.other, color: "#dedee6" },
   ];
 

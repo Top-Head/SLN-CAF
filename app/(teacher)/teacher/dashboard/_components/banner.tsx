@@ -29,10 +29,10 @@ export function WelcomeBanner({
   const deadlineDay = formatDeadlineDay(nextDeadline.date);
 
   return (
-    <section className="relative h-[181px] isolate overflow-hidden rounded-xl bg-[#E8395B] px-8 py-7 text-white">
+    <section className="relative h-[181px] isolate overflow-hidden rounded-xl bg-primary px-8 py-7 text-white">
       <div
         aria-hidden
-        className="pointer-events-none absolute right-11 top-15.5 -z-10 h-62.5 w-62.5 rounded-full bg-[#FF8159]"
+        className="pointer-events-none absolute right-11 top-15.5 -z-10 h-62.5 w-62.5 rounded-full bg-leaf"
       />
       <div
         aria-hidden
@@ -52,7 +52,7 @@ export function WelcomeBanner({
           <div className="mt-4 flex flex-wrap gap-2.5">
             <Link
               href={continueHref}
-              className="inline-flex h-10 items-center gap-2.5 rounded-lg bg-white px-4 text-sm font-medium text-[#E8395B] transition hover:bg-white/90 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
+              className="inline-flex h-10 items-center gap-2.5 rounded-lg bg-white px-4 text-sm font-medium text-primary transition hover:bg-white/90 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
             >
               Continuar lançamento
               <ArrowRight className="h-4 w-4" />
@@ -80,7 +80,7 @@ export function WelcomeBanner({
               {days === 1 ? "dia" : "dias"}
             </span>
           </p>
-          <p className="mt-1.5 text-[11px] font-medium leading-3.5 text-[#E8395B]">
+          <p className="mt-1.5 text-[11px] font-medium leading-3.5 text-primary">
             {nextDeadline.label}
           </p>
         </aside>

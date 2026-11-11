@@ -319,7 +319,7 @@ export function TeacherGradeSheet({ initialTurmaDisciplina }: { initialTurmaDisc
                           className={cn(
                             "h-9 w-20 rounded-md border bg-card text-center text-[13px] outline-none focus:border-primary disabled:bg-muted",
                             edited && "border-info bg-info-soft",
-                            bad && "border-primary bg-accent text-primary",
+                            bad && "border-negative bg-negative-soft text-negative",
                           )}
                         />
                       </td>
@@ -329,7 +329,7 @@ export function TeacherGradeSheet({ initialTurmaDisciplina }: { initialTurmaDisc
                     {student.mt === null ? (
                       <span className="text-muted-foreground">—</span>
                     ) : (
-                      <span className={Number(student.mt) < max / 2 ? "text-primary" : ""}>
+                      <span className={Number(student.mt) < max / 2 ? "text-negative" : ""}>
                         {formatDecimal(student.mt)}
                       </span>
                     )}

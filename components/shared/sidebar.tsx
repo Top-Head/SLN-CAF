@@ -20,7 +20,15 @@ export function Sidebar({ role = "admin", footer }: SidebarProps) {
   return (
     <aside className="sticky top-0 hidden h-screen w-72.5 shrink-0 flex-col overflow-y-auto bg-sidebar scrollbar-none px-8.5 py-7 lg:flex">
       <div className="flex items-center gap-3">
-        <Image src="/logo.svg" alt="" width={38} height={38} priority />
+        <span className="flex size-11 shrink-0 items-center justify-center rounded-lg bg-white p-1">
+          <Image
+            src="/logo/colegio-arvore-da-felicidade.png"
+            alt="Colégio Árvore da Felicidade"
+            width={36}
+            height={36}
+            priority
+          />
+        </span>
         <div className="flex flex-col gap-1">
           <span className="text-xl font-bold text-white">SLN CAF</span>
           <span className="text-xs text-muted-foreground">
@@ -65,7 +73,7 @@ export function Sidebar({ role = "admin", footer }: SidebarProps) {
       {footer && <div className="mt-auto pt-10">{footer}</div>}
 
       <span className={cn("text-[10px] text-sidebar-muted", footer ? "pt-4" : "mt-auto pt-10")}>
-        Easy Meal · Gestão escolar
+        Colégio Árvore da Felicidade
       </span>
     </aside>
   );

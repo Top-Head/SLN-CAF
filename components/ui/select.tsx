@@ -37,7 +37,7 @@ function SelectTrigger({
       data-slot="select-trigger"
       data-size={size}
       className={cn(
-        "flex w-full items-center gap-2 rounded-[8px] border border-[#DEDEE6] bg-white px-3 text-left text-sm text-[#1C1C1C] outline-none transition-colors focus:border-[#E73959] focus:ring-[3px] focus:ring-[#E73959]/15 disabled:cursor-not-allowed disabled:bg-[#F6F6F6] disabled:opacity-70 data-[placeholder]:text-[#999999]",
+        "flex w-full items-center gap-2 rounded-[8px] border border-[#DEDEE6] bg-white px-3 text-left text-sm text-[#1C1C1C] outline-none transition-colors focus:border-primary focus:ring-[3px] focus:ring-primary/15 disabled:cursor-not-allowed disabled:bg-[#F6F6F6] disabled:opacity-70 data-[placeholder]:text-[#999999]",
         size === "default" ? "h-11" : "h-9",
         className,
       )}
@@ -115,14 +115,14 @@ function SelectItem({
     <SelectPrimitive.Item
       data-slot="select-item"
       className={cn(
-        "relative flex w-full cursor-pointer select-none items-center rounded-md py-2 pr-8 pl-2.5 text-sm outline-none transition-colors focus:bg-[#FDF2F4] focus:text-[#E73959] data-[disabled]:pointer-events-none data-[disabled]:opacity-50",
+        "relative flex w-full cursor-pointer select-none items-center rounded-md py-2 pr-8 pl-2.5 text-sm outline-none transition-colors focus:bg-accent focus:text-primary data-[disabled]:pointer-events-none data-[disabled]:opacity-50",
         className,
       )}
       {...props}
     >
       <span className="absolute right-2 flex size-3.5 items-center justify-center">
         <SelectPrimitive.ItemIndicator>
-          <CheckIcon className="size-4 text-[#E73959]" />
+          <CheckIcon className="size-4 text-primary" />
         </SelectPrimitive.ItemIndicator>
       </span>
       <SelectPrimitive.ItemText>{children}</SelectPrimitive.ItemText>

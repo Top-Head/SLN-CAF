@@ -34,10 +34,10 @@ export function SubjectAverageChart({ data }: { data: SubjectAverage[] }) {
         </div>
         <ul className="flex items-center gap-3.5 text-[11px] text-neutral">
           <li className="flex items-center gap-1.5">
-            <span className="size-2.5 rounded-[2px] bg-accent" />≥ {PASS_GRADE}
+            <span className="size-2.5 rounded-[2px] bg-leaf" />≥ {PASS_GRADE}
           </li>
           <li className="flex items-center gap-1.5">
-            <span className="size-2.5 rounded-[2px] bg-primary" />
+            <span className="size-2.5 rounded-[2px] bg-negative" />
             {"<"} {PASS_GRADE}
           </li>
           <li className="flex items-center gap-1.5">
@@ -57,7 +57,7 @@ export function SubjectAverageChart({ data }: { data: SubjectAverage[] }) {
             {data.map(({ subject, average }) => (
               <Cell
                 key={subject}
-                fill={average < PASS_GRADE ? "var(--primary)" : "var(--accent)"}
+                fill={average < PASS_GRADE ? "var(--negative)" : "var(--leaf)"}
               />
             ))}
             <LabelList
@@ -73,7 +73,7 @@ export function SubjectAverageChart({ data }: { data: SubjectAverage[] }) {
                     textAnchor="middle"
                     fontSize={11}
                     fontWeight={600}
-                    fill={average < PASS_GRADE ? "var(--primary)" : "var(--foreground)"}
+                    fill={average < PASS_GRADE ? "var(--negative)" : "var(--foreground)"}
                   >
                     {formatGrade(average)}
                   </text>

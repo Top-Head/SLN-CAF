@@ -71,7 +71,7 @@ export function ConcludeDialog({
         className="gap-0 overflow-hidden rounded-xl border-0 p-0 shadow-[0_24px_48px_rgb(15_18_26/0.25)] sm:max-w-[540px]"
       >
         <div className="flex items-start gap-3.5 px-6 pt-6 pb-2">
-          <span className="flex size-11 shrink-0 items-center justify-center rounded-full bg-grade-fail-soft text-primary">
+          <span className="flex size-11 shrink-0 items-center justify-center rounded-full bg-accent text-primary">
             <CircleCheck className="size-5" />
           </span>
           <div className="flex min-w-0 flex-1 flex-col gap-1">

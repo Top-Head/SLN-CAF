@@ -157,7 +157,7 @@ export function AccessCodesTable({
                       )}
                     </span>
                   </TableCell>
-                  <TableCell className={cn("text-xs", expired && "text-primary")}>
+                  <TableCell className={cn("text-xs", expired && "text-negative")}>
                     {formatDateTime(row.expires_at)}
                   </TableCell>
                   <TableCell>

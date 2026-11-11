@@ -8,11 +8,12 @@ export type ClassIndicator = {
   hint: string;
   icon: LucideIcon;
   /** Cor do ícone e do fundo. */
-  tone: "primary" | "positive" | "pending";
+  tone: "primary" | "positive" | "pending" | "negative";
 };
 
 const TONES: Record<ClassIndicator["tone"], string> = {
-  primary: "bg-grade-fail-soft text-primary",
+  primary: "bg-accent text-primary",
+  negative: "bg-grade-fail-soft text-grade-fail",
   positive: "bg-grade-pass-soft text-grade-pass",
   pending: "bg-pending-soft text-pending",
 };

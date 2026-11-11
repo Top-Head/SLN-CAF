@@ -26,7 +26,7 @@ export function QuickAccess() {
           href={href}
           className="flex items-center gap-3 rounded-lg border border-catalog-border px-3 py-2.5 transition-colors hover:bg-muted"
         >
-          <span className="flex size-[34px] shrink-0 items-center justify-center rounded-lg bg-grade-fail-soft text-primary">
+          <span className="flex size-[34px] shrink-0 items-center justify-center rounded-lg bg-accent text-primary">
             <Icon className="size-4" />
           </span>
           <span className="flex min-w-0 flex-1 flex-col gap-0.5">

@@ -146,7 +146,7 @@ export function LaunchContext({
         <span
           className={cn(
             "flex size-[38px] shrink-0 items-center justify-center rounded-lg",
-            open ? "bg-grade-fail-soft text-primary" : "bg-catalog-border text-grade-locked-text",
+            open ? "bg-accent text-primary" : "bg-catalog-border text-grade-locked-text",
           )}
         >
           {open ? <Clock className="size-[18px]" /> : <Lock className="size-[18px]" />}

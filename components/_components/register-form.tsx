@@ -174,7 +174,7 @@ export function RegisterForm() {
         Já tem conta?{" "}
         <Link
           href="/login"
-          className="font-semibold text-[#E73959] hover:underline"
+          className="font-semibold text-primary hover:underline"
         >
           Entrar no sistema
         </Link>

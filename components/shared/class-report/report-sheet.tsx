@@ -27,7 +27,7 @@ const gradeColor = (value: number | null) =>
   value === null
     ? "text-pending"
     : value < PASS_GRADE
-      ? "text-primary"
+      ? "text-negative"
       : "text-foreground";
 
 type ReportSheetProps = {
@@ -59,7 +59,7 @@ export function ReportSheet({ students, summaries, counts, view, onViewChange }:
         tabs={[
           { key: "all", label: "Todos", count: students.length, tone: "primary" },
           { key: "passed", label: "Aprovados", count: counts.passed, tone: "positive" },
-          { key: "failed", label: "Reprovados", count: counts.failed, tone: "primary" },
+          { key: "failed", label: "Reprovados", count: counts.failed, tone: "negative" },
           { key: "pending", label: "Pendentes", count: counts.pending, tone: "pending" },
         ]}
       >

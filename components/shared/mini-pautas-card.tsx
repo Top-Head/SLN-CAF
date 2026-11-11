@@ -41,7 +41,7 @@ export function MiniPautasCard({
         </div>
         <Link
           href={viewAllHref}
-          className="inline-flex shrink-0 items-center text-xs font-semibold text-rose-500 hover:underline"
+          className="inline-flex shrink-0 items-center text-xs font-semibold text-primary hover:underline"
         >
           Ver todas
           <ChevronRight className="ml-0.5 h-3.5 w-3.5" />
@@ -75,7 +75,7 @@ export function MiniPautasCard({
               if (item.estado === "concluido" || percentage === 100) {
                 progressColor = "bg-emerald-500";
               } else if (item.estado === "em_curso" || item.completedStudents > 0) {
-                progressColor = "bg-rose-500";
+                progressColor = "bg-primary";
               }
 
               return (
@@ -122,7 +122,7 @@ export function MiniPautasCard({
                       {item.prazo.date}
                     </p>
                     {item.prazo.subLabel && (
-                      <p className="mt-0.5 whitespace-nowrap text-[10px] font-bold text-rose-500">
+                      <p className="mt-0.5 whitespace-nowrap text-[10px] font-bold text-primary">
                         {item.prazo.subLabel}
                       </p>
                     )}
