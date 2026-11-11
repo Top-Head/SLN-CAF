@@ -63,14 +63,14 @@ export type SettingsKey = keyof Settings;
 export const DEFAULT_SETTINGS: Settings = {
   identity: {
     logo: null,
-    systemName: "Easy Meal",
+    systemName: "SLN CAF",
     systemSubtitle: "Lançamento de Notas",
     institution: "Colégio Árvore da Felicidade",
     acronym: "CAF",
     email: "secretaria@arvoredafelicidade.ao",
     phone: "+244 923 000 111",
     address: "Rua da Missão, n.º 45 · Talatona, Luanda",
-    color: "#E73959",
+    color: "#1B7A34",
   },
   year: { active: "2026/2027", trimester: "1.º trimestre" },
   formulas: { mfdWeight: 40, examWeight: 60 },
@@ -120,7 +120,7 @@ export const SECTIONS: SettingsSectionMeta[] = [
   { id: "auditoria", label: "Auditoria e versões", icon: History, key: "audit" },
 ];
 
-export const BRAND_COLORS = ["#E73959", "#2666D9", "#119E07", "#CC7805", "#7C3AED", "#1C1C1C"];
+export const BRAND_COLORS = ["#1B7A34", "#8A5A2B", "#2666D9", "#119E07", "#CC7805", "#7C3AED", "#1C1C1C"];
 
 export const OPTIONS = {
   years: ["2026/2027", "2025/2026"],

@@ -82,12 +82,12 @@ export function PerformanceTable({
                 </TableCell>
                 <TableCell>{row.students}</TableCell>
                 <TableCell
-                  className={cn("font-semibold", row.average < PASS_GRADE && "text-primary")}
+                  className={cn("font-semibold", row.average < PASS_GRADE && "text-negative")}
                 >
                   {formatGrade(row.average)}
                 </TableCell>
                 <TableCell className="text-positive">{row.passed}</TableCell>
-                <TableCell className="text-primary">{row.failed}</TableCell>
+                <TableCell className="text-negative">{row.failed}</TableCell>
                 <TableCell>
                   <div className="flex items-center gap-3">
                     <div

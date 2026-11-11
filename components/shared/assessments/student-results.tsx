@@ -219,7 +219,7 @@ export function StudentResults({ canDecide = false }: { canDecide?: boolean }) {
           <Table
             head={["Disciplina", "MT1", "MT2", "MT3", "MFD", "Exame", "MF"]}
             rows={results.annual.subjects.map((s) => [
-              <span key="s" className={s.negative ? "font-medium text-primary" : "font-medium"}>
+              <span key="s" className={s.negative ? "font-medium text-negative" : "font-medium"}>
                 {s.subject}
               </span>,
               formatDecimal(s.mt1),

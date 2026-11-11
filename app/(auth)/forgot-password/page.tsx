@@ -8,7 +8,7 @@ export default function ForgotPasswordPage() {
         aria-hidden
         className="pointer-events-none absolute inset-x-0 top-0 h-[68px] bg-repeat-x"
         style={{
-          backgroundImage: 'url("/auth/Plus%20Pattern.png")',
+          backgroundImage: 'url("/auth/plus-pattern.svg")',
           backgroundSize: "auto 100%",
         }}
       />

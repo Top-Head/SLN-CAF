@@ -23,7 +23,7 @@ export function ClassHighlight({
     <section className="relative isolate flex flex-wrap items-center gap-6 overflow-hidden rounded-[10px] bg-primary px-8 py-[26px] text-white">
       <span
         aria-hidden
-        className="absolute top-[70px] left-[73%] -z-10 size-[260px] rounded-full bg-[#ff8159]"
+        className="absolute top-[70px] left-[73%] -z-10 size-[260px] rounded-full bg-leaf"
       />
       <span
         aria-hidden

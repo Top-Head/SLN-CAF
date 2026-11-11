@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="80" height="68" viewBox="0 0 80 68">
+  <!-- Padrão de cruzes no verde-folha do logótipo do Colégio Árvore da Felicidade -->
+  <g stroke="#5FAE3E" stroke-opacity="0.45" stroke-width="2.4" stroke-linecap="round">
+    <path d="M14 12l8 8M22 12l-8 8"/>
+    <path d="M54 12l8 8M62 12l-8 8"/>
+    <path d="M34 42l8 8M42 42l-8 8"/>
+    <path d="M74 42l8 8M82 42l-8 8"/>
+    <path d="M-6 42l8 8M2 42l-8 8"/>
+  </g>
+</svg>

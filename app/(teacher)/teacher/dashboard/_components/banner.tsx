@@ -27,10 +27,14 @@ export function WelcomeBanner({
   const deadlineDay = formatDeadlineDay(nextDeadline.date);
 
   return (
+<<<<<<< HEAD
+    <section className="relative h-[181px] isolate overflow-hidden rounded-xl bg-primary px-8 py-7 text-white">
+=======
     <section className="relative isolate min-h-[181px] overflow-hidden rounded-xl bg-[#E8395B] px-6 py-6 text-white sm:px-8 sm:py-7">
+>>>>>>> 303d924928077c099ab8835278508316d11448ed
       <div
         aria-hidden
-        className="pointer-events-none absolute right-11 top-15.5 -z-10 h-62.5 w-62.5 rounded-full bg-[#FF8159]"
+        className="pointer-events-none absolute right-11 top-15.5 -z-10 h-62.5 w-62.5 rounded-full bg-leaf"
       />
       <div
         aria-hidden
@@ -56,7 +60,7 @@ export function WelcomeBanner({
           <div className="mt-5 flex flex-wrap gap-2.5">
             <Link
               href={continueHref}
-              className="inline-flex h-10 items-center gap-2.5 rounded-lg bg-white px-4 text-sm font-medium text-[#E8395B] transition hover:bg-white/90 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
+              className="inline-flex h-10 items-center gap-2.5 rounded-lg bg-white px-4 text-sm font-medium text-primary transition hover:bg-white/90 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
             >
               Continuar lançamento
               <ArrowRight className="h-4 w-4" />
@@ -71,6 +75,24 @@ export function WelcomeBanner({
           </div>
         </div>
 
+<<<<<<< HEAD
+        <aside
+          aria-label="Próximo prazo"
+          className="w-full rounded-xl bg-white px-5 py-4 text-center shadow-[0_8px_20px_rgba(0,0,0,0.12)] md:w-40 md:shrink-0"
+        >
+          <p className="text-[10px] font-medium uppercase leading-3 text-neutral-500">
+            Próximo prazo
+          </p>
+          <p className="mt-1 flex items-baseline justify-center gap-1.5 text-neutral-900">
+            <span className="text-4xl font-bold leading-none">{days}</span>
+            <span className="text-[13px] font-medium text-neutral-500">
+              {days === 1 ? "dia" : "dias"}
+            </span>
+          </p>
+          <p className="mt-1.5 text-[11px] font-medium leading-3.5 text-primary">
+            {nextDeadline.label}
+          </p>
+=======
         <aside className="flex w-full items-center gap-3 rounded-xl bg-white px-4 py-3.5 text-neutral-900 shadow-[0_8px_20px_rgba(0,0,0,0.12)] sm:px-5 md:w-56 md:shrink-0">
           {trimester !== undefined ? (
             <>
@@ -107,6 +129,7 @@ export function WelcomeBanner({
               </span>
             </>
           )}
+>>>>>>> 303d924928077c099ab8835278508316d11448ed
         </aside>
       </div>
     </section>

@@ -38,7 +38,7 @@ export function ProfileOverview({
   return (
     <section className="relative overflow-hidden rounded-[20px] border border-black/[0.07] bg-card">
       <div aria-hidden className="relative h-[140px] overflow-hidden bg-primary shadow-card">
-        <span className="absolute top-[77px] left-[58.6%] size-[274px] rounded-full bg-[#fb7d5b]" />
+        <span className="absolute top-[77px] left-[58.6%] size-[274px] rounded-full bg-leaf" />
         <span className="absolute top-[31.6px] left-[70.1%] size-[274px] rounded-full bg-warning" />
       </div>
 

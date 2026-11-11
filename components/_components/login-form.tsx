@@ -170,7 +170,7 @@ export function LoginForm() {
           Ainda lembra da tua senha?{" "}
           <Link
             href="/forgot-password"
-            className="font-semibold text-[#E73959] hover:underline"
+            className="font-semibold text-primary hover:underline"
           >
             Recuperar senha
           </Link>
@@ -179,7 +179,7 @@ export function LoginForm() {
           É encarregado de educação?{" "}
           <Link
             href="/boletim"
-            className="font-semibold text-[#E73959] hover:underline"
+            className="font-semibold text-primary hover:underline"
           >
             Consultar boletim
           </Link>
@@ -188,7 +188,7 @@ export function LoginForm() {
           Ainda não tem conta?{" "}
           <Link
             href="/register"
-            className="font-semibold text-[#E73959] hover:underline"
+            className="font-semibold text-primary hover:underline"
           >
             Criar conta
           </Link>

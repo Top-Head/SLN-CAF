@@ -23,10 +23,10 @@ export type ReportView = "all" | ReportResult;
 
 export const RESULTS: Record<
   ReportResult,
-  { label: string; tone: "positive" | "primary" | "pending" }
+  { label: string; tone: "positive" | "negative" | "pending" }
 > = {
   passed: { label: "Aprovado", tone: "positive" },
-  failed: { label: "Reprovado", tone: "primary" },
+  failed: { label: "Reprovado", tone: "negative" },
   pending: { label: "Pendente", tone: "pending" },
 };
 

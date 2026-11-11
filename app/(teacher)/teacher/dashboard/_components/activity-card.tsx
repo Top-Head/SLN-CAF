@@ -8,7 +8,7 @@ export type ActivityItem = {
 };
 
 const ICONS = {
-  pencil: { Icon: Pencil, className: "text-rose-500 bg-rose-50" },
+  pencil: { Icon: Pencil, className: "text-primary bg-accent" },
   eye: { Icon: Eye, className: "text-blue-500 bg-blue-50" },
   check: { Icon: CheckCircle2, className: "text-emerald-500 bg-emerald-50" },
   lock: { Icon: Lock, className: "text-amber-500 bg-amber-50" },

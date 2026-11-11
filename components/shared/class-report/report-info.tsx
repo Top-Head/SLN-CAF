@@ -26,7 +26,7 @@ export function ReportInfo({
     {
       label: "Média da turma",
       value: (
-        <span className={cn(classMean !== null && classMean < PASS_GRADE && "text-primary")}>
+        <span className={cn(classMean !== null && classMean < PASS_GRADE && "text-negative")}>
           {formatGrade(classMean)}
         </span>
       ),

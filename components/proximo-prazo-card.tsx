@@ -69,7 +69,7 @@ function Badge({
   variant: PrazoItem["variant"];
 }) {
   const styles = {
-    urgent: "bg-rose-50 text-rose-500",
+    urgent: "bg-negative-soft text-negative",
     warning: "bg-amber-50 text-amber-700",
     neutral: "bg-neutral-100 text-neutral-600",
   };
