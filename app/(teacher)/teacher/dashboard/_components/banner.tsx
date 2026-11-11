@@ -1,17 +1,15 @@
+"use client";
+
+import { BookOpenCheck } from "lucide-react";
 import Link from "next/link";
 
 import { ArrowRight } from "./arrow-right";
-import { daysUntil, formatDeadlineDay, greeting } from "../_lib/utils";
 
 type WelcomeBannerProps = {
   name: string;
-  pendingStudents: number;
-  pendingReports: number;
-  nextDeadline: {
-    subject: string;
-    label: string;
-    date: Date | string;
-  };
+  pendingStudents?: number;
+  pendingReports?: number;
+  trimester?: number;
   continueHref?: string;
   classesHref?: string;
 };
@@ -21,7 +19,7 @@ export function WelcomeBanner({
   name,
   pendingStudents,
   pendingReports,
-  nextDeadline,
+  trimester,
   continueHref = "/teacher/lancamento-de-notas",
   classesHref = "/teacher/turmas",
 }: WelcomeBannerProps) {
@@ -29,7 +27,11 @@ export function WelcomeBanner({
   const deadlineDay = formatDeadlineDay(nextDeadline.date);
 
   return (
+<<<<<<< HEAD
     <section className="relative h-[181px] isolate overflow-hidden rounded-xl bg-primary px-8 py-7 text-white">
+=======
+    <section className="relative isolate min-h-[181px] overflow-hidden rounded-xl bg-[#E8395B] px-6 py-6 text-white sm:px-8 sm:py-7">
+>>>>>>> 303d924928077c099ab8835278508316d11448ed
       <div
         aria-hidden
         className="pointer-events-none absolute right-11 top-15.5 -z-10 h-62.5 w-62.5 rounded-full bg-leaf"
@@ -39,17 +41,23 @@ export function WelcomeBanner({
         className="pointer-events-none absolute -right-[106px] top-[10px] -z-10 h-[300px] w-[300px] rounded-full bg-[#FFC43D]"
       />
 
-      <div className="flex flex-col gap-8 md:flex-row md:items-center md:justify-between">
-        <div className="max-w-lg">
-          <h2 className="text-[22px] font-bold leading-7 tracking-tight">
-            {greeting()}, {name}
+      <div className="flex flex-col gap-6 md:flex-row md:items-center md:justify-between">
+        <div className="max-w-xl">
+          <h2
+            className="text-[22px] font-bold leading-7 tracking-tight"
+          >
+            Bem-vindo, {name}
           </h2>
 
-          <p className="mt-2 text-[13px] leading-4 text-white/90">
-            Faltam {pendingStudents} estudantes por completar em {pendingReports} mini-pautas. O prazo mais próximo é {nextDeadline.subject}, que fecha a {deadlineDay}.
+          <p className="mt-2 text-[13px] leading-5 text-white/90">
+            {pendingStudents !== undefined
+              ? pendingStudents === 0
+                ? `Não há estudantes com notas em falta nas ${pendingReports ?? 0} mini-pautas. Consulte as suas turmas para acompanhar os lançamentos.`
+                : `${pendingStudents} ${pendingStudents === 1 ? "estudante tem" : "estudantes têm"} notas por completar em ${pendingReports ?? 0} mini-pautas.`
+              : "Consulte as suas turmas, acompanhe as mini-pautas e mantenha os lançamentos organizados."}
           </p>
 
-          <div className="mt-4 flex flex-wrap gap-2.5">
+          <div className="mt-5 flex flex-wrap gap-2.5">
             <Link
               href={continueHref}
               className="inline-flex h-10 items-center gap-2.5 rounded-lg bg-white px-4 text-sm font-medium text-primary transition hover:bg-white/90 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
@@ -67,6 +75,7 @@ export function WelcomeBanner({
           </div>
         </div>
 
+<<<<<<< HEAD
         <aside
           aria-label="Próximo prazo"
           className="w-full rounded-xl bg-white px-5 py-4 text-center shadow-[0_8px_20px_rgba(0,0,0,0.12)] md:w-40 md:shrink-0"
@@ -83,6 +92,44 @@ export function WelcomeBanner({
           <p className="mt-1.5 text-[11px] font-medium leading-3.5 text-primary">
             {nextDeadline.label}
           </p>
+=======
+        <aside className="flex w-full items-center gap-3 rounded-xl bg-white px-4 py-3.5 text-neutral-900 shadow-[0_8px_20px_rgba(0,0,0,0.12)] sm:px-5 md:w-56 md:shrink-0">
+          {trimester !== undefined ? (
+            <>
+              <span className="flex size-11 shrink-0 items-center justify-center rounded-xl bg-rose-50 text-[#E8395B]">
+                <BookOpenCheck aria-hidden="true" className="size-5" />
+              </span>
+              <span>
+                <span className="block text-[10px] font-semibold uppercase tracking-wide text-neutral-500">
+                  Trimestre em curso
+                </span>
+                <span className="mt-0.5 block text-xl font-bold leading-tight">
+                  {trimester}.º trimestre
+                </span>
+                <span className="mt-1 block text-[11px] text-[#E8395B]">
+                  Lançamento de notas
+                </span>
+              </span>
+            </>
+          ) : (
+            <>
+              <span className="flex size-11 shrink-0 items-center justify-center rounded-xl bg-rose-50 text-[#E8395B]">
+                <BookOpenCheck aria-hidden="true" className="size-5" />
+              </span>
+              <span>
+                <span className="block text-[10px] font-semibold uppercase tracking-wide text-neutral-500">
+                  Área do professor
+                </span>
+                <span className="mt-0.5 block text-sm font-bold leading-snug">
+                  Turmas e avaliações
+                </span>
+                <span className="mt-1 block text-[11px] leading-snug text-neutral-500">
+                  Tudo o que precisa para gerir os seus lançamentos.
+                </span>
+              </span>
+            </>
+          )}
+>>>>>>> 303d924928077c099ab8835278508316d11448ed
         </aside>
       </div>
     </section>
