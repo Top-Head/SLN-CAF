@@ -36,11 +36,7 @@ const TRIMESTERS = [1, 2, 3] as const;
 type ResultTone = "positive" | "negative" | "pending";
 
 const selectClass =
-<<<<<<< HEAD
   "h-9 appearance-none rounded-xl border border-gray-200 bg-white pl-3 pr-8 text-xs font-semibold text-gray-700 shadow-sm transition hover:bg-gray-50 focus:outline-none focus:ring-1 focus:ring-primary";
-=======
-  "h-9 appearance-none rounded-xl border border-gray-200 bg-white pl-3 pr-8 text-xs font-semibold text-gray-700 shadow-sm transition hover:bg-gray-50 focus:outline-none focus:ring-1 focus:ring-rose-500 disabled:cursor-not-allowed disabled:opacity-60";
->>>>>>> 303d924928077c099ab8835278508316d11448ed
 
 /** "Positivo", "NEGATIVA", "pendente"… → tom do resultado devolvido pela API. */
 function toneOf(resultado: string): ResultTone | null {
@@ -170,12 +166,6 @@ export function MiniPautaView() {
     : [];
   const estado = miniPauta ? estadoStyle(miniPauta.estado) : null;
 
-  const status = sheet ? periodStatus(sheet.estado) : null;
-  const anoLetivo = sheet?.ano_letivo ?? quadro.items[0]?.ano_letivo ?? "—";
-  const isLoading =
-    quadro.status === "loading" || miniPautas.status === "loading";
-  const error = quadro.error ?? miniPautas.error;
-
   return (
     <div className="flex flex-col gap-6">
       {/* Título e barra de ações */}
@@ -235,13 +225,7 @@ export function MiniPautaView() {
                 <option key={item.id} value={item.id}>
                   {item.turma} · {item.disciplina}
                 </option>
-              ) : (
-                quadro.items.map((item) => (
-                  <option key={item.id} value={item.id}>
-                    {item.disciplina} · {item.turma}
-                  </option>
-                ))
-              )}
+              ))}
             </select>
             <ChevronDown className="pointer-events-none absolute top-1/2 right-2.5 size-3.5 -translate-y-1/2 text-gray-400" />
           </label>
@@ -441,7 +425,6 @@ export function MiniPautaView() {
               <ChevronLeft className="size-3.5" />
             </button>
 
-<<<<<<< HEAD
             {Array.from({ length: totalPages }, (_, index) => index + 1).map((value) => (
               <button
                 key={value}
@@ -457,32 +440,11 @@ export function MiniPautaView() {
                 {value}
               </button>
             ))}
-=======
-            {Array.from({ length: totalPages }, (_, index) => index + 1).map(
-              (value) => (
-                <button
-                  key={value}
-                  type="button"
-                  onClick={() => setPage(value)}
-                  className={cn(
-                    "flex size-7 items-center justify-center rounded-lg text-xs transition",
-                    value === currentPage
-                      ? "bg-rose-50 font-bold text-rose-600"
-                      : "border border-gray-100 text-gray-600 hover:bg-gray-50",
-                  )}
-                >
-                  {value}
-                </button>
-              ),
-            )}
->>>>>>> 303d924928077c099ab8835278508316d11448ed
 
             <button
               type="button"
               disabled={currentPage === totalPages}
-              onClick={() =>
-                setPage((value) => Math.min(totalPages, value + 1))
-              }
+              onClick={() => setPage((value) => Math.min(totalPages, value + 1))}
               className="flex size-7 items-center justify-center rounded-lg border border-gray-200 text-gray-600 transition hover:bg-gray-50 disabled:opacity-50"
               aria-label="Página seguinte"
             >
@@ -499,12 +461,9 @@ export function MiniPautaView() {
             <Info className="size-5" />
           </div>
           <div>
-            <p className="text-xs font-bold text-gray-800">
-              Mini-pauta só de leitura
-            </p>
+            <p className="text-xs font-bold text-gray-800">Mini-pauta só de leitura</p>
             <p className="text-[11px] text-gray-400">
-              Para alterar notas, volte ao lançamento enquanto o período estiver
-              aberto.
+              Para alterar notas, volte ao lançamento enquanto o período estiver aberto.
             </p>
           </div>
         </div>
@@ -528,22 +487,6 @@ export function MiniPautaView() {
         </div>
       </div>
     </div>
-  );
-}
-
-function GradeCell({ value }: { value: number | null }) {
-  return (
-    <td className="px-3 py-3 text-center font-semibold">
-      {value === null ? (
-        <span className="text-gray-300">—</span>
-      ) : (
-        <span
-          className={value < 10 ? "font-bold text-rose-500" : "text-gray-800"}
-        >
-          {formatComponent(value)}
-        </span>
-      )}
-    </td>
   );
 }
 
