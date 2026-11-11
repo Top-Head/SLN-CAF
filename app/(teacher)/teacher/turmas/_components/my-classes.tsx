@@ -8,7 +8,6 @@ import {
   HelpCircle,
   Pencil,
   Play,
-  Ruler,
   Search,
   Users,
 } from "lucide-react";
@@ -16,18 +15,22 @@ import Link from "next/link";
 import { useMemo, useState } from "react";
 
 import { FilterSelect } from "@/components/shared/filter-select";
+import { useMinhasTurmas } from "@/hooks/teachers/use-minhas-turmas";
 import { cn } from "@/lib/utils";
-import { matchesSearch } from "@/lib/utils/matches-search";
-
 import {
-  ACADEMIC_YEARS,
-  STATUS_LABEL,
-  TRIMESTERS,
+  normalizeClassStatus,
   type ClassStatus,
-  type TeacherClass,
-} from "../_lib/mock-data";
+} from "@/lib/utils/class-status";
+import { matchesSearch } from "@/lib/utils/matches-search";
+import type { MinhaTurma } from "@/services/minhas-turmas";
 
 type View = "all" | ClassStatus;
+
+const STATUS_LABEL: Record<ClassStatus, string> = {
+  in_progress: "Em curso",
+  not_started: "Por iniciar",
+  completed: "Concluído",
+};
 
 const STATUS_STYLES: Record<ClassStatus, { badge: string; dot: string }> = {
   in_progress: { badge: "bg-pending-soft text-pending", dot: "bg-pending" },
@@ -37,14 +40,14 @@ const STATUS_STYLES: Record<ClassStatus, { badge: string; dot: string }> = {
 
 function ClassCard({ item }: { item: TeacherClass }) {
   const isCompleted = item.status === "completed";
-  const percentage = Math.round((item.completed / item.total) * 100);
+  const percentage = item.total > 0 ? Math.round((item.completed / item.total) * 100) : 0;
   const status = STATUS_STYLES[item.status];
   const PrimaryIcon =
     item.status === "in_progress" ? Play : item.status === "not_started" ? Pencil : Pencil;
   const primaryLabel =
-    item.status === "in_progress"
+    statusKey === "in_progress"
       ? "Continuar"
-      : item.status === "not_started"
+      : statusKey === "not_started"
         ? "Lançar notas"
         : "Editar notas";
 
@@ -59,18 +62,18 @@ function ClassCard({ item }: { item: TeacherClass }) {
                 isCompleted ? "bg-positive-soft text-positive" : "bg-accent text-primary",
               )}
             >
-              <span>{item.grade}</span>
+              <span>{item.classe}.ª</span>
               <span className="-mt-1 text-[9px] font-normal opacity-80">
-                {item.subGroup}
+                classe
               </span>
             </div>
 
             <div className="min-w-0">
               <h3 className="truncate text-sm leading-tight font-bold text-foreground">
-                {item.subject}
+                {item.disciplina}
               </h3>
               <p className="mt-0.5 truncate text-xs text-muted-foreground">
-                {item.course}
+                {item.turma} · {item.curso}
               </p>
             </div>
           </div>
@@ -82,43 +85,43 @@ function ClassCard({ item }: { item: TeacherClass }) {
             )}
           >
             <span className={cn("size-1.5 rounded-full", status.dot)} />
-            {STATUS_LABEL[item.status]}
+            {STATUS_LABEL[statusKey]}
           </span>
         </div>
 
         <div className="mt-4 flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-muted-foreground">
           <div className="flex items-center gap-1">
             <Users className="size-3.5" />
-            <span>{item.students} estudantes</span>
+            <span>{item.total_alunos} estudantes</span>
           </div>
           <div className="flex items-center gap-1">
-            <Ruler className="size-3.5" />
-            <span>{item.scale}</span>
+            <Calendar className="size-3.5" />
+            <span>{item.ano_letivo}</span>
           </div>
-          {item.badge && (
+          {item.is_classe_exame && (
             <span className="rounded bg-info-soft px-2 py-0.5 text-[10px] font-semibold text-info">
-              {item.badge}
+              Classe de exame
             </span>
           )}
         </div>
 
         <div className="mt-4 space-y-2 rounded-xl border bg-muted/60 p-3">
           <div className="flex items-center justify-between text-xs">
-            <span className="font-semibold text-foreground">{item.trimester}</span>
+            <span className="font-semibold text-foreground">Progresso</span>
             <span className="font-bold text-foreground">
-              {item.completed}{" "}
+              {item.completos}{" "}
               <span className="font-normal text-muted-foreground">
-                / {item.total} completas
+                / {item.total_alunos} completas
               </span>
             </span>
           </div>
 
           <div
             role="meter"
-            aria-label={`Progresso de ${item.subject} da ${item.grade} ${item.subGroup}`}
+            aria-label={`Progresso de ${item.disciplina} da ${item.turma}`}
             aria-valuemin={0}
-            aria-valuemax={item.total}
-            aria-valuenow={item.completed}
+            aria-valuemax={100}
+            aria-valuenow={percentage}
             className="h-1.5 w-full overflow-hidden rounded-full bg-border"
           >
             <div
@@ -136,14 +139,14 @@ function ClassCard({ item }: { item: TeacherClass }) {
             ) : (
               <Clock className="size-3.5 shrink-0" />
             )}
-            <span className="truncate">{item.deadline}</span>
+            <span className="truncate">{percentage}% concluído</span>
           </div>
         </div>
       </div>
 
       <div className="mt-5 grid grid-cols-2 gap-2">
         <Link
-          href="/teacher/lancamento-de-notas"
+          href={item.launchHref ?? "/teacher/lancamento-de-notas"}
           className={cn(
             "flex items-center justify-center gap-1.5 rounded-lg px-3 py-2 text-xs font-semibold transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring",
             isCompleted
@@ -156,7 +159,7 @@ function ClassCard({ item }: { item: TeacherClass }) {
         </Link>
 
         <Link
-          href="/teacher/mini-pautas"
+          href={item.miniPautaHref ?? "/teacher/mini-pautas"}
           className="flex items-center justify-center gap-1.5 rounded-lg border bg-card px-3 py-2 text-xs font-semibold text-foreground transition-colors hover:bg-muted focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
         >
           <FileText className="size-3.5 text-muted-foreground" />
@@ -167,51 +170,71 @@ function ClassCard({ item }: { item: TeacherClass }) {
   );
 }
 
-export function MyClasses({ classes }: { classes: TeacherClass[] }) {
+export function MyClasses({
+  classes,
+  years = ACADEMIC_YEARS,
+  trimesters = TRIMESTERS,
+  initialTrimester,
+  status,
+}: {
+  classes: TeacherClass[];
+  years?: string[];
+  trimesters?: string[];
+  initialTrimester?: string;
+  /** Mensagem no lugar da grelha (a carregar, erro). */
+  status?: string | null;
+}) {
   const [view, setView] = useState<View>("all");
   const [query, setQuery] = useState("");
-  const [year, setYear] = useState(ACADEMIC_YEARS[0]);
-  const [trimester, setTrimester] = useState(TRIMESTERS[0]);
+  const [selectedYear, setYear] = useState<string | null>(null);
+  const [selectedTrimester, setTrimester] = useState<string | null>(null);
+  // Enquanto os dados carregam as opções mudam: usa a primeira até haver escolha.
+  const year = selectedYear ?? years[0] ?? "";
+  const trimester = selectedTrimester ?? initialTrimester ?? trimesters[0] ?? "";
 
   const visible = useMemo(
     () =>
       classes
+        .filter((item) => !item.year || item.year === year)
         .filter((item) => item.trimester === trimester)
         .filter((item) =>
           matchesSearch(
             query,
-            item.subject,
-            item.course,
-            `${item.grade} ${item.subGroup}`,
+            item.disciplina,
+            item.turma,
+            item.curso,
+            `${item.classe}.ª`,
           ),
         ),
-    [classes, query, trimester],
+    [classes, query, trimester, year],
   );
 
   const filtered =
-    view === "all" ? visible : visible.filter((item) => item.status === view);
+    view === "all" ? visible : visible.filter((item) => statusOf(item) === view);
 
-  const classCount = new Set(visible.map((item) => `${item.grade}${item.subGroup}`)).size;
-  const subjectCount = new Set(visible.map((item) => item.subject)).size;
+  const classCount = new Set(visible.map((item) => item.turma)).size;
+  const subjectCount = new Set(visible.map((item) => item.disciplina)).size;
 
   const tabs: { key: View; label: string; count: number }[] = [
     { key: "all", label: "Todas", count: visible.length },
     {
       key: "in_progress",
       label: "Em curso",
-      count: visible.filter((item) => item.status === "in_progress").length,
+      count: visible.filter((item) => statusOf(item) === "in_progress").length,
     },
     {
       key: "not_started",
       label: "Por iniciar",
-      count: visible.filter((item) => item.status === "not_started").length,
+      count: visible.filter((item) => statusOf(item) === "not_started").length,
     },
     {
       key: "completed",
       label: "Concluídas",
-      count: visible.filter((item) => item.status === "completed").length,
+      count: visible.filter((item) => statusOf(item) === "completed").length,
     },
   ];
+
+  const isLoading = status === "loading" && items.length === 0;
 
   return (
     <div className="flex flex-col gap-6">
@@ -233,14 +256,14 @@ export function MyClasses({ classes }: { classes: TeacherClass[] }) {
             <FilterSelect
               label="Ano lectivo"
               value={year}
-              options={ACADEMIC_YEARS}
+              options={years}
               onChange={setYear}
               icon={Calendar}
             />
             <FilterSelect
               label="Trimestre"
               value={trimester}
-              options={TRIMESTERS}
+              options={trimesters}
               onChange={setTrimester}
             />
 
@@ -293,14 +316,30 @@ export function MyClasses({ classes }: { classes: TeacherClass[] }) {
           })}
         </div>
 
-        <div className="grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-3">
-          {filtered.map((item) => (
-            <ClassCard key={item.id} item={item} />
-          ))}
+        {error ? (
+          <div className="flex flex-col items-center gap-3 rounded-xl border border-dashed py-10 text-center">
+            <p className="text-sm text-rose-500">{error}</p>
+            <button
+              type="button"
+              onClick={() => void refetch()}
+              className="rounded-lg border bg-card px-3 py-1.5 text-xs font-semibold text-foreground transition-colors hover:bg-muted"
+            >
+              Tentar novamente
+            </button>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-3">
+            {isLoading &&
+              Array.from({ length: 3 }).map((_, index) => (
+                <div
+                  key={index}
+                  className="h-[260px] animate-pulse rounded-xl border bg-muted/40"
+                />
+              ))}
 
           {filtered.length === 0 && (
             <p className="col-span-full rounded-xl border border-dashed py-10 text-center text-sm text-muted-foreground">
-              Nenhuma turma encontrada para os filtros selecionados.
+              {status ?? "Nenhuma turma encontrada para os filtros selecionados."}
             </p>
           )}
         </div>

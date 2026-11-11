@@ -177,7 +177,7 @@ export default function ResetPassword({ token }: ResetPasswordProps) {
           </p>
           <Link
             href="/login"
-            className="inline-block font-semibold text-[#E73959] hover:underline"
+            className="inline-block font-semibold text-primary hover:underline"
           >
             Voltar para entrar
           </Link>

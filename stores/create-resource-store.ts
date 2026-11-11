@@ -107,6 +107,11 @@ export function createResourceStore<T, P extends ResourceListParams>({
       const result = await fetchPage(normalized, accessToken());
       if (requestId !== listRequestId) return null;
 
+      if (!result || !Array.isArray(result.results)) {
+        setState({ listStatus: "error", listError: errorMessage });
+        return null;
+      }
+
       setState({
         items: result.results,
         count: result.count,
@@ -134,9 +139,13 @@ export function createResourceStore<T, P extends ResourceListParams>({
 
     setState({ allStatus: "loading", allError: null });
 
-    const request = fetchAllPages((page) =>
-      fetchPage({ page } as P, accessToken()),
-    )
+    const request = fetchAllPages(async (page) => {
+      const result = await fetchPage({ page } as P, accessToken());
+      if (!result || !Array.isArray(result.results)) {
+        throw new Error(errorMessage);
+      }
+      return result;
+    })
       .then((all) => {
         if (allRequest === request) {
           setState({ all, allStatus: "success", allError: null });
@@ -181,6 +190,21 @@ export function createResourceStore<T, P extends ResourceListParams>({
 
   function useResourceState() {
     return useSyncExternalStore(subscribe, getState, getServerState);
+  }
+
+  // Os dados dependem de quem tem sessão (ex.: turmas do professor):
+  // descarta a cache ao terminar sessão ou ao mudar de utilizador.
+  if (typeof window !== "undefined") {
+    let sessionKey: string | null | undefined;
+    authStore.subscribe(() => {
+      const auth = authStore.getState();
+      if (!auth.hydrated) return;
+      const next = auth.accessToken ? String(auth.user?.id ?? auth.user?.email ?? "") : null;
+      if (sessionKey !== undefined && next !== sessionKey && state !== initialState) {
+        reset();
+      }
+      sessionKey = next;
+    });
   }
 
   return {

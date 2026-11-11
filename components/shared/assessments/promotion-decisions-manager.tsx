@@ -20,7 +20,7 @@ import { useAssessmentOptions } from "./use-assessment-options";
 
 export const PROMOTION_TONES: Record<string, Tone> = {
   APROVADO: "positive",
-  REPROVADO: "primary",
+  REPROVADO: "negative",
   RECURSO: "pending",
   EXAME_ESPECIAL: "info",
   PENDENTE_DECISAO: "neutral",

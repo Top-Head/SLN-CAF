@@ -1970,6 +1970,166 @@ paths:
       responses:
         '204':
           description: No response body
+  /api/teacher/dashboard/:
+    get:
+      operationId: teacher_dashboard_list
+      summary: Cards do dashboard do professor
+      parameters:
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      tags:
+      - Dashboard Professor
+      security:
+      - bearerAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedDashboardProfessorList'
+          description: ''
+  /api/teacher/dashboard/actividade/:
+    get:
+      operationId: teacher_dashboard_actividade_list
+      summary: Actividade recente do professor
+      parameters:
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      tags:
+      - Dashboard Professor
+      security:
+      - bearerAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedActividadeRecenteList'
+          description: ''
+  /api/teacher/dashboard/mini-pautas-data/:
+    get:
+      operationId: teacher_dashboard_mini_pautas_data_list
+      summary: Quadro de mini-pautas do professor
+      parameters:
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      tags:
+      - Dashboard Professor
+      security:
+      - bearerAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedQuadroMiniPautaList'
+          description: ''
+  /api/teacher/minhas-turmas/:
+    get:
+      operationId: teacher_minhas_turmas_list
+      summary: Minhas turmas do professor
+      parameters:
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      tags:
+      - Dashboard Professor
+      security:
+      - bearerAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedMinhaTurmaList'
+          description: ''
+  /api/teacher/mini-pautas/:
+    get:
+      operationId: teacher_mini_pautas_list
+      summary: Mini-pauta de uma turma-disciplina - só leitura
+      parameters:
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      tags:
+      - Mini-pautas
+      security:
+      - bearerAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedMiniPautaList'
+          description: ''
+  /api/teacher/mini-pautas/pdf/:
+    get:
+      operationId: teacher_mini_pautas_pdf_retrieve
+      description: 'Devolve o mesmo conteúdo da mini-pauta, mas em PDF. Usa os mesmos
+        filtros: resultado e search.'
+      summary: Baixar mini-pauta em PDF
+      parameters:
+      - in: query
+        name: resultado
+        schema:
+          type: string
+          enum:
+          - negativas
+          - pendentes
+          - positivas
+          - todos
+      - in: query
+        name: search
+        schema:
+          type: string
+        description: Nome ou nº de processo do aluno
+      - in: query
+        name: trimestre
+        schema:
+          type: integer
+        description: 1, 2 ou 3. Se vazio, usa o trimestre aberto
+      - in: query
+        name: turma_disciplina_id
+        schema:
+          type: string
+        description: 'ID da turma-disciplina, ex: Matemática 12.ª IB'
+        required: true
+      tags:
+      - Mini-pautas
+      security:
+      - bearerAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: string
+                format: binary
+          description: Ficheiro PDF da mini-pauta
+        '400':
+          description: Falta turma_disciplina_id ou nenhum trimestre aberto
+        '403':
+          description: Sem permissão para esta mini-pauta
+        '404':
+          description: Turma-disciplina não encontrada
 components:
   schemas:
     AccessCodeValidationResponse:
@@ -2018,6 +2178,99 @@ components:
         * `PASSWORD_RESET` - Recuperação de password
         * `VALIDATE` - Validação
         * `OTHER` - Outra ação
+    ActividadeRecente:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        aluno:
+          type: string
+          readOnly: true
+        turma:
+          type: string
+          readOnly: true
+        disciplina:
+          type: string
+          readOnly: true
+        componente:
+          type: string
+          readOnly: true
+        valor:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,2}(?:\.\d{0,2})?$
+          readOnly: true
+        data:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - aluno
+      - componente
+      - data
+      - disciplina
+      - id
+      - turma
+      - valor
+    AlunoMiniPauta:
+      type: object
+      properties:
+        enrollment_id:
+          type: string
+          format: uuid
+          readOnly: true
+        numero:
+          type: integer
+          readOnly: true
+        aluno:
+          type: string
+          readOnly: true
+        numero_processo:
+          type: string
+          readOnly: true
+        sexo:
+          type: string
+          readOnly: true
+        mac:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,2}(?:\.\d{0,2})?$
+          readOnly: true
+          nullable: true
+        pp:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,2}(?:\.\d{0,2})?$
+          readOnly: true
+          nullable: true
+        pt:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,2}(?:\.\d{0,2})?$
+          readOnly: true
+          nullable: true
+        mt:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,2}(?:\.\d{0,2})?$
+          readOnly: true
+          nullable: true
+        resultado:
+          type: string
+          readOnly: true
+      required:
+      - aluno
+      - enrollment_id
+      - mac
+      - mt
+      - numero
+      - numero_processo
+      - pp
+      - pt
+      - resultado
+      - sexo
     AnnualResult:
       type: object
       properties:
@@ -2231,6 +2484,30 @@ components:
       required:
       - id
       - nome
+    DashboardProfessor:
+      type: object
+      properties:
+        turmas:
+          type: integer
+          readOnly: true
+        mini_pautas:
+          type: integer
+          readOnly: true
+        concluidas:
+          type: string
+          readOnly: true
+        por_completar:
+          type: integer
+          readOnly: true
+        trimestre:
+          type: integer
+          readOnly: true
+      required:
+      - concluidas
+      - mini_pautas
+      - por_completar
+      - trimestre
+      - turmas
     ExamDetail:
       type: object
       properties:
@@ -2463,9 +2740,147 @@ components:
       required:
       - email
       - password
+    MinhaTurma:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        turma:
+          type: string
+          readOnly: true
+        disciplina:
+          type: string
+          readOnly: true
+        classe:
+          type: integer
+          readOnly: true
+        curso:
+          type: string
+          readOnly: true
+        ano_letivo:
+          type: string
+          readOnly: true
+        total_alunos:
+          type: integer
+          readOnly: true
+        completos:
+          type: integer
+          readOnly: true
+        progresso:
+          type: integer
+          readOnly: true
+        estado:
+          type: string
+          readOnly: true
+        is_classe_exame:
+          type: boolean
+          readOnly: true
+      required:
+      - ano_letivo
+      - classe
+      - completos
+      - curso
+      - disciplina
+      - estado
+      - id
+      - is_classe_exame
+      - progresso
+      - total_alunos
+      - turma
+    MiniPauta:
+      type: object
+      properties:
+        turma_disciplina_id:
+          type: string
+          format: uuid
+          readOnly: true
+        titulo:
+          type: string
+          readOnly: true
+        turma:
+          type: string
+          readOnly: true
+        curso:
+          type: string
+          readOnly: true
+        disciplina:
+          type: string
+          readOnly: true
+        periodo:
+          type: string
+          readOnly: true
+        ano_letivo:
+          type: string
+          readOnly: true
+        media_turma:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,2}(?:\.\d{0,2})?$
+          readOnly: true
+          nullable: true
+        estado:
+          type: string
+          readOnly: true
+        total:
+          type: integer
+          readOnly: true
+        positivas:
+          type: integer
+          readOnly: true
+        negativas:
+          type: integer
+          readOnly: true
+        pendentes:
+          type: integer
+          readOnly: true
+        alunos:
+          type: array
+          items:
+            $ref: '#/components/schemas/AlunoMiniPauta'
+          readOnly: true
+      required:
+      - alunos
+      - ano_letivo
+      - curso
+      - disciplina
+      - estado
+      - media_turma
+      - negativas
+      - pendentes
+      - periodo
+      - positivas
+      - titulo
+      - total
+      - turma
+      - turma_disciplina_id
     NullEnum:
       enum:
       - null
+    PaginatedActividadeRecenteList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/ActividadeRecente'
     PaginatedAuditLogList:
       type: object
       required:
@@ -2512,6 +2927,29 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Course'
+    PaginatedDashboardProfessorList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/DashboardProfessor'
     PaginatedExamGradeList:
       type: object
       required:
@@ -2558,6 +2996,52 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Grade'
+    PaginatedMinhaTurmaList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/MinhaTurma'
+    PaginatedMiniPautaList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/MiniPauta'
     PaginatedPromotionDecisionList:
       type: object
       required:
@@ -2581,6 +3065,29 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/PromotionDecision'
+    PaginatedQuadroMiniPautaList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/QuadroMiniPauta'
     PaginatedSchoolClassList:
       type: object
       required:
@@ -3163,6 +3670,55 @@ components:
       - mfd
       - negative
       - subject
+    QuadroMiniPauta:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        turma:
+          type: string
+          readOnly: true
+        disciplina:
+          type: string
+          readOnly: true
+        classe:
+          type: integer
+          readOnly: true
+        curso:
+          type: string
+          readOnly: true
+        ano_letivo:
+          type: string
+          readOnly: true
+        total_alunos:
+          type: integer
+          readOnly: true
+        lancadas:
+          type: integer
+          readOnly: true
+        esperado:
+          type: integer
+          readOnly: true
+        progresso:
+          type: integer
+          readOnly: true
+        estado:
+          type: string
+          readOnly: true
+      required:
+      - ano_letivo
+      - classe
+      - curso
+      - disciplina
+      - esperado
+      - estado
+      - id
+      - lancadas
+      - progresso
+      - total_alunos
+      - turma
     Refresh:
       type: object
       properties:

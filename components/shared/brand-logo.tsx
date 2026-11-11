@@ -4,10 +4,10 @@ export function BrandLogo() {
   return (
     <div className="flex items-center gap-2">
       <Image
-        src="/logo/Easy Meal Logo.png"
-        alt="Easy Meal"
-        width={36}
-        height={36}
+        src="/logo/colegio-arvore-da-felicidade.png"
+        alt="Colégio Árvore da Felicidade"
+        width={44}
+        height={44}
         priority
         className="block shrink-0"
       />

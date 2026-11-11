@@ -10,7 +10,7 @@ export type MiniPautaItem = {
   alunos: number;
   completedStudents: number;
   totalStudents: number;
-  prazo: {
+  prazo?: {
     date: string;
     subLabel?: string;
   };
@@ -29,6 +29,9 @@ export function MiniPautasCard({
   viewAllHref = "/teacher/mini-pautas",
   footerInfo = "Escala 0–10 até à 6.ª classe · 0–20 a partir da 7.ª",
 }: MiniPautasCardProps) {
+  const showPrazo = items.some((item) => item.prazo);
+  const columnCount = showPrazo ? 7 : 6;
+
   return (
     <div className="w-full overflow-hidden rounded-2xl border border-gray-100 bg-white text-gray-800 shadow-sm">
       {/* Cabeçalho */}
@@ -41,7 +44,7 @@ export function MiniPautasCard({
         </div>
         <Link
           href={viewAllHref}
-          className="inline-flex shrink-0 items-center text-xs font-semibold text-rose-500 hover:underline"
+          className="inline-flex shrink-0 items-center text-xs font-semibold text-primary hover:underline"
         >
           Ver todas
           <ChevronRight className="ml-0.5 h-3.5 w-3.5" />
@@ -57,7 +60,7 @@ export function MiniPautasCard({
               <th className="py-2.5 px-3">Disciplina</th>
               <th className="py-2.5 px-3">Alunos</th>
               <th className="py-2.5 px-3">Progresso</th>
-              <th className="py-2.5 px-3">Prazo</th>
+              {showPrazo && <th className="py-2.5 px-3">Prazo</th>}
               <th className="py-2.5 px-3">Estado</th>
               <th className="py-2.5 px-3 last:rounded-r-lg last:pr-6"></th>
             </tr>
@@ -75,7 +78,7 @@ export function MiniPautasCard({
               if (item.estado === "concluido" || percentage === 100) {
                 progressColor = "bg-emerald-500";
               } else if (item.estado === "em_curso" || item.completedStudents > 0) {
-                progressColor = "bg-rose-500";
+                progressColor = "bg-primary";
               }
 
               return (
@@ -117,16 +120,28 @@ export function MiniPautasCard({
                   </td>
 
                   {/* Prazo */}
+<<<<<<< HEAD
                   <td className="py-3 px-3">
                     <p className="whitespace-nowrap font-semibold leading-tight text-gray-800">
                       {item.prazo.date}
                     </p>
                     {item.prazo.subLabel && (
-                      <p className="mt-0.5 whitespace-nowrap text-[10px] font-bold text-rose-500">
+                      <p className="mt-0.5 whitespace-nowrap text-[10px] font-bold text-primary">
                         {item.prazo.subLabel}
+=======
+                  {showPrazo && (
+                    <td className="py-3 px-3">
+                      <p className="whitespace-nowrap font-semibold leading-tight text-gray-800">
+                        {item.prazo?.date ?? "—"}
+>>>>>>> 303d924928077c099ab8835278508316d11448ed
                       </p>
-                    )}
-                  </td>
+                      {item.prazo?.subLabel && (
+                        <p className="mt-0.5 whitespace-nowrap text-[10px] font-bold text-rose-500">
+                          {item.prazo.subLabel}
+                        </p>
+                      )}
+                    </td>
+                  )}
 
                   {/* Estado */}
                   <td className="py-3 px-3">
@@ -145,6 +160,17 @@ export function MiniPautasCard({
                 </tr>
               );
             })}
+
+            {items.length === 0 && (
+              <tr>
+                <td
+                  colSpan={columnCount}
+                  className="px-6 py-10 text-center text-xs text-gray-400"
+                >
+                  Ainda não tem mini-pautas atribuídas.
+                </td>
+              </tr>
+            )}
           </tbody>
         </table>
       </div>

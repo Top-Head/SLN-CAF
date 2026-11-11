@@ -23,7 +23,7 @@ export default function SendingEmailForm() {
 
       <Link
         href="/forgot-password"
-        className="mt-7 font-semibold text-[#E73959] hover:underline"
+        className="mt-7 font-semibold text-primary hover:underline"
       >
         Solicitar outro link
       </Link>

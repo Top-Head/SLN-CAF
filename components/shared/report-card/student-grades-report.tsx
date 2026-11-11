@@ -100,7 +100,7 @@ export function StudentGradesReport({ result }: { result: AccessCodeValidation }
                               title={`${COMPONENT_LABELS[g.component] ?? g.component} · ${g.teacher}`}
                               className={
                                 Number(g.value) < 10
-                                  ? "rounded-sm bg-accent px-1.5 py-0.5 text-primary"
+                                  ? "rounded-sm bg-negative-soft px-1.5 py-0.5 text-negative"
                                   : "rounded-sm bg-positive-soft px-1.5 py-0.5 text-positive"
                               }
                             >

@@ -14,23 +14,36 @@
   --popover: #ffffff;
   --popover-foreground: #1c1c1c;
 
-  --primary: #e73959;
+  /*
+   * Paleta do Colégio Árvore da Felicidade (logótipo):
+   * verde das letras e da copa, quase-preto do contorno, castanho do tronco.
+   */
+  --primary: #1b7a34;
   --primary-foreground: #ffffff;
-  --secondary: #2c2e3b;
+  --secondary: #1f2a22;
   --secondary-foreground: #ffffff;
-  --muted: #f6f6f6;
-  --muted-foreground: #999999;
-  --accent: #fbdbe0;
-  --accent-foreground: #e73959;
-  --destructive: #ff383c;
+  --muted: #f5f7f5;
+  --muted-foreground: #8f998f;
+  --accent: #e3f2e6;
+  --accent-foreground: #1b7a34;
+  --destructive: #d92d20;
 
-  --border: #dedee6;
-  --input: #dedee6;
-  --ring: #e73959;
+  /* Tons secundários da marca: folha (verde claro) e tronco (castanho) */
+  --leaf: #5fae3e;
+  --bark: #8a5a2b;
+  --bark-soft: #f5ece2;
+
+  /* Negativas, reprovações e erros (nunca a cor primária, que é verde) */
+  --negative: #c42746;
+  --negative-soft: #fdecef;
+
+  --border: #dde3dd;
+  --input: #dde3dd;
+  --ring: #1b7a34;
 
   --success: #428777;
   --warning: #fcc43e;
-  --gray-3: #a098ae;
+  --gray-3: #9aa69c;
   --gray-100: #d9d9d9;
 
   /* Badges de estado e tabelas */
@@ -51,9 +64,9 @@
   --catalog-border: #e5e6eb;
   --catalog-head: #f7f8fa;
   --catalog-checkbox: #cdd0d8;
-  --catalog-active: #fff1f4;
-  --catalog-active-border: #f5cbd4;
-  --catalog-detail: #fdfbfc;
+  --catalog-active: #eef8f0;
+  --catalog-active-border: #c6e6cd;
+  --catalog-detail: #fbfdfb;
   --catalog-track: #eceef2;
   --catalog-track-fill: #838c9c;
   --catalog-switch: #e3e4e9;
@@ -73,39 +86,39 @@
   --grade-locked: #f6f7f9;
   --grade-locked-text: #5f6472;
 
-  --chart-1: #e73959;
-  --chart-2: #428777;
+  --chart-1: #1b7a34;
+  --chart-2: #8a5a2b;
   --chart-3: #fcc43e;
-  --chart-4: #2c2e3b;
-  --chart-5: #a098ae;
+  --chart-4: #5fae3e;
+  --chart-5: #9aa69c;
 
   /* Navegação lateral */
-  --sidebar: #1c1c1c;
-  --sidebar-foreground: #ababab;
-  --sidebar-primary: #e73959;
+  --sidebar: #0f2318;
+  --sidebar-foreground: #aebdb2;
+  --sidebar-primary: #1b7a34;
   --sidebar-primary-foreground: #ffffff;
-  --sidebar-accent: #2c2e3b;
+  --sidebar-accent: #1b3726;
   --sidebar-accent-foreground: #ffffff;
-  --sidebar-border: #2c2e3b;
-  --sidebar-ring: #e73959;
-  --sidebar-muted: #858585;
+  --sidebar-border: #1b3726;
+  --sidebar-ring: #5fae3e;
+  --sidebar-muted: #7f9285;
 
-  --shadow-card: 0 20px 50px 0 rgb(191 21 108 / 0.05);
+  --shadow-card: 0 20px 50px 0 rgb(27 122 52 / 0.06);
 }
 
 .dark {
-  --background: #1c1c1c;
+  --background: #111a14;
   --foreground: #ffffff;
-  --card: #2c2e3b;
+  --card: #1b2a20;
   --card-foreground: #ffffff;
-  --popover: #2c2e3b;
+  --popover: #1b2a20;
   --popover-foreground: #ffffff;
   --secondary: #ffffff;
-  --secondary-foreground: #1c1c1c;
-  --muted: #2c2e3b;
-  --muted-foreground: #a098ae;
-  --accent: #3a2a30;
-  --accent-foreground: #fbdbe0;
+  --secondary-foreground: #111a14;
+  --muted: #1b2a20;
+  --muted-foreground: #9aa69c;
+  --accent: #1f3a28;
+  --accent-foreground: #cfe9d5;
   --border: rgb(255 255 255 / 0.1);
   --input: rgb(255 255 255 / 0.15);
 }
@@ -139,6 +152,11 @@
   --color-input: var(--input);
   --color-ring: var(--ring);
   --color-success: var(--success);
+  --color-leaf: var(--leaf);
+  --color-bark: var(--bark);
+  --color-bark-soft: var(--bark-soft);
+  --color-negative: var(--negative);
+  --color-negative-soft: var(--negative-soft);
   --color-warning: var(--warning);
   --color-gray-3: var(--gray-3);
   --color-gray-100: var(--gray-100);

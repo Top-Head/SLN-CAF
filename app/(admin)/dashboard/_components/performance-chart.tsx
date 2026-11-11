@@ -20,7 +20,7 @@ import {
 import type { PerformancePoint } from "../_lib/mock-data";
 
 const chartConfig = {
-  bar: { label: "Barras", color: "var(--accent)" },
+  bar: { label: "Barras", color: "var(--leaf)" },
   line: { label: "Linha", color: "var(--primary)" },
 } satisfies ChartConfig;
 
@@ -100,7 +100,7 @@ export function PerformanceChart({ data }: { data: PerformancePoint[] }) {
 
       <div className="flex items-center gap-4 text-xs font-medium">
         <span className="flex items-center gap-2">
-          <span className="size-3 rounded-[3px] bg-accent" />
+          <span className="size-3 rounded-[3px] bg-leaf" />
           Barras
         </span>
         <span className="flex items-center gap-2">

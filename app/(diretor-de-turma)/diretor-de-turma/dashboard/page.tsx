@@ -48,7 +48,7 @@ export default function DirectorDashboardPage() {
             value: negativeGrades,
             hint: `${percentOf(negativeGrades, launchedGrades)} das notas lançadas`,
             icon: ThumbsDown,
-            tone: "primary",
+            tone: "negative",
           },
           {
             label: "Disciplinas por concluir",

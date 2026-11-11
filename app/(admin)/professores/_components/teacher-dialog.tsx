@@ -213,7 +213,7 @@ export function TeacherDialog({
       <DialogContent className="max-h-[90vh] overflow-y-auto sm:max-w-2xl">
         <DialogHeader className="gap-3 text-left">
           <div className="flex items-start gap-3">
-            <span className="flex size-11 shrink-0 items-center justify-center rounded-2xl bg-[#FDF2F4] text-[#E73959]">
+            <span className="flex size-11 shrink-0 items-center justify-center rounded-2xl bg-accent text-primary">
               <UserRound className="size-5" />
             </span>
             <div className="space-y-1">
@@ -452,7 +452,7 @@ function IconInput({
       <Input
         {...props}
         className={cn(
-          "h-11 w-full rounded-[8px] border-[#DEDEE6] pl-10 text-sm text-[#1C1C1C] placeholder:text-[#999999] focus-visible:border-[#E73959] focus-visible:ring-[3px] focus-visible:ring-[#E73959]/15 disabled:cursor-not-allowed disabled:bg-[#F6F6F6] disabled:opacity-70",
+          "h-11 w-full rounded-[8px] border-[#DEDEE6] pl-10 text-sm text-[#1C1C1C] placeholder:text-[#999999] focus-visible:border-primary focus-visible:ring-[3px] focus-visible:ring-primary/15 disabled:cursor-not-allowed disabled:bg-[#F6F6F6] disabled:opacity-70",
           className,
         )}
       />
@@ -478,7 +478,7 @@ function PasswordInput({
         type={visible ? "text" : "password"}
         disabled={disabled}
         className={cn(
-          "h-11 w-full rounded-[8px] border-[#DEDEE6] pl-10 pr-11 text-sm text-[#1C1C1C] placeholder:text-[#999999] focus-visible:border-[#E73959] focus-visible:ring-[3px] focus-visible:ring-[#E73959]/15 disabled:cursor-not-allowed disabled:bg-[#F6F6F6] disabled:opacity-70",
+          "h-11 w-full rounded-[8px] border-[#DEDEE6] pl-10 pr-11 text-sm text-[#1C1C1C] placeholder:text-[#999999] focus-visible:border-primary focus-visible:ring-[3px] focus-visible:ring-primary/15 disabled:cursor-not-allowed disabled:bg-[#F6F6F6] disabled:opacity-70",
           className,
         )}
       />
@@ -488,7 +488,7 @@ function PasswordInput({
         aria-label={visible ? "Ocultar senha" : "Mostrar senha"}
         aria-pressed={visible}
         disabled={disabled}
-        className="absolute right-3 top-1/2 -translate-y-1/2 cursor-pointer text-[#A098AE] transition-colors hover:text-[#E73959] disabled:cursor-not-allowed"
+        className="absolute right-3 top-1/2 -translate-y-1/2 cursor-pointer text-[#A098AE] transition-colors hover:text-primary disabled:cursor-not-allowed"
       >
         {visible ? <EyeOff className="size-4" /> : <Eye className="size-4" />}
       </button>
@@ -505,7 +505,7 @@ function SectionTitle({
 }) {
   return (
     <div className="flex items-center gap-2 border-b border-[#F0F0F4] pb-2">
-      <span className="flex size-6 items-center justify-center rounded-md bg-[#FDF2F4] text-[#E73959]">
+      <span className="flex size-6 items-center justify-center rounded-md bg-accent text-primary">
         <Icon className="size-3.5" />
       </span>
       <h3 className="text-[13px] font-semibold text-[#2C2E3B]">{children}</h3>

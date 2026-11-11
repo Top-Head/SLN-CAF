@@ -43,7 +43,7 @@ export function GradeValue({
         !known
           ? "text-muted-foreground"
           : number < (passing ?? 10)
-            ? "bg-accent text-primary"
+            ? "bg-negative-soft text-negative"
             : "bg-positive-soft text-positive",
       )}
     >

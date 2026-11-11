@@ -15,7 +15,7 @@ const VARIANTS = {
   default: "border bg-card text-neutral hover:bg-muted",
   active: "border bg-table-head text-neutral hover:bg-muted",
   warning: "border border-pending bg-card text-pending hover:bg-pending-soft",
-  danger: "border border-primary bg-card text-primary hover:bg-accent",
+  danger: "border border-negative bg-card text-negative hover:bg-negative-soft",
   primary: "bg-primary text-primary-foreground hover:bg-primary/90",
 };
 

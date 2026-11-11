@@ -174,7 +174,7 @@ export function StudentDialog({
       <DialogContent className="max-h-[90vh] overflow-y-auto sm:max-w-xl">
         <DialogHeader className="gap-3 text-left">
           <div className="flex items-start gap-3">
-            <span className="flex size-11 shrink-0 items-center justify-center rounded-2xl bg-[#FDF2F4] text-[#E73959]">
+            <span className="flex size-11 shrink-0 items-center justify-center rounded-2xl bg-accent text-primary">
               <UserRound className="size-5" />
             </span>
             <div className="space-y-1">
@@ -307,7 +307,7 @@ export function StudentDialog({
                 <Button
                   type="submit"
                   disabled={isPending}
-                  className="rounded-lg bg-[#E73959] px-5 text-white hover:bg-[#d52e4e]"
+                  className="rounded-lg bg-primary px-5 text-white hover:bg-primary/90"
                 >
                   {isPending
                     ? "A guardar..."
@@ -333,7 +333,7 @@ function SectionTitle({
 }) {
   return (
     <h3 className="flex items-center gap-2 text-sm font-semibold text-[#1C1C1C]">
-      <Icon className="size-4 text-[#E73959]" />
+      <Icon className="size-4 text-primary" />
       {children}
     </h3>
   );
@@ -373,7 +373,7 @@ function IconInput({
       <Input
         {...props}
         className={cn(
-          "h-11 w-full rounded-[8px] border-[#DEDEE6] pl-9 text-sm text-[#1C1C1C] placeholder:text-[#999999] focus-visible:border-[#E73959] focus-visible:ring-[#E73959]/15 disabled:bg-[#F6F6F6]",
+          "h-11 w-full rounded-[8px] border-[#DEDEE6] pl-9 text-sm text-[#1C1C1C] placeholder:text-[#999999] focus-visible:border-primary focus-visible:ring-primary/15 disabled:bg-[#F6F6F6]",
           className,
         )}
       />

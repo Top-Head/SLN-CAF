@@ -33,14 +33,14 @@ export function WelcomeBanner({
   classesHref = "/teacher/turmas",
 }: WelcomeBannerProps) {
   return (
-    <section className="relative isolate overflow-hidden rounded-2xl bg-[#E8395B] px-6 py-8 text-white shadow-sm sm:px-8 md:py-9">
+    <section className="relative isolate overflow-hidden rounded-2xl bg-primary px-6 py-8 text-white shadow-sm sm:px-8 md:py-9">
       <div
         aria-hidden
         className="pointer-events-none absolute -bottom-36 right-28 -z-10 h-[300px] w-[300px] rounded-full bg-[#FFC43D] md:right-44"
       />
       <div
         aria-hidden
-        className="pointer-events-none absolute -bottom-28 -right-20 -z-10 h-[260px] w-[260px] rounded-full bg-[#FF8159]"
+        className="pointer-events-none absolute -bottom-28 -right-20 -z-10 h-[260px] w-[260px] rounded-full bg-leaf"
       />
 
       <div className="flex flex-col gap-8 md:flex-row md:items-center md:justify-between">
@@ -56,7 +56,7 @@ export function WelcomeBanner({
           <div className="mt-6 flex flex-wrap gap-3">
             <Link
               href={continueHref}
-              className="inline-flex items-center gap-2 rounded-lg bg-white px-5 py-2.5 text-sm font-semibold text-[#E8395B] transition hover:bg-white/90 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
+              className="inline-flex items-center gap-2 rounded-lg bg-white px-5 py-2.5 text-sm font-semibold text-primary transition hover:bg-white/90 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
             >
               Continuar lançamento
               <ArrowRight className="h-4 w-4" />
@@ -82,7 +82,7 @@ export function WelcomeBanner({
             <span className="text-5xl font-bold leading-none">2</span>
             <span className="ml-1 text-sm text-neutral-500">dias</span>
           </p>
-          <p className="mt-3 text-xs font-medium text-[#E8395B]">
+          <p className="mt-3 text-xs font-medium text-primary">
             {nextDeadline.label}
           </p>
         </aside>
