@@ -4,6 +4,8 @@ import type { Paginated } from "../data";
 export type SchoolClass = {
   id: string;
   numero: number;
+  /** Classe de iniciação: não usa o sistema de notas. */
+  is_initiation?: boolean;
 };
 
 export type SchoolClassListParams = {
@@ -12,6 +14,7 @@ export type SchoolClassListParams = {
 
 export type SchoolClassPayload = {
   numero: number;
+  is_initiation?: boolean;
 };
 
 export type PaginatedSchoolClasses = Paginated<SchoolClass>;

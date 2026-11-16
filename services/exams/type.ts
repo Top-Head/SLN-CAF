@@ -33,7 +33,8 @@ export type ExamGradeListParams = {
 export type ExamGradePayload = {
   enrollment: string;
   turma_disciplina: string;
-  exam_type: ExamType;
+  /** Opcional: sem ele a API usa o tipo configurado para a disciplina e classe. */
+  exam_type?: ExamType;
   exam_value?: string | null;
   nee?: string | null;
   neo?: string | null;

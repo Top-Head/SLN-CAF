@@ -57,15 +57,29 @@ const COLUMNS = [
 
 const loadTurma = (id: string) => getTurmaById(id, currentAccessToken());
 
-/** Encontra o professor pelo nome devolvido em `director_teacher`. */
-function findDirector(teachers: Teacher[], name: string | null) {
-  if (!name) return undefined;
-  const target = name.trim().toLowerCase();
+/**
+ * Encontra o diretor de turma. Segundo o fluxo académico a API devolve
+ * `director_teacher` como UUID do professor; versões anteriores devolviam o
+ * nome, por isso aceita os dois.
+ */
+function findDirector(teachers: Teacher[], value: string | null) {
+  if (!value) return undefined;
+  const target = value.trim().toLowerCase();
   return teachers.find(
     (t) =>
+      t.id.toLowerCase() === target ||
       t.nome.trim().toLowerCase() === target ||
       t.username.trim().toLowerCase() === target,
   );
+}
+
+const looksLikeUuid = (value: string) => /^[0-9a-f-]{32,36}$/i.test(value.trim());
+
+/** Nome do diretor para mostrar na lista. */
+function directorLabel(teachers: Teacher[], value: string) {
+  const teacher = findDirector(teachers, value);
+  if (teacher) return teacher.nome;
+  return looksLikeUuid(value) ? "Professor atribuído" : value;
 }
 
 export function TurmasList() {
@@ -84,7 +98,10 @@ export function TurmasList() {
   const courses = useAllCourses();
   const classes = useAllSchoolClasses();
   const years = useAllSchoolYears();
-  const teachers = useTeacherOptions({ enabled: dialogOpen });
+  // Carrega os professores para mostrar o nome do diretor (a API devolve o UUID).
+  const teachers = useTeacherOptions({
+    enabled: dialogOpen || turmas.items.some((t) => Boolean(t.director_teacher)),
+  });
 
   const pageSize = turmas.pageSize ?? FALLBACK_PAGE_SIZE;
 
@@ -235,7 +252,7 @@ export function TurmasList() {
                   <TableCell>{turma.school_year_label || "—"}</TableCell>
                   <TableCell>
                     {turma.director_teacher ? (
-                      turma.director_teacher
+                      directorLabel(teachers.items, turma.director_teacher)
                     ) : (
                       <span className="text-xs text-attention">Por atribuir</span>
                     )}
@@ -370,7 +387,7 @@ export function TurmasList() {
           turma.director_teacher &&
           !findDirector(teachers.items, turma.director_teacher) ? (
             <p className="text-xs text-muted-foreground">
-              Diretor de turma registado: {turma.director_teacher}
+              Diretor de turma registado: {directorLabel(teachers.items, turma.director_teacher)}
             </p>
           ) : null
         }

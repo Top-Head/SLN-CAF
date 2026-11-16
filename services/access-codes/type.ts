@@ -1,3 +1,4 @@
+import type { Paginated } from "../data";
 import type { GradeComponent } from "../grades/type";
 import type { StudentGender } from "../students/type";
 
@@ -51,3 +52,20 @@ export type AccessCodeValidation = {
 export type ValidateAccessCodePayload = {
   codigo: string;
 };
+
+/** Código emitido (gestão): nunca inclui o código em claro. */
+export type ManagedAccessCode = {
+  id: string;
+  student: string;
+  student_nome: string;
+  student_numero_processo: string;
+  expires_at: string;
+  revoked: boolean;
+  created_at: string;
+  last_used_at: string | null;
+  created_by_username: string | null;
+};
+
+export type ManagedAccessCodeListParams = { page?: number };
+
+export type PaginatedManagedAccessCodes = Paginated<ManagedAccessCode>;

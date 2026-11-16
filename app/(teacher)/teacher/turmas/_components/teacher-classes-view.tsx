@@ -59,7 +59,7 @@ export function TeacherClassesView() {
       : classes.status === "error"
         ? classes.error
         : items.length === 0
-          ? "Ainda não tem turmas e disciplinas atribuídas."
+          ? "Ainda não tem turmas e disciplinas atribuídas. A direcção tem de lhe atribuir uma disciplina numa turma (turma-disciplina)."
           : null;
 
   return (

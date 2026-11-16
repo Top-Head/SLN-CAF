@@ -7,6 +7,8 @@ import { useState } from "react";
 import { formatDecimal, isDecimal, toDecimal } from "@/components/shared/assessments/labels";
 import { currentAccessToken } from "@/components/shared/resource/resource-manager";
 import { useAllGrades } from "@/hooks/assessments/use-grades";
+import { useAllClassRules } from "@/hooks/assessments/use-class-rules";
+import { useAllGradingScales } from "@/hooks/assessments/use-grading-scales";
 import { useAllTrimesters } from "@/hooks/assessments/use-trimesters";
 import { useMiniPauta } from "@/hooks/teacher-dashboard/use-mini-pauta";
 import { useTeacherClasses } from "@/hooks/teacher-dashboard/use-teacher-dashboard";
@@ -47,6 +49,8 @@ export function TeacherGradeSheet({ initialTurmaDisciplina }: { initialTurmaDisc
   const classes = useTeacherClasses();
   const trimesters = useAllTrimesters();
   const grades = useAllGrades();
+  const classRules = useAllClassRules();
+  const scales = useAllGradingScales();
   const [selectedId, setSelectedId] = useState(initialTurmaDisciplina ?? "");
   const [selectedTrimester, setSelectedTrimester] = useState<number | null>(null);
   const [edits, setEdits] = useState<Edits>({});
@@ -73,13 +77,33 @@ export function TeacherGradeSheet({ initialTurmaDisciplina }: { initialTurmaDisc
   const trimester = yearTrimesters.find((t) => t.numero === numero) ?? null;
   const closed = trimester?.status === "FECHADO";
 
-  const { miniPauta, status, error } = useMiniPauta(
+  const { miniPauta, status, error, fallback } = useMiniPauta(
     turmaDisciplinaId
       ? { turma_disciplina_id: turmaDisciplinaId, trimestre: numero ?? undefined }
       : null,
   );
   const students: MiniPautaStudent[] = miniPauta?.alunos ?? [];
-  const max = (current?.classe ?? 7) <= 6 ? 10 : 20;
+  // Regras em vigor no ano letivo da turma: a versão com o `effective_from`
+  // mais alto que não ultrapasse o ano de início (como faz a API).
+  const startYear = Number(current?.ano_letivo?.split("/")[0]) || new Date().getFullYear();
+  const inForce = <R extends { effective_from?: number }>(rules: R[]) =>
+    rules
+      .filter((r) => (r.effective_from ?? 0) <= startYear)
+      .sort((a, b) => (b.effective_from ?? 0) - (a.effective_from ?? 0))[0];
+  const classRule = current
+    ? inForce(classRules.items.filter((r) => r.school_class_numero === current.classe))
+    : undefined;
+  const scale = current
+    ? inForce(scales.items.filter((s) => s.class_min <= current.classe && current.classe <= s.class_max))
+    : undefined;
+  const max = scale ? Number(scale.max_value) : (current?.classe ?? 7) <= 6 ? 10 : 20;
+  const passing = scale ? Number(scale.passing_value) : max / 2;
+  // PT desativado pela regra da classe; sem regras carregadas, usa o seed
+  // (6.ª e 9.ª classe, 3.º trimestre).
+  const ptDisabled = classRule
+    ? classRule.pt_disabled_trimester != null && classRule.pt_disabled_trimester === numero
+    : (current?.classe === 6 || current?.classe === 9) && numero === 3;
+  const isDisabled = (component: GradeComponent) => component === "PT" && ptDisabled;
 
   /** Nota já gravada para o aluno/componente neste trimestre. */
   const existing = (enrollment: string, component: GradeComponent): Grade | undefined =>
@@ -242,6 +266,12 @@ export function TeacherGradeSheet({ initialTurmaDisciplina }: { initialTurmaDisc
         </div>
       </section>
 
+{fallback && (
+        <p role="status" className="rounded-md bg-amber-50 px-3 py-2 text-sm text-amber-700">
+          A mini-pauta da API está indisponível (erro no servidor). A lista abaixo vem das
+          matrículas e das notas lançadas; a MT e o resultado aparecem quando a API voltar.
+        </p>
+      )}
       {(error || classes.error) && (
         <p role="alert" className="rounded-md bg-red-50 px-3 py-2 text-sm text-red-600">
           {error ?? classes.error}
@@ -266,7 +296,9 @@ export function TeacherGradeSheet({ initialTurmaDisciplina }: { initialTurmaDisc
               {miniPauta?.titulo || (current ? `${current.disciplina} · ${current.turma}` : "Folha de lançamento")}
             </h2>
             <p className="text-xs text-muted-foreground">
-              Notas de 0 a {max} · deixe vazio para apagar uma nota · MT calculada pela API
+              Notas de 0 a {max} · a API arredonda o valor (ex.: 14,4 → 14) · deixe vazio
+              para apagar uma nota · MT calculada pela API
+              {ptDisabled && ` · PT não se aplica no ${numero}.º trimestre desta classe`}
             </p>
           </div>
           {current && (
@@ -311,7 +343,8 @@ export function TeacherGradeSheet({ initialTurmaDisciplina }: { initialTurmaDisc
                         <input
                           value={value}
                           onChange={(event) => setValue(student.enrollment_id, c.key, event.target.value)}
-                          disabled={closed || saving}
+                          disabled={closed || saving || isDisabled(c.key)}
+                          title={isDisabled(c.key) ? "PT não se aplica neste trimestre" : undefined}
                           inputMode="decimal"
                           maxLength={5}
                           aria-label={`${c.label} de ${student.aluno}`}
@@ -329,7 +362,7 @@ export function TeacherGradeSheet({ initialTurmaDisciplina }: { initialTurmaDisc
                     {student.mt === null ? (
                       <span className="text-muted-foreground">—</span>
                     ) : (
-                      <span className={Number(student.mt) < max / 2 ? "text-negative" : ""}>
+                      <span className={Number(student.mt) < passing ? "text-negative" : ""}>
                         {formatDecimal(student.mt)}
                       </span>
                     )}
@@ -342,8 +375,8 @@ export function TeacherGradeSheet({ initialTurmaDisciplina }: { initialTurmaDisc
                     {loading
                       ? "A carregar os estudantes..."
                       : options.length === 0
-                        ? "Ainda não tem turmas e disciplinas atribuídas."
-                        : "Esta turma ainda não tem estudantes matriculados."}
+                        ? "Ainda não tem turmas e disciplinas atribuídas. A direcção tem de lhe atribuir uma disciplina numa turma (turma-disciplina)."
+                        : "Esta turma ainda não tem estudantes com matrícula ativa. A direcção tem de matricular os alunos na turma."}
                   </td>
                 </tr>
               )}

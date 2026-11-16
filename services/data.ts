@@ -138,8 +138,12 @@ function shouldRefreshAccessToken(status: number, token: string): boolean {
   return false;
 }
 
+/** Página HTML de erro do servidor (ex.: "Server Error (500)" do Django). */
+const looksLikeHtml = (text: string) => /^\s*<(!doctype|html)/i.test(text);
+
 function extractErrorMessage(data: unknown, fallback: string): string {
-  if (typeof data === "string" && data.trim()) return data;
+  // Nunca mostrar HTML cru ao utilizador.
+  if (typeof data === "string" && data.trim() && !looksLikeHtml(data)) return data;
 
   if (!data || typeof data !== "object") return fallback;
 
@@ -219,14 +223,12 @@ async function request<T>(
       );
     }
 
-    throw new ApiError(
-      extractErrorMessage(
-        data,
-        config.fallbackErrorMessage ?? DEFAULT_ERROR_MESSAGE,
-      ),
-      response.status,
-      data,
-    );
+    const fallback =
+      response.status >= 500
+        ? `O servidor teve um erro (${response.status}). Tente novamente mais tarde.`
+        : (config.fallbackErrorMessage ?? DEFAULT_ERROR_MESSAGE);
+
+    throw new ApiError(extractErrorMessage(data, fallback), response.status, data);
   }
 
   return data as T;

@@ -66,7 +66,12 @@ type ResourceManagerProps<T extends { id: string }> = {
     deleted?: (item: T) => string;
   };
   fetchOne?: (id: string, accessToken?: string) => Promise<T>;
-  onCreate: (values: FormValues, accessToken?: string) => Promise<unknown>;
+  /** Sem `onCreate` o botão de adicionar não aparece (ex.: recurso só de leitura). */
+  onCreate?: (values: FormValues, accessToken?: string) => Promise<unknown>;
+  /** Ações extra por linha (ex.: revogar), mostradas antes do menu. */
+  rowActions?: (item: T) => ReactNode;
+  /** Conteúdo entre o cabeçalho e a pesquisa (ex.: botões de ação em lote, avisos). */
+  toolbar?: ReactNode;
   /** Sem `onUpdate` a acção "Editar" não aparece. */
   onUpdate?: (
     item: T,
@@ -99,6 +104,8 @@ export function ResourceManager<T extends { id: string }>({
   messages,
   fetchOne,
   onCreate,
+  rowActions,
+  toolbar,
   onUpdate,
   onDelete,
 }: ResourceManagerProps<T>) {
@@ -122,7 +129,7 @@ export function ResourceManager<T extends { id: string }>({
   const allColumns = [
     { label: "N.º", className: "w-12" },
     ...columns.map(({ label, className }) => ({ label, className })),
-    { label: "", className: "w-14" },
+    { label: "", className: rowActions ? "w-32" : "w-14" },
   ];
 
   function openDialog(mode: DialogMode, item?: T) {
@@ -162,8 +169,10 @@ export function ResourceManager<T extends { id: string }>({
         title={title}
         count={items.length}
         addLabel={addLabel}
-        onAdd={() => openDialog("create")}
+        onAdd={onCreate ? () => openDialog("create") : undefined}
       />
+
+      {toolbar && <div className="mt-4">{toolbar}</div>}
 
       <div className="mt-8">
         <SearchCard
@@ -209,7 +218,8 @@ export function ResourceManager<T extends { id: string }>({
                     </TableCell>
                   ))}
                   <TableCell className="pr-4">
-                    <div className="flex justify-center">
+                    <div className="flex items-center justify-center gap-2">
+                      {rowActions?.(item)}
                       <RowActionsMenu
                         label={getLabel(item)}
                         onView={() => openDialog("view", item)}
@@ -256,6 +266,7 @@ export function ResourceManager<T extends { id: string }>({
         onSubmit={async (values) => {
           const token = currentAccessToken();
           if (dialogMode === "create") {
+            if (!onCreate) return;
             await onCreate(values, token);
             notify.success(
               messages?.created?.(values) ?? "Registo criado com sucesso.",

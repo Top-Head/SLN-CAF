@@ -1,5 +1,5 @@
-import { AccessCodesWorkspace } from "./_components/access-codes-workspace";
+import { AccessCodesTabs } from "./_components/access-codes-tabs";
 
 export default function AccessCodesPage() {
-  return <AccessCodesWorkspace />;
+  return <AccessCodesTabs />;
 }
