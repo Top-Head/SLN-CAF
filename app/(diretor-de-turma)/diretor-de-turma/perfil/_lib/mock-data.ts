@@ -6,7 +6,6 @@ export const PROFILE: Profile = {
   location: "Luanda, Angola",
   phone: "+244 923 418 760",
   email: "paulo.sanguli@caf.ao",
-  avatar: "/images/profile-avatar.png",
 };
 
 export const PERSONAL_INFO: ProfileField[] = [

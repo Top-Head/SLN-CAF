@@ -34,11 +34,13 @@ const TABS = [
 export function AcademicStructure() {
   const tab = useSearchParams().get("tab") ?? undefined;
   return (
-    <PageTabs
-      key={tab}
-      label="Estrutura académica"
-      tabs={TABS}
-      defaultTab={TABS.some((t) => t.key === tab) ? tab : "turmas"}
-    />
+    <div className="flex flex-col gap-6">
+      <PageTabs
+        key={tab}
+        label="Áreas de gestão académica"
+        tabs={TABS}
+        defaultTab={TABS.some((t) => t.key === tab) ? tab : "turmas"}
+      />
+    </div>
   );
 }

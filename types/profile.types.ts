@@ -4,7 +4,7 @@ export type Profile = {
   location: string;
   phone: string;
   email: string;
-  avatar: string;
+  avatar?: string | null;
 };
 
 export type ProfileField = { label: string; value: string };
