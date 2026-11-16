@@ -1,6 +1,7 @@
 import { Pencil } from "lucide-react";
 import Image from "next/image";
 
+import { getInitials } from "@/lib/utils/get-initials";
 import type { Profile } from "@/types/profile.types";
 
 function ContactItem({
@@ -43,14 +44,24 @@ export function ProfileOverview({
       </div>
 
       <div className="absolute top-8 left-[33px] size-[164px] overflow-hidden rounded-full border-8 border-white bg-muted">
-        <Image
-          src={profile.avatar}
-          alt={`Fotografia de ${profile.displayName}`}
-          fill
-          sizes="164px"
-          className="object-cover"
-          priority
-        />
+        {profile.avatar ? (
+          <Image
+            src={profile.avatar}
+            alt={`Fotografia de ${profile.displayName}`}
+            fill
+            sizes="164px"
+            className="object-cover"
+            priority
+          />
+        ) : (
+          <span
+            role="img"
+            aria-label={`Iniciais de ${profile.displayName}`}
+            className="flex size-full items-center justify-center bg-primary/10 text-4xl font-semibold text-primary"
+          >
+            {getInitials(profile.displayName)}
+          </span>
+        )}
       </div>
 
       <button

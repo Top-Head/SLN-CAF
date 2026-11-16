@@ -48,7 +48,7 @@ export const NAVIGATION: NavGroup[] = [
       { title: "Professores", href: "/professores", icon: UsersRound },
       { title: "Estudantes", href: "/estudantes", icon: GraduationCap },
       { title: "Disciplinas", href: "/disciplinas", icon: BookOpen },
-      { title: "Turmas", href: "/turmas", icon: School },
+      { title: "Gestão académica", href: "/turmas", icon: School },
       { title: "Utilizadores", href: "/utilizadores", icon: UserCog },
     ],
   },
