@@ -29,11 +29,27 @@ const typeOf = (e: ExamGrade): ExamType => e.exam_type ?? "SIMPLE";
 const label = (e: ExamGrade) => `exame de ${e.subject_nome} de ${e.student_nome}`;
 const asText = (value?: string | null) => formatDecimal(value).replace("—", "");
 
+/** Valor do select para "usar o tipo configurado para a disciplina". */
+const AUTO_TYPE = "AUTO";
+
 function toPayload(values: Record<string, string>): ExamGradePayload {
-  const type = values.exam_type as ExamType;
-  return {
+  const base = {
     enrollment: values.enrollment.trim(),
     turma_disciplina: values.turma_disciplina.trim(),
+  };
+  if (values.exam_type === AUTO_TYPE) {
+    // Fluxo académico: sem tipo, a API usa o configurado (SubjectExamRule).
+    // Envia os valores preenchidos: nota única ou NEE + NEO.
+    return {
+      ...base,
+      exam_value: toDecimal(values.exam_value),
+      nee: toDecimal(values.nee),
+      neo: toDecimal(values.neo),
+    };
+  }
+  const type = values.exam_type as ExamType;
+  return {
+    ...base,
     exam_type: type,
     // MEC usa as notas escrita (NEE) e oral (NEO); os outros, a nota do exame.
     exam_value: type === "MEC" ? null : toDecimal(values.exam_value),
@@ -103,7 +119,7 @@ export function ExamsManager() {
         },
         descriptions: {
           create:
-            "Exame simples ou especial: indique a nota. Exame MEC: indique a nota escrita (NEE) e a oral (NEO).",
+            "Só em classes com exame final e disciplinas não isentas. Exame simples ou especial: indique a nota. Exame MEC: indique a nota escrita (NEE) e a oral (NEO).",
           edit: "Corrija a nota de exame.",
           view: "Consulte a nota de exame.",
         },
@@ -118,7 +134,10 @@ export function ExamsManager() {
             icon: FileCheck2,
             required: true,
             wide: true,
-            options: optionsOf(EXAM_TYPE_LABELS),
+            options: [
+              { value: AUTO_TYPE, label: "Tipo configurado para a disciplina" },
+              ...optionsOf(EXAM_TYPE_LABELS),
+            ],
           },
           {
             name: "exam_value",
@@ -134,7 +153,7 @@ export function ExamsManager() {
         emptyValues: {
           enrollment: "",
           turma_disciplina: "",
-          exam_type: "SIMPLE",
+          exam_type: AUTO_TYPE,
           exam_value: "",
           nee: "",
           neo: "",
@@ -150,6 +169,13 @@ export function ExamsManager() {
         validate: (values) => {
           if (!isUuid(values.enrollment) || !isUuid(values.turma_disciplina)) {
             return "Indique um estudante e uma disciplina válidos.";
+          }
+          if (values.exam_type === AUTO_TYPE) {
+            const single = isDecimal(values.exam_value);
+            const mec = isDecimal(values.nee) && isDecimal(values.neo);
+            return single || mec
+              ? null
+              : "Indique a nota do exame ou, no exame MEC, a nota escrita (NEE) e a oral (NEO).";
           }
           if (values.exam_type === "MEC") {
             return isDecimal(values.nee) && isDecimal(values.neo)

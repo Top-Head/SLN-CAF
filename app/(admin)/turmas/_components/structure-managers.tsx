@@ -116,6 +116,21 @@ export function SchoolClassesManager() {
             <span className="font-medium">{schoolClassLabel(c)}</span>
           ),
         },
+        {
+          label: "Escala",
+          className: "w-[140px]",
+          render: (c) => (c.numero <= 6 ? "0 a 10 valores" : "0 a 20 valores"),
+        },
+        {
+          label: "Notas",
+          className: "w-[160px]",
+          render: (c) =>
+            c.is_initiation ? (
+              <span className="text-xs text-attention">Iniciação · sem notas</span>
+            ) : (
+              <span className="text-xs text-positive">Com lançamento</span>
+            ),
+        },
       ]}
       getLabel={schoolClassLabel}
       searchText={(c) => [String(c.numero), schoolClassLabel(c)]}
@@ -127,8 +142,8 @@ export function SchoolClassesManager() {
           view: "Dados da classe",
         },
         descriptions: {
-          create: "Indique o número da classe (1 a 13).",
-          edit: "Atualize o número da classe.",
+          create: "Indique o número da classe (1 a 13). O número escolhe a escala e a regra de avaliação.",
+          edit: "Atualize o número da classe ou se é de iniciação.",
           view: "Consulte a classe registada.",
         },
         submitLabel: "Cadastrar classe",
@@ -144,9 +159,24 @@ export function SchoolClassesManager() {
             wide: true,
             placeholder: "Ex.: 10",
           },
+          {
+            name: "is_initiation",
+            label: "Classe de iniciação",
+            type: "select",
+            icon: Layers,
+            required: true,
+            wide: true,
+            options: [
+              { value: "false", label: "Não · usa o lançamento de notas" },
+              { value: "true", label: "Sim · iniciação, sem notas" },
+            ],
+          },
         ],
-        emptyValues: { numero: "" },
-        toValues: (c) => ({ numero: String(c.numero) }),
+        emptyValues: { numero: "", is_initiation: "false" },
+        toValues: (c) => ({
+          numero: String(c.numero),
+          is_initiation: c.is_initiation ? "true" : "false",
+        }),
         validate: (values) =>
           parseClassNumber(values.numero) === null
             ? "O número da classe deve ser um inteiro entre 1 e 13."
@@ -159,12 +189,21 @@ export function SchoolClassesManager() {
       }}
       fetchOne={getSchoolClassById}
       onCreate={(values, token) =>
-        createSchoolClass({ numero: parseClassNumber(values.numero)! }, token)
+        createSchoolClass(
+          {
+            numero: parseClassNumber(values.numero)!,
+            is_initiation: values.is_initiation === "true",
+          },
+          token,
+        )
       }
       onUpdate={(c, values, token) =>
         patchSchoolClass(
           c.id,
-          { numero: parseClassNumber(values.numero)! },
+          {
+            numero: parseClassNumber(values.numero)!,
+            is_initiation: values.is_initiation === "true",
+          },
           token,
         )
       }
@@ -215,7 +254,7 @@ export function SchoolYearsManager() {
           view: "Dados do ano letivo",
         },
         descriptions: {
-          create: "Indique o ano de início e de fim do ano letivo.",
+          create: "Indique o ano de início e de fim do ano letivo (ex.: 2026 e 2027). O ano letivo é a raiz das turmas, matrículas e trimestres.",
           edit: "",
           view: "Consulte o ano letivo registado.",
         },
@@ -253,8 +292,9 @@ export function SchoolYearsManager() {
           if (inicio === null || fim === null) {
             return "Indique anos válidos entre 2000 e 2100.";
           }
-          if (fim <= inicio) {
-            return "O ano de fim deve ser posterior ao ano de início.";
+          // Fluxo académico: o ano letivo termina sempre no ano seguinte.
+          if (fim !== inicio + 1) {
+            return `O ano de fim deve ser ${inicio + 1} (ano de início + 1).`;
           }
           return null;
         },

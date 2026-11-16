@@ -8,6 +8,7 @@ import {
   type StudentAccessCode,
 } from "@/services/access-codes";
 import { authStore } from "@/stores/use-auth.store";
+import { managedAccessCodesStore } from "@/stores/use-managed-access-codes.store";
 
 /**
  * A API não tem endpoint para listar códigos já gerados: cada código só é
@@ -43,6 +44,8 @@ function accessToken() {
 async function generateForTurma(turmaId: string) {
   const result = await generateTurmaAccessCodes(turmaId, accessToken());
   setState({ byTurma: { ...state.byTurma, [turmaId]: result.codes } });
+  // Os códigos anteriores ficam revogados: atualiza a lista de emitidos.
+  void managedAccessCodesStore.invalidate();
   return result;
 }
 
@@ -55,6 +58,7 @@ async function generateForStudent(turmaId: string, studentId: string) {
     : [...current, code];
 
   setState({ byTurma: { ...state.byTurma, [turmaId]: codes } });
+  void managedAccessCodesStore.invalidate();
   return code;
 }
 

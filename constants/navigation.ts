@@ -9,9 +9,12 @@ import {
   KeyRound,
   LayoutDashboard,
   Pencil,
+  Scale,
   School,
   Settings,
+  UserCog,
   UsersRound,
+  Workflow,
   type LucideIcon,
 } from "lucide-react";
 
@@ -34,7 +37,10 @@ export type NavGroup = {
 export const NAVIGATION: NavGroup[] = [
   {
     label: "Geral",
-    items: [{ title: "Dashboard", href: "/dashboard", icon: LayoutDashboard }],
+    items: [
+      { title: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
+      { title: "Fluxo académico", href: "/fluxo-academico", icon: Workflow },
+    ],
   },
   {
     label: "Gestão",
@@ -43,6 +49,7 @@ export const NAVIGATION: NavGroup[] = [
       { title: "Estudantes", href: "/estudantes", icon: GraduationCap },
       { title: "Disciplinas", href: "/disciplinas", icon: BookOpen },
       { title: "Turmas", href: "/turmas", icon: School },
+      { title: "Utilizadores", href: "/utilizadores", icon: UserCog },
     ],
   },
   {
@@ -54,6 +61,7 @@ export const NAVIGATION: NavGroup[] = [
         icon: Pencil,
       },
       { title: "Pautas", href: "/pautas", icon: FileText },
+      { title: "Regras de avaliação", href: "/regras-de-avaliacao", icon: Scale },
       { title: "Estatísticas", href: "/estatisticas", icon: ChartNoAxesColumn },
     ],
   },

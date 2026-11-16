@@ -44,6 +44,7 @@ export function ListHeader({
           <Image src="/icons/filter.svg" alt="" width={16} height={16} />
           Filtrar
         </button>
+        {onAdd && (
         <button
           type="button"
           onClick={onAdd}
@@ -52,6 +53,7 @@ export function ListHeader({
           {addLabel}
           <AddIcon className={AddIcon === Plus ? "size-3.5" : "size-4"} />
         </button>
+        )}
       </div>
     </div>
   );

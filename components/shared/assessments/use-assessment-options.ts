@@ -4,7 +4,9 @@ import { useAllExamGrades } from "@/hooks/assessments/use-exams";
 import { useAllGrades } from "@/hooks/assessments/use-grades";
 import { useAllPromotionDecisions } from "@/hooks/assessments/use-promotion-decisions";
 import { useAllTrimesters } from "@/hooks/assessments/use-trimesters";
+import { useAllEnrollments } from "@/hooks/academic/use-enrollments";
 import { useAllSchoolYears } from "@/hooks/academic/use-school-years";
+import { useAllTurmaDisciplinas } from "@/hooks/academic/use-turma-disciplinas";
 import type { SelectOption } from "@/components/shared/resource/resource-form-dialog";
 
 import { trimesterLabel } from "./labels";
@@ -22,9 +24,11 @@ const toOptions = (map: Map<string, string>) =>
 /**
  * Opções para os formulários de avaliação.
  *
- * A API ainda não lista matrículas (`enrollment`) nem disciplinas de turma
- * (`turma_disciplina`): as opções conhecidas vêm das notas, exames e decisões
- * já registados. Sem nenhuma, os formulários pedem o identificador à mão.
+ * As matrículas e as disciplinas por turma vêm de
+ * `/api/academico/enrollments/` e `/api/avaliacoes/turma-disciplinas/`.
+ * As notas, exames e decisões já registados completam a lista (por exemplo,
+ * matrículas antigas ou sem permissão de leitura). Sem nenhuma opção, os
+ * formulários pedem o identificador à mão.
  */
 export function useAssessmentOptions(options?: { decisions?: boolean }) {
   const grades = useAllGrades();
@@ -33,12 +37,26 @@ export function useAssessmentOptions(options?: { decisions?: boolean }) {
     enabled: options?.decisions ?? false,
   });
   const trimesters = useAllTrimesters();
+  const enrollmentList = useAllEnrollments();
+  const turmaDisciplinas = useAllTurmaDisciplinas();
   const years = useAllSchoolYears();
 
   const enrollments = new Map<string, string>();
   const subjects = new Map<string, string>();
   // Ano letivo de cada matrícula, para preencher as consultas anuais.
   const enrollmentYear = new Map<string, string>();
+
+  // Fontes principais: matrículas ativas primeiro e disciplinas por turma.
+  for (const e of [...enrollmentList.items].sort((a, b) =>
+    (a.status ?? "ATIVA") === "ATIVA" ? -1 : (b.status ?? "ATIVA") === "ATIVA" ? 1 : 0,
+  )) {
+    const inactive = (e.status ?? "ATIVA") !== "ATIVA" ? ` (${(e.status ?? "").toLowerCase()})` : "";
+    addOption(enrollments, e.id, `${e.student_nome} · ${e.turma_nome}${inactive}`);
+    enrollmentYear.set(e.id, e.school_year);
+  }
+  for (const td of turmaDisciplinas.items) {
+    addOption(subjects, td.id, `${td.subject_nome} · ${td.turma_nome} · ${td.teacher_nome}`);
+  }
 
   for (const g of grades.items) {
     addOption(enrollments, g.enrollment, `${g.student_nome} · ${g.turma_nome}`);
@@ -83,6 +101,8 @@ export function useAssessmentOptions(options?: { decisions?: boolean }) {
     enrollmentYear,
     trimesters: trimesters.items,
     loading:
+      enrollmentList.status === "loading" ||
+      turmaDisciplinas.status === "loading" ||
       grades.status === "loading" ||
       exams.status === "loading" ||
       trimesters.status === "loading",

@@ -1,9 +1,14 @@
 "use client";
 
-import { useState } from "react";
+import { useSearchParams } from "next/navigation";
 
-import { cn } from "@/lib/utils";
+import { PageTabs } from "@/components/shared/page-tabs";
 
+import {
+  CurriculumManager,
+  EnrollmentsManager,
+  TurmaDisciplinasManager,
+} from "./flow-managers";
 import {
   CoursesManager,
   SchoolClassesManager,
@@ -12,50 +17,28 @@ import {
 import { TurmasList } from "./turmas-list";
 
 const TABS = [
-  { key: "turmas", label: "Turmas", Panel: TurmasList },
-  { key: "cursos", label: "Cursos", Panel: CoursesManager },
-  { key: "classes", label: "Classes", Panel: SchoolClassesManager },
-  { key: "anos", label: "Anos letivos", Panel: SchoolYearsManager },
-] as const;
+  { key: "turmas", label: "Turmas", render: () => <TurmasList /> },
+  { key: "matriculas", label: "Matrículas", render: () => <EnrollmentsManager /> },
+  { key: "disciplinas", label: "Disciplinas por turma", render: () => <TurmaDisciplinasManager /> },
+  { key: "plano", label: "Plano curricular", render: () => <CurriculumManager /> },
+  { key: "cursos", label: "Cursos", render: () => <CoursesManager /> },
+  { key: "classes", label: "Classes", render: () => <SchoolClassesManager /> },
+  { key: "anos", label: "Anos letivos", render: () => <SchoolYearsManager /> },
+];
 
-type TabKey = (typeof TABS)[number]["key"];
-
-/** Turmas e a estrutura académica de que dependem (cursos, classes, anos). */
+/**
+ * Turmas e o que delas depende no fluxo académico: matrículas, disciplinas
+ * por turma (professor) e plano curricular, mais a estrutura (cursos, classes,
+ * anos letivos). `?tab=` abre um separador (usado pela página Fluxo académico).
+ */
 export function AcademicStructure() {
-  const [tab, setTab] = useState<TabKey>("turmas");
-  const active = TABS.find((t) => t.key === tab) ?? TABS[0];
-
+  const tab = useSearchParams().get("tab") ?? undefined;
   return (
-    <div className="flex flex-col gap-6">
-      <div
-        role="tablist"
-        aria-label="Estrutura académica"
-        className="flex h-12 gap-6 overflow-x-auto border-b"
-      >
-        {TABS.map(({ key, label }) => (
-          <button
-            key={key}
-            type="button"
-            role="tab"
-            id={`tab-${key}`}
-            aria-selected={tab === key}
-            aria-controls={`panel-${key}`}
-            onClick={() => setTab(key)}
-            className={cn(
-              "flex h-full items-center border-b-2 text-[13px] whitespace-nowrap transition-colors",
-              tab === key
-                ? "border-primary font-semibold text-primary"
-                : "border-transparent text-neutral hover:text-foreground",
-            )}
-          >
-            {label}
-          </button>
-        ))}
-      </div>
-
-      <div role="tabpanel" id={`panel-${active.key}`} aria-labelledby={`tab-${active.key}`}>
-        <active.Panel />
-      </div>
-    </div>
+    <PageTabs
+      key={tab}
+      label="Estrutura académica"
+      tabs={TABS}
+      defaultTab={TABS.some((t) => t.key === tab) ? tab : "turmas"}
+    />
   );
 }

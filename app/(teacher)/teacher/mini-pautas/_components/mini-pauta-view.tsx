@@ -19,6 +19,7 @@ import { useEffect, useState } from "react";
 import { formatDecimal } from "@/components/shared/assessments/labels";
 import { currentAccessToken } from "@/components/shared/resource/resource-manager";
 import { useMiniPauta } from "@/hooks/teacher-dashboard/use-mini-pauta";
+import { useAllTrimesters } from "@/hooks/assessments/use-trimesters";
 import { useTeacherClasses } from "@/hooks/teacher-dashboard/use-teacher-dashboard";
 import { paginate } from "@/hooks/catalog/use-catalog-state";
 import { notify } from "@/lib/notify";
@@ -108,15 +109,28 @@ export function MiniPautaView() {
       a.disciplina.localeCompare(b.disciplina, "pt"),
   );
   const turmaDisciplinaId = selectedId || options[0]?.id || "";
-  const params = turmaDisciplinaId
+  // "Trimestre aberto": a API devolve 500 sem `trimestre`, por isso o número
+  // do trimestre aberto do ano letivo da turma é calculado aqui.
+  const trimesters = useAllTrimesters();
+  const anoLetivo = options.find((o) => o.id === turmaDisciplinaId)?.ano_letivo;
+  const openTrimester = trimesters.items.find(
+    (t) =>
+      t.status !== "FECHADO" &&
+      (!anoLetivo ||
+        `${t.school_year_detail?.ano_inicio}/${t.school_year_detail?.ano_fim}` === anoLetivo),
+  )?.numero;
+  // Sem trimestre escolhido, espera pelos trimestres para não pedir sem `trimestre`.
+  const waitingTrimester =
+    !trimestre && (trimesters.status === "idle" || trimesters.status === "loading");
+  const params = turmaDisciplinaId && !waitingTrimester
     ? {
         turma_disciplina_id: turmaDisciplinaId,
-        trimestre: trimestre || undefined,
+        trimestre: trimestre || openTrimester || undefined,
         resultado: view === "todos" ? undefined : view,
         search: search || undefined,
       }
     : null;
-  const { miniPauta, status, error } = useMiniPauta(params);
+  const { miniPauta, status, error, fallback } = useMiniPauta(params);
 
   const students: MiniPautaStudent[] = miniPauta?.alunos ?? [];
   const totalPages = Math.max(1, Math.ceil(students.length / PAGE_SIZE));
@@ -243,7 +257,8 @@ export function MiniPautaView() {
           <button
             type="button"
             onClick={() => void downloadPdf()}
-            disabled={!miniPauta || downloading}
+            disabled={!miniPauta || downloading || fallback}
+            title={fallback ? "O PDF depende da mini-pauta da API, que está indisponível" : undefined}
             className="flex h-9 items-center gap-1.5 rounded-xl bg-primary px-4 text-xs font-bold text-white shadow-sm transition hover:bg-primary/90 disabled:opacity-50"
           >
             <FileDown className="size-3.5" />
@@ -252,6 +267,12 @@ export function MiniPautaView() {
         </div>
       </div>
 
+{fallback && (
+        <p role="status" className="rounded-md bg-amber-50 px-3 py-2 text-sm text-amber-700">
+          A mini-pauta da API está indisponível (erro no servidor). A lista abaixo vem das
+          matrículas e das notas lançadas; a MT e o resultado aparecem quando a API voltar.
+        </p>
+      )}
       {(error || classes.error) && (
         <p role="alert" className="rounded-md bg-red-50 px-3 py-2 text-sm text-red-600">
           {error ?? classes.error}
@@ -286,7 +307,7 @@ export function MiniPautaView() {
             {loading
               ? "A carregar..."
               : options.length === 0
-                ? "Ainda não tem turmas e disciplinas atribuídas."
+                ? "Ainda não tem turmas e disciplinas atribuídas. A direcção tem de lhe atribuir uma disciplina numa turma (turma-disciplina)."
                 : "Escolha outro trimestre ou turma para ver a mini-pauta."}
           </p>
         )}

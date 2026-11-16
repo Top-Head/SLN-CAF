@@ -69,7 +69,7 @@ export function TrimestersManager() {
         },
         descriptions: {
           create: "Associe o trimestre a um ano letivo.",
-          edit: "Feche o trimestre para impedir novos lançamentos de notas.",
+          edit: "Fechar o trimestre bloqueia o lançamento de notas. A API só aceita fechar quando todas as matrículas ativas têm as notas obrigatórias em todas as disciplinas da turma; se faltar alguma, mostra quem está em falta.",
           view: "Consulte o trimestre registado.",
         },
         submitLabel: "Cadastrar trimestre",
